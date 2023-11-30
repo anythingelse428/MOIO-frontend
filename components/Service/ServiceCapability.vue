@@ -242,12 +242,13 @@ if (capability.value?.type === 'devices.capabilities.color_setting') {
         width: 32px;
         height: 32px;
         border-radius: 100%;
-        background: $bg-primary;
+        background: $color-inactive;
         font-size: 24px;
-        filter:drop-shadow(0px 0px 12px $service-shadow-color);
-      }
+        }
       &.--checked{
         &::before{
+          filter:drop-shadow(0px 0px 12px $service-shadow-color);
+          background: $bg-primary;
           color: $color-active;
           box-shadow: none;
         }

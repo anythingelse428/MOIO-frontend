@@ -83,7 +83,7 @@ const props = defineProps<Service>()
 const isTooBigLength = ref(false)
 const isCapabilitiesShow = ref(false)
 const isDeviceOn = ref(props.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value)
-const isDeviceOpen = ref(props.capabilities?.find(el => el.instance === 'open')?.value)
+const isDeviceOpen = ref(props.capabilities?.find(el => el.instance === 'open' || el.type === 'devices.types.openable.garage')?.value)
 const target = ref(null)
 const ico = useIcoByDeviceType(props.type)
 onClickOutside(target, () => {

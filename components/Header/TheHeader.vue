@@ -69,6 +69,17 @@ onClickOutside(settingsMenu, (e) => {
 
 <style lang="scss">
 @import "~/assets/styles/transitions";
+@import "~/assets/styles/vars/functions";
+.scheme-dark{
+  .header-content{
+    background-color: rgb(0 0 0 / 30%);
+  }
+}
+.scheme-light{
+  .header-content{
+    background-color: rgb(255 255 255 / 30%);
+  }
+}
 .header-content{
   position: relative;
   width: 100%;
@@ -79,6 +90,7 @@ onClickOutside(settingsMenu, (e) => {
   padding-top: 16px;
   align-items: center;
   gap: 20px;
+  backdrop-filter: blur(2px);
   &__menu-container{
     position: relative;
   }

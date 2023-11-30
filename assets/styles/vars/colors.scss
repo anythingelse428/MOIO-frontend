@@ -6,6 +6,7 @@
   --color-primary: #FFFFFF;
   --color-accent: #15161C;
   --color-active: #98EDFF;
+  --color-inactive: #000;
   --bg-primary: #15191C;
   --bg-accent: #1A1916;
   --aside-header:#98CEFF;
@@ -28,11 +29,12 @@
   --color-primary: #15161C;
   --color-accent: #15161C;
   --color-active: #8DB8FF;
+  --color-inactive:#D8E9FF;
   --bg-primary: #EDF5FF;
   --bg-accent: #D9EEF9;
   --aside-header:#105FC2;
   --main-bg-gradient-start:#FFF;
-  --main-bg-gradient-end:#FFF;
+  --main-bg-gradient-end: #fff;
   --avatar-bg-gradient-start:#00D4FF;
   --avatar-bg-gradient-end:#87EBFF00;
   --divider-border-color:#A6C8DA;
@@ -56,4 +58,5 @@ $avatar-bg-gradient-end:var(--avatar-bg-gradient-end);
 $divider-border-color: var(--divider-border-color);
 $service-shadow-color:var(--service-shadow-color);
 $aside-header:var(--aside-header);
-$thumb-color:var(--thumb-color)
+$thumb-color:var(--thumb-color);
+$color-inactive:var(--color-inactive);

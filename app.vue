@@ -19,7 +19,12 @@ user.init()
 groups.getAll()
 // devices.getAllDevices()
 
-
+const colorMode = useColorMode()
+console.log(colorMode.preference)
+console.log(localStorage.getItem('nuxt-color-mode'))
+onMounted(()=>{
+  colorMode.value = localStorage.getItem('nuxt-color-mode') || 'dark'
+})
 </script>
 <style>
 

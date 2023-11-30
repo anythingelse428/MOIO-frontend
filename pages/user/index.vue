@@ -46,7 +46,6 @@
 import { useUserStore } from '~/store/user'
 import TheModal from "~/components/shared/TheModal.vue"
 import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
-
 const roommates = ref([
   {
     id: 0,
@@ -76,6 +75,7 @@ const isAddRoommatesModalShow = ref(false)
 // onClickOutside(addRoommateModal, () => {
 //   isAddRoommatesModalShow.value = false
 // })
+
 </script>
 
 <style lang="scss">

@@ -123,12 +123,7 @@ function changeColorMode () {
     localStorage.setItem('nuxt-color-mode', colorMode.value)
   }, 1)
 }
-onMounted(() => {
-  const theme = localStorage.getItem('nuxt-color-mode')
-  if (theme && theme?.length > 1) {
-    colorMode.value = theme
-  }
-})
+
 function logout () {
   const userStore = useUserStore()
   userStore.logout()
