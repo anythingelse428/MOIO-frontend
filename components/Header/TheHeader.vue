@@ -1,9 +1,9 @@
 <template>
   <div class="header-content">
-    <button class="header-button"  @click="isAddMenuShow = !isAddMenuShow">
+    <button class="header-button" @click="isAddMenuShow = !isAddMenuShow">
       <span class="mdi mdi-plus-circle-outline" />
       <transition name="fade">
-        <header-menu ref="addMenu" v-show="isAddMenuShow" :items="addMenuItems" />
+        <header-menu v-show="isAddMenuShow" ref="addMenu" :items="addMenuItems" />
       </transition>
     </button>
     <div class="header-content__menu-container">
@@ -11,7 +11,7 @@
         <span class="mdi mdi-dots-horizontal" />
       </button>
       <transition name="fade">
-        <header-menu ref="settingsMenu" v-show="isSettingsMenuShow" :items="settingsMenuItems" />
+        <header-menu v-show="isSettingsMenuShow" ref="settingsMenu" :items="settingsMenuItems" />
       </transition>
     </div>
   </div>
@@ -59,12 +59,16 @@ const isSettingsMenuShow = ref(false)
 const addMenu = ref(null)
 const settingsMenu = ref(null)
 
-onClickOutside(addMenu,(e)=>isAddMenuShow.value = false)
-onClickOutside(settingsMenu,(e)=>isSettingsMenuShow.value = false)
+onClickOutside(addMenu, (e) => {
+  isAddMenuShow.value = false
+})
+onClickOutside(settingsMenu, (e) => {
+  isSettingsMenuShow.value = false
+})
 </script>
 
 <style lang="scss">
-@import "~/assets/styles/transitions.scss";
+@import "~/assets/styles/transitions";
 .header-content{
   position: relative;
   width: 100%;
