@@ -1,0 +1,1 @@
+# Переименуй папку в build и запускай npm run build:fontagon  

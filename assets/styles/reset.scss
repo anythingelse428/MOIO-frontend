@@ -1,0 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+.layout {
+  *{
+  font-family: Jura, sans-serif;
+  font-weight: 600;
+
+  color: $color-primary;
+  }
+}

@@ -1,0 +1,36 @@
+@mixin section-header {
+  font-size: 40px;
+  font-weight: 700;
+}
+@mixin aside-header {
+  font-size: 20px;
+  font-weight: 600;
+}
+@mixin aside-item {
+  font-size: 20px;
+  font-weight: 600;
+  &::first-letter{
+    text-transform: uppercase;
+  }
+}
+@mixin action-item {
+  font-size: 20px;
+  font-weight: 600;
+}
+@mixin tool-item {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+@mixin carousel-category-item {
+  font-size: 16px;
+  font-weight: 300;
+}
+@mixin header-submenu-item {
+  font-size: 30px;
+  font-weight: 400;
+}
+@mixin capabilities-modal-header {
+  font-size: 15px;
+  font-weight: 600;
+}
