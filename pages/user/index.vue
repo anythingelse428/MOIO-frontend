@@ -107,7 +107,8 @@ const isAddRoommatesModalShow = ref(false)
       margin-top: 16px;
       cursor: pointer;
       .mdi{
-      color: $color-accent;
+        color: $color-accent;
+        font-size: 28px;
       }
     }
   }

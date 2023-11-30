@@ -245,7 +245,6 @@ if (capability.value?.type === 'devices.capabilities.color_setting') {
         background: $bg-primary;
         font-size: 24px;
         filter:drop-shadow(0px 0px 12px $service-shadow-color);
-        box-shadow: 0px 0px 6.1px 0px rgba(0, 0, 0, 0.80) inset;
       }
       &.--checked{
         &::before{

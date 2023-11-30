@@ -89,25 +89,6 @@ const ico = useIcoByDeviceType(props.type)
 onClickOutside(target, () => {
   isCapabilitiesShow.value = false
 })
-const newTempIco = () => {
-  if (props.type.includes('devices.types.sensor')) {
-    return 'access-point'
-  }
-  switch (props.type) {
-    case 'devices.types.switch':
-      return 'power-plug-outline'
-    case 'devices.types.openable.lock':
-      return 'lock'
-    case 'devices.types.light':
-      return 'lightbulb-variant-outline'
-    case 'devices.types.thermostat':
-      return 'home-thermometer-outline'
-    case 'devices.types.openable.valve':
-      return 'water-outline'
-    default:
-      return 'block-helper'
-  }
-}
 function validateNameLength () {
   const element = document.querySelector('#service' + props.groupId + '_' + props.id)
   if (element) {

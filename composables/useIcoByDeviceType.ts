@@ -5,7 +5,7 @@ export default function useIcoByDeviceType (type:string) {
   }
   switch (type) {
     case 'devices.types.switch':
-      return { name: 'power-plug-outline', code: '\\F1425' }
+      return { name: 'power-socket-eu', code: '\\F07E7' }
     case 'devices.types.openable.lock':
       return { name: 'lock-outline', code: '\\F0341' }
     case 'devices.types.light':

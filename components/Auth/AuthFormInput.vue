@@ -60,7 +60,7 @@ const model = computed({
   font-size: 40px;
   &__label{
     position: absolute;
-    color: #80766A;
+    color: $color-active;
     z-index: 10;
     left: 24px;
     font-weight: 300;

@@ -139,7 +139,6 @@ function logout () {
 .aside{
   .aside-collapse{
     z-index: 10;
-    box-shadow: 30px 0px 67px 0px rgba(0, 0, 0, 0.25);
     position: fixed;
     bottom: 0;
     top: 0;
