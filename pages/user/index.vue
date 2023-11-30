@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { useUserStore } from '~/store/user'
 import TheModal from "~/components/shared/TheModal.vue"
-import AddRoommateModal from "~/components/profile/AddRoommateModal.vue"
+import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
 
 const roommates = ref([
   {
