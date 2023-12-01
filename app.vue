@@ -12,17 +12,18 @@ import useAsyncQuery from '~/composables/useAsyncQuery'
 import { useGroupsStore } from "~/store/groups"
 
 const user = useUserStore()
-const groups = useGroupsStore()
+// const groups = useGroupsStore()
 // const devices = useDevicesStore()
 
 user.init()
-groups.getAll()
+// groups.getAll()
+// console.log(groups.floors)
 // devices.getAllDevices()
 
 const colorMode = useColorMode()
 console.log(colorMode.preference)
 console.log(localStorage.getItem('nuxt-color-mode'))
-onMounted(()=>{
+onMounted(() => {
   colorMode.value = localStorage.getItem('nuxt-color-mode') || 'dark'
 })
 </script>

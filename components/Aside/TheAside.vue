@@ -4,10 +4,23 @@
     <div :class="`aside-collapse ${isAsideCollapsed&& '--collapsed'}`">
       <div class="aside-main">
         <aside-category
-          v-for="content in asideContent"
-          :key="content.categoryTitle"
-          :category-header="content.categoryTitle"
-          :category-items="content.categoryContent"
+          category-header="Основное"
+          :category-items="asideContent.categoryContent"
+        />
+        <aside-category
+          v-if="typeof categories !== 'undefined'"
+          category-header="Категории"
+          :category-items="categories"
+        />
+        <aside-category
+          v-if="typeof rooms !== 'undefined'"
+          category-header="Комнаты"
+          :category-items="rooms"
+        />
+        <aside-category
+          v-if="typeof floors !== 'undefined'"
+          category-header="Этажи"
+          :category-items="floors"
         />
       </div>
       <div class="aside-footer">
@@ -26,96 +39,61 @@
 <script setup lang="ts">
 import AsideCategory from '~/components/Aside/AsideCategory.vue'
 import { useUserStore } from "~/store/user"
+import { type GetAllResponseItem } from "~/api/category/getAll"
+import { useCategoriesStore } from "~/store/categories"
+import { useGroupsStore } from "~/store/groups"
 
 const isAsideCollapsed = ref(false)
-const asideContent = ref(
-  [
+const asideContent =
     {
       categoryTitle: 'Основное',
       categoryContent: [
         {
           icon: 'home',
-          title: 'дом',
+          name: 'дом',
           url: '/',
         },
         {
           icon: 'star-outline',
-          title: 'обзор',
+          name: 'обзор',
           url: '/overview',
         },
         {
           icon: 'home-automation',
-          title: 'автоматизация',
+          name: 'автоматизация',
           url: '/automation',
         },
         {
           icon: 'account-outline',
-          title: 'профиль',
+          name: 'профиль',
           url: '/user',
         },
       ],
-    },
-    {
-      categoryTitle: 'Категории',
-      categoryContent: [
-        {
-          icon: 'lightbulb-outline',
-          title: 'свет',
-          url: '/user/groups/123',
-        },
-        {
-          icon: 'fan',
-          title: 'микроклимат',
-          url: '/user/groups/12',
-        },
-        {
-          icon: 'shield-outline',
-          title: 'безопасность',
-          url: '/user/groups/31',
-        },
-        {
-          icon: 'volume-high',
-          title: 'электроника',
-          url: '/user/groups/64',
-        },
-        {
-          icon: 'water-outline',
-          title: 'Вода',
-          url: '/user/groups/64',
-        },
-      ],
-    },
-    {
-      categoryTitle: 'Комнаты',
-      categoryContent: [
-        {
-          icon: 'cube-outline',
-          title: 'Комната 1',
-          url: '/user/groups/11',
-        },
-        {
-          icon: 'cube-outline',
-          title: 'Комната 2',
-          url: '/user/groups/41',
-        },
-        {
-          icon: 'cube-outline',
-          title: 'Комната 3',
-          url: '/user/groups/13',
-        },
-        {
-          icon: 'cube-outline',
-          title: 'Комната 4',
-          url: '/user/groups/62',
-        },
-      ],
-    },
-  ],
-)
-
+    }
+const categories = ref<{
+  icon: string,
+  name:string,
+  url: string,
+}[]>()
+const rooms = ref()
+const floors = ref()
+const categoriesStore = useCategoriesStore()
+const groupsStore = useGroupsStore()
+async function getCategories () {
+  await categoriesStore.getAll()
+  categories.value = categoriesStore.allCategories()
+  await groupsStore.getAll()
+  rooms.value = groupsStore.rooms
+  floors.value = groupsStore.floors
+}
+groupsStore.$onAction(({ after }) => {
+  after((r) => {
+    rooms.value = groupsStore.rooms
+    floors.value = groupsStore.floors
+  })
+})
+getCategories()
 const colorMode = useColorMode()
-console.log(colorMode.preference)
-console.log(localStorage.getItem('nuxt-color-mode'))
 colorMode.value = localStorage.getItem('nuxt-color-mode') || 'dark' // из конфига, раздел colorMode, storageKey
 function changeColorMode () {
   colorMode.value = colorMode.value === 'dark' ? 'light' : 'dark'
@@ -128,6 +106,12 @@ function logout () {
   const userStore = useUserStore()
   userStore.logout()
 }
+const route = useRoute()
+watch(() => route.fullPath, () => {
+  if (isAsideCollapsed.value) {
+    isAsideCollapsed.value = false
+  }
+})
 </script>
 
 <style lang="scss">

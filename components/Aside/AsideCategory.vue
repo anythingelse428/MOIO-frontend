@@ -7,7 +7,7 @@
       <aside-item
         v-for="item in categoryItems"
         :key="item.url"
-        :title="item.title"
+        :title="item.name"
         :icon="item.icon"
         :url="item.url"
       />
@@ -23,7 +23,7 @@ export type AsideCategory = {
   categoryItems:
       {
         icon: string,
-        title: string,
+        name: string,
         url: string
       }[]
 }

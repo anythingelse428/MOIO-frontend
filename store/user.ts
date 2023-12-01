@@ -67,11 +67,12 @@ export const useUserStore = defineStore('user', {
       }
     },
     async auth (props:IAuthUserProps) {
-      const { access_token, username, refresh_token } = await apiUserAuth(props)
+      const { access_token, username, refresh_token, id } = await apiUserAuth(props)
       if (access_token) {
         const config = useRuntimeConfig()
         this.access_token = access_token
         this.displayedName = username
+        this.id = id
         localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, access_token)
         window.location.pathname = '/'
       }
@@ -114,6 +115,7 @@ export const useUserStore = defineStore('user', {
             const userData = await getUserInfo()
             this.role = userData.role
             this.displayedName = userData.name
+            this.id = userData.id
           }
         } catch (e) {
           console.log('clear token...')

@@ -1,6 +1,6 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
 export interface IUserInfoResponse {
-    id: number,
+    id: any,
     name: string,
     login: string,
     password: string,

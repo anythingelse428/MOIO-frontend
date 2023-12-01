@@ -8,7 +8,8 @@ export interface IAuthUserResponse {
     access_token: string,
     refresh_token: string,
     username: string,
-    role: string
+    role: string,
+    id:any
 }
 export default async function apiUserAuth (props:IAuthUserProps):Promise<IAuthUserResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {

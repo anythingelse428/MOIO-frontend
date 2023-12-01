@@ -1,5 +1,5 @@
 export default function useIcoByDeviceType (type:string) {
-  if (!type) { return }
+  if (!type) { return { name: 'help', code: '\\F02D6' } }
   if (type.includes('devices.types.sensor')) {
     return { name: 'access-point', code: "\\F0003" }
   }
@@ -17,6 +17,6 @@ export default function useIcoByDeviceType (type:string) {
     case 'devices.types.openable.garage':
       return { name: 'garage-variant', code: '\\F12D3' }
     default:
-      return { name: 'block-helper', code: '\\F00AD' }
+      return { name: 'help', code: '\\F02D6' }
   }
 }

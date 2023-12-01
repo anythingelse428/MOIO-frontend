@@ -1,6 +1,6 @@
 <template>
-  <div class="service-capability">
-    <div v-if=" type === 'devices.capabilities.color_setting'" class="service-capability__control --color">
+  <div v-if="isMounted" class="service-capability">
+    <div v-if="type === 'devices.capabilities.color_setting'" class="service-capability__control --color">
       <label for="color">
         {{ type }}
       </label>
@@ -27,7 +27,7 @@
       </div>
     </teleport>
 
-    <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability.value?'--checked':''}`" @click.stop="()=>false">
+    <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
       <toggle-switch
         :checked="capability.value"
         :ico="`'${toggleSwitchIco?.code}'`"
@@ -97,6 +97,9 @@ const slider = useNuxtApp().$slider
 const props = defineProps<ServiceCapability>()
 const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
 const devicesStore = useDevicesStore()
+if (devicesStore.devices.length === 0) {
+  await devicesStore.getAllDevices()
+}
 const capability = ref(devicesStore.capabilityById(props.deviceId + '_ch' + props.chanel, props.type))
 const brightness = ref(capability.value?.hsv?.v)
 const isMounted = ref(false)

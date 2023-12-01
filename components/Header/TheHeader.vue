@@ -22,18 +22,22 @@ const addMenuItems = [
   {
     ico: "plus-box-outline",
     title: "Добавить сценарий",
+    url: '/user/group/add',
   },
   {
     ico: "home-automation",
     title: "Добавить автоматизацию",
+    url: '/user/group/add',
   },
   {
     ico: "cube-outline",
     title: "Добавить комнату",
+    url: '/user/group/add/room',
   },
   {
     ico: "account-outline",
     title: "Добавить людей",
+    url: '/user/group/add',
   },
 ]
 const settingsMenuItems = [

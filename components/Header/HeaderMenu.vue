@@ -1,9 +1,11 @@
 <template>
   <div class="header-menu">
-    <div v-for="item in items" :key="item.ico+item.title" class="header-menu__item">
-      <span :class="`mdi mdi-${item.ico}`" />
-      <span class="header-menu__item-title">{{ item.title }}</span>
-    </div>
+    <nuxt-link v-for="item in items" :key="item.ico+item.title" :to="item.url">
+      <div class="header-menu__item">
+        <span :class="`mdi mdi-${item.ico}`" />
+        <span class="header-menu__item-title">{{ item.title }}</span>
+      </div>
+    </nuxt-link>
   </div>
 </template>
 
@@ -11,7 +13,8 @@
 export interface HeaderMenuProps {
   items:{
     ico:string,
-    title:string
+    title:string,
+    url?:string
   }[]
 }
 
