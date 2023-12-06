@@ -19,13 +19,13 @@ user.init()
 // groups.getAll()
 // console.log(groups.floors)
 // devices.getAllDevices()
+// const conn = useSocket()
+// console.log(conn)
+//
+// conn.onopen = () => {
+//   console.log(123)
+// }
 
-const colorMode = useColorMode()
-console.log(colorMode.preference)
-console.log(localStorage.getItem('nuxt-color-mode'))
-onMounted(() => {
-  colorMode.value = localStorage.getItem('nuxt-color-mode') || 'dark'
-})
 </script>
 <style>
 

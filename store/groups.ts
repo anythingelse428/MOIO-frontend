@@ -1,13 +1,18 @@
 import { defineStore } from 'pinia'
 import { consola } from "consola"
 
-import type { GetAllResponseItem } from "~/api/group/getAll"
+import type { IGroupResponseItem } from "~/api/group/getAll"
 import apiGroupGetAll from "~/api/group/getAll"
 import apiGroupAddRoom from "~/api/group/addRoom"
 import { useCategoriesStore } from "~/store/categories"
+import type { IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
+import apiGroupGetDevicesById from "~/api/group/getDevicesByGroupId"
+import apiGroupsGetUpperGroups from "~/api/group/getUpperGroups"
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
-    groups: [] as GetAllResponseItem[],
+    groups: [] as IGroupResponseItem[],
+    devices: {} as IDevicesInCategory,
+    uppperGroups: [] as IGroupResponseItem[],
   }),
   getters: {
     allGroups: state => state.groups,
@@ -15,17 +20,17 @@ export const useGroupsStore = defineStore('groups', {
     floors: (state) => {
       const categoriesStore = useCategoriesStore()
       // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 2), 'floor', 'этаж')
+      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 2), 'group', 'этаж')
     },
     rooms: (state) => {
       const categoriesStore = useCategoriesStore()
       // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 3), 'room', 'комната')
+      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 3), 'group', 'комната')
     },
     houses: (state) => {
       const categoriesStore = useCategoriesStore()
       // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 1), 'house', 'дом')
+      return categoriesStore.allCategories(state.uppperGroups, 'group', 'дом')
     },
   },
   actions: {
@@ -36,7 +41,15 @@ export const useGroupsStore = defineStore('groups', {
           this.groups = data
         }
       } catch (e) {
-        console.log('Борода в получении групп', e)
+        useNotification('error', "Произошла ошибка в получении групп")
+      }
+    },
+    async getHouses () {
+      try {
+        const response = await apiGroupsGetUpperGroups()
+        this.uppperGroups = response
+      } catch {
+        useNotification('error', "Произошла ошибка в получении домов")
       }
     },
     async addGroup (name:string) {
@@ -49,6 +62,16 @@ export const useGroupsStore = defineStore('groups', {
         }
       } catch (e) {
         useNotification('error', 'Произошла ошибка при добавлении комнаты')
+      }
+    },
+    async getDevicesByGroupId (id:string) {
+      try {
+        const data = await apiGroupGetDevicesById(id)
+        if (data) {
+          this.devices = data
+        }
+      } catch {
+        useNotification('error', 'Произошла непредвиденная ошибка')
       }
     },
   },

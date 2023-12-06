@@ -46,7 +46,7 @@ export const useDevicesStore = defineStore('devices', {
       try {
         await apiDeviceChangeBrightness(props)
       } catch (e) {
-        consola.error(`Борода в яркости ${e}`)
+        useNotification('error', "Произошла ошибка при изменении яркости")
       }
     },
     async changeRGB (props: DeviceChangeRGBPayload) {
@@ -54,7 +54,7 @@ export const useDevicesStore = defineStore('devices', {
       try {
         await apiDeviceChangeRGB(props)
       } catch (e) {
-        consola.error(`Ошибка при изменении RGB: ${e}`)
+        useNotification('error', "Произошла ошибка при изменении цвета")
       }
     },
     async changeOnOf (props:DeviceChangeStatusOnOf) {
@@ -62,7 +62,7 @@ export const useDevicesStore = defineStore('devices', {
       try {
         await apiDeviceChangeOnOf(props)
       } catch (e) {
-        consola.error(`Борода в OnOf ${e}`)
+        useNotification('error', "Произошла непредвиденная ошибка")
       }
     },
     async changeOpenClose (props:DeviceChangeStatusOpenClose) {
@@ -72,17 +72,14 @@ export const useDevicesStore = defineStore('devices', {
           this.devices.find(el => el.id === props.deviceId + '_ch' + props.chanel),
         )
       } catch (e) {
-        consola.error(`Борода в open|close ${e}`)
+        useNotification('error', "Произошла непредвиденная ошибка")
       }
     },
     async changeTemperature (props:DeviceChangeStatusTemperature) {
       try {
         await apiDeviceChangeTemperature(props)
-        console.log('store',
-          this.devices.find(el => el.id === props.deviceId + '_ch' + props.chanel),
-        )
       } catch (e) {
-        consola.error(`Борода в temperature ${e}`)
+        useNotification('error', "Произошла непредвиденная ошибка")
       }
     },
   },

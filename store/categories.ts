@@ -2,16 +2,16 @@ import { defineStore } from 'pinia'
 import type { GetAllResponseItem } from "~/api/category/getAll"
 import apiCategoryGetAll from "~/api/category/getAll"
 import { type IAllDevicesResponse } from "~/api/device/getAll"
-import apiCategoryGetDevicesById from "~/api/category/getDevicesByCategoryId"
+import apiCategoryGetDevicesById, { type IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 import useIcoByGroupName from "~/composables/useIcoByGroupName"
 
 export const useCategoriesStore = defineStore('categories', {
   state: () => ({
     categories: [] as GetAllResponseItem[],
-    devicesInCategory: [] as IAllDevicesResponse[],
+    devicesInCategory: {} as IDevicesInCategory,
   }),
   getters: {
-    allCategories: state => (array = state.categories, urlPrefix = 'group', staticIcon?:string) => {
+    allCategories: state => (array = state.categories, urlPrefix = 'category', staticIcon?:string) => {
       return array.reduce((acc:{name:string, url:string, icon:string, id:any}[], curr, i) => {
         acc[i] =
           {
@@ -39,7 +39,7 @@ export const useCategoriesStore = defineStore('categories', {
     },
     async getDevicesByCategoryId (id:number) {
       try {
-        this.devicesInCategory = []
+        this.devicesInCategory = {}
         const data = await apiCategoryGetDevicesById(id)
         this.devicesInCategory = data
       } catch (e) {

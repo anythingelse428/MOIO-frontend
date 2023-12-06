@@ -3,18 +3,22 @@
     <h1 class="group__header">
       {{ groupData?.name }}
     </h1>
-    <div v-if="groupData?.groups && !groupData.groups?.code" class="">
-      <div v-for="group in Object.keys(groupData.groups)" :key="group">
-        {{ group }}
-        <the-service
-          v-for="service in groupData.groups[group]"
-          :id="service.id"
-          :key="service.groupId"
-          group-id=""
-          :name="service.name"
-          :type="service.type"
-          :capabilities="service?.capabilities"
-        />
+    <div v-if="groupData?.groups" class="subgroup-list">
+      <div v-for="group in Object.keys(groupData.groups)" :key="group" class="subgroup-item">
+        <h2 class="subgroup-item__header">
+          {{ group }}
+        </h2>
+        <div class="subgroup-item__service-list">
+          <the-service
+            v-for="service in groupData.groups[group]"
+            :id="service.id"
+            :key="service.groupId"
+            group-id=""
+            :name="service.name"
+            :type="service.type"
+            :capabilities="service?.capabilities"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -25,18 +29,17 @@ import useAsyncQuery from '~/composables/useAsyncQuery'
 import TheService from '~/components/Service/TheService.vue'
 import ServiceGroup from '~/components/Service/ServiceGroup.vue'
 import { useCategoriesStore } from "~/store/categories"
-import { useGroupsStore } from "~/store/groups"
 
 const route = useRoute()
 const id = route.params.id
 const groupData = ref()
-const groupStore = useGroupsStore()
+const categoryStore = useCategoriesStore()
 async function fetchGroups () {
-  await groupStore.getAll()
-  await groupStore.getDevicesByGroupId(id)
+  await categoryStore.getAll()
+  await categoryStore.getDevicesByCategoryId(id)
   groupData.value = {
-    name: groupStore.groupById(id)?.name,
-    groups: groupStore.devices,
+    name: categoryStore.categoryById(id)?.name,
+    groups: categoryStore.devices,
   }
 }
 

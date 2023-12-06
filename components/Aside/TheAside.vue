@@ -24,8 +24,8 @@
         />
       </div>
       <div class="aside-footer">
-        <button class="aside-footer__item" @click="changeColorMode()">
-          <span class="mdi mdi-brightness-6" />{{ colorMode.value === 'dark'?"Светлая тема":"Темная тема" }}
+        <button class="aside-footer__item" @click="colorMode?.changeColorScheme()">
+          <span class="mdi mdi-brightness-6" />{{ colorMode?.currentScheme.value === 'scheme-dark'?"Светлая тема":"Темная тема" }}
         </button>
         <button class="aside-footer__item" @click="logout()">
           <span class="mdi mdi-exit-to-app" />
@@ -93,15 +93,10 @@ groupsStore.$onAction(({ after }) => {
   })
 })
 getCategories()
-const colorMode = useColorMode()
-colorMode.value = localStorage.getItem('nuxt-color-mode') || 'dark' // из конфига, раздел colorMode, storageKey
-function changeColorMode () {
-  colorMode.value = colorMode.value === 'dark' ? 'light' : 'dark'
-  setTimeout(() => {
-    localStorage.setItem('nuxt-color-mode', colorMode.value)
-  }, 1)
-}
-
+const colorMode = useColorScheme()
+onMounted(() => {
+  colorMode?.colorSchemeInit()
+})
 function logout () {
   const userStore = useUserStore()
   userStore.logout()

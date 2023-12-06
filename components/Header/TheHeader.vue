@@ -18,6 +18,8 @@
 </template>
 
 <script setup lang="ts">
+import { useGroupsStore } from "~/store/groups"
+
 const addMenuItems = [
   {
     ico: "plus-box-outline",
@@ -25,39 +27,36 @@ const addMenuItems = [
     url: '/user/group/add',
   },
   {
-    ico: "home-automation",
-    title: "Добавить автоматизацию",
+    icon: "home-automation",
+    name: "Добавить автоматизацию",
     url: '/user/group/add',
   },
   {
-    ico: "cube-outline",
-    title: "Добавить комнату",
+    icon: "cube-outline",
+    name: "Добавить комнату",
     url: '/user/group/add/room',
   },
   {
-    ico: "account-outline",
-    title: "Добавить людей",
+    icon: "account-outline",
+    name: "Добавить людей",
     url: '/user/group/add',
   },
 ]
 const settingsMenuItems = [
   {
-    ico: "information",
-    title: "Обогреватель (офис) нет связи",
+    icon: "information",
+    name: "Обогреватель (офис) нет связи",
+    url: '/',
   },
   {
-    ico: "cog",
-    title: "Настройки дома",
-  },
-  {
-    ico: "home",
-    title: "Дом1",
-  },
-  {
-    ico: "home",
-    title: "Дом2",
+    icon: "cog",
+    name: "Настройки дома",
+    url: '/',
   },
 ]
+const groupsStore = useGroupsStore()
+await groupsStore.getHouses()
+settingsMenuItems.push(...groupsStore.houses)
 const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)
 const addMenu = ref(null)
@@ -90,8 +89,7 @@ onClickOutside(settingsMenu, (e) => {
   z-index: 10;
   display: flex;
   justify-content: end;
-  padding-inline: 28px;
-  padding-top: 16px;
+  padding: 16px 28px;
   align-items: center;
   gap: 20px;
   backdrop-filter: blur(2px);

@@ -15,25 +15,12 @@ export default defineNuxtConfig({
     '@nuxtjs/style-resources',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    '@nuxtjs/color-mode',
   ],
-  colorMode: {
-    hid: 'nuxt-color-mode-script',
-    globalName: '__NUXT_COLOR_MODE__',
-    componentName: 'ColorScheme',
-    classPrefix: 'scheme-',
-    classSuffix: '',
-    storageKey: 'nuxt-color-mode',
-  },
-
   devServer: {
     host: process.env.NITRO_HOST,
     port: Number(process.env.NITRO_PORT) || 3000,
   },
   runtimeConfig: {
-    // Private keys are only available on the server
-    apiSecret: '123',
-
     // Public keys that are exposed to the client
     public: {
       // Base

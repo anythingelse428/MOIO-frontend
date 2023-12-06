@@ -1,6 +1,6 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
-export interface GetAllResponseItem{
+export interface IGroupResponseItem{
     id: string,
     parentId: string|null,
     typeId: number|null,
@@ -15,7 +15,7 @@ export interface GetAllResponseItem{
     devices:any
 }
 
-export default async function apiGroupGetAll ():Promise<GetAllResponseItem[]> {
+export default async function apiGroupGetAll ():Promise<IGroupResponseItem[]> {
   return await useAsyncQuery(async ({ axios, path }) => {
     return await axios.get(path + '/Group/GetGroups')
   })

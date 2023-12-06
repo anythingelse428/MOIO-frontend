@@ -1,5 +1,5 @@
 @import "reset";
 @import "transitions";
-main {
-
+.Toastify__toast-body>div:last-child {
+	word-break: break-word;
 }

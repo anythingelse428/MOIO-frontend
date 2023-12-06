@@ -23,7 +23,7 @@ userStore.init()
 <style lang="scss">
 .layout.--default{
     main{
-      padding-top: 60px;
+      padding-top: 100px;
       position: fixed;
       overflow-y: auto;
       background: linear-gradient(180deg, $main-bg-gradient-start 0%, $main-bg-gradient-end 36.46%);

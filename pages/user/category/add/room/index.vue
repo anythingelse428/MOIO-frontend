@@ -91,16 +91,16 @@ async function addGroup () {
       border-radius: 16px;
     }
     &-wrapper{
-        padding: 8px 16px;
       position: relative;
-        background-color: $settings-color;
-        border-radius: 15px;
       .floor-label{
       box-shadow: 0px 0px 6 px 0px $color-active;
         font-size: 24px;
         font-weight: 400;
         position: relative;
+        padding: 8px 16px;
         inset: 0;
+        background-color: $settings-color;
+        border-radius: 15px;
       }
     }
     &[type="radio"]{

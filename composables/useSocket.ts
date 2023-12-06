@@ -1,7 +1,7 @@
 export default function useSocket () {
-  const conn = new WebSocket("ws://127.0.1.1:9000/")
+  const conn = new WebSocket("ws://95.68.244.175:7033/")
   conn.onopen = () => {
-    console.log('connected')
+    alert('connected')
   }
   conn.onclose = () => {
     alert("Подключение окончено")

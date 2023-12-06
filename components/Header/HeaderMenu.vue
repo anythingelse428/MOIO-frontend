@@ -1,9 +1,9 @@
 <template>
   <div class="header-menu">
-    <nuxt-link v-for="item in items" :key="item.ico+item.title" :to="item.url">
+    <nuxt-link v-for="item in items" :key="item.icon+item.name" :to="item?.url||'/'">
       <div class="header-menu__item">
-        <span :class="`mdi mdi-${item.ico}`" />
-        <span class="header-menu__item-title">{{ item.title }}</span>
+        <span :class="`mdi mdi-${item.icon}`" />
+        <span class="header-menu__item-title">{{ item.name }}</span>
       </div>
     </nuxt-link>
   </div>
@@ -12,14 +12,13 @@
 <script setup lang="ts">
 export interface HeaderMenuProps {
   items:{
-    ico:string,
-    title:string,
+    icon:string,
+    name:string,
     url?:string
   }[]
 }
 
 const props = defineProps<HeaderMenuProps>()
-
 </script>
 
 <style lang="scss">
