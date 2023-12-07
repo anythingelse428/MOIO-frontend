@@ -5,16 +5,20 @@
     </h1>
     <div v-if="groupData?.groups && !groupData.groups?.code" class="">
       <div v-for="group in Object.keys(groupData.groups)" :key="group">
-        {{ group }}
-        <the-service
-          v-for="service in groupData.groups[group]"
-          :id="service.id"
-          :key="service.groupId"
-          group-id=""
-          :name="service.name"
-          :type="service.type"
-          :capabilities="service?.capabilities"
-        />
+        <h2 class="subgroup-item__header">
+          {{ group }}
+        </h2>
+        <div class="subgroup-item__service-list">
+          <the-service
+            v-for="service in groupData.groups[group]"
+            :id="service.id"
+            :key="service.groupId"
+            group-id=""
+            :name="service.name"
+            :type="service.type"
+            :capabilities="service?.capabilities"
+          />
+        </div>
       </div>
     </div>
   </div>

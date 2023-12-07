@@ -3,6 +3,6 @@ import type { IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 
 export default async function apiGroupGetDevicesById (id:string):Promise<IDevicesInCategory> {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.get(path + '/group/GetDevicesByGroupIdGroupByCategory/?groupid=' + id)
+    return await axios.get(path + '/group/GetDevicesByGroupAndCategory/?groupid=' + id)
   })
 }

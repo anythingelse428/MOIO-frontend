@@ -1,5 +1,12 @@
 export default function useSocket () {
-  const conn = new WebSocket("ws://95.68.244.175:7033/")
+  const conn = new WebSocket("ws://192.168.1.64:7033/device/ws")
+  async function t () {
+    const respose = await useAsyncQuery(async ({ axios, path }) => {
+      return await axios.get(path + '/device/ws')
+    })
+    console.log(respose)
+  }
+  t()
   conn.onopen = () => {
     alert('connected')
   }

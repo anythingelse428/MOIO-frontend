@@ -19,12 +19,12 @@ user.init()
 // groups.getAll()
 // console.log(groups.floors)
 // devices.getAllDevices()
-// const conn = useSocket()
-// console.log(conn)
+const conn = useSocket()
+console.log(conn)
 //
-// conn.onopen = () => {
-//   console.log(123)
-// }
+conn.onopen = () => {
+  console.log(123)
+}
 
 </script>
 <style>

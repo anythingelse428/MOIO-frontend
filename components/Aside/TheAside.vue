@@ -150,7 +150,7 @@ watch(() => route.fullPath, () => {
       position: relative;
       z-index: 11;
       font-size: 40px;
-      top: -48px;
+      top: -64px;
       right: -24px;
       width: fit-content;
       cursor: pointer;
