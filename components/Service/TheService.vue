@@ -11,7 +11,7 @@
         </span>
       </div>
     </div>
-    <div v-if="capabilities?.length" v-show="isCapabilitiesShow" class="service-capabilities-list-wrapper">
+    <div v-if="capabilities&&capabilities?.length>=1" v-show="isCapabilitiesShow" class="service-capabilities-list-wrapper">
       <the-modal
         :is-shown="isCapabilitiesShow"
         transition-fade-name="fade"

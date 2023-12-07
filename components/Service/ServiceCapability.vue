@@ -121,7 +121,7 @@ async function actionFabric (fnName:'changeOnOf'|'changeTemperature'|'changeBrig
 const throttledAction = useThrottle(actionFabric, 1000)
 function updateDevice (val:{type:string, value:any}) {
   const mainActionProps = {
-    clientId: 'show',
+    clientId: 'relay',
     deviceId: props.deviceId,
     chanel: props.chanel,
   }

@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="url">
+  <NuxtLink v-if="title" :to="url">
     <div class="aside-item">
       <span :class="`mdi mdi-${icon}`" />
       <h2 class="aside-item__title">

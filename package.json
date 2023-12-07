@@ -36,6 +36,7 @@
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",
     "@mdi/js": "^7.3.67",
+    "@microsoft/signalr": "^8.0.0",
     "@pinia/nuxt": "^0.5.1",
     "axios": "^1.6.2",
     "cookie": "^0.6.0",

@@ -1,23 +1,28 @@
-export default function useSocket () {
-  const conn = new WebSocket("ws://192.168.1.64:7033/device/ws")
-  async function t () {
-    const respose = await useAsyncQuery(async ({ axios, path }) => {
-      return await axios.get(path + '/device/ws')
-    })
-    console.log(respose)
+import * as signalR from "@microsoft/signalr"
+
+
+export default function useSocket (httpCtxUrl:string, autoReconnect = false) {
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl(httpCtxUrl)
+    .build()
+  async function start () {
+    try {
+      await connection.start()
+      console.log("SignalR Connected.")
+    } catch (err) {
+      console.log(err)
+      if (autoReconnect) {
+        setTimeout(start, 5000)
+      }
+    }
   }
-  t()
-  conn.onopen = () => {
-    alert('connected')
+  start()
+
+  connection.onclose(async () => {
+    await start()
+  })
+  return {
+    connection,
+    start,
   }
-  conn.onclose = () => {
-    alert("Подключение окончено")
-  }
-  conn.onmessage = (e) => {
-    console.log('from on message', JSON.parse(e.data))
-  }
-  return conn
-  // function sendMessage (message:string) {
-  //   conn.send(JSON.stringify({ event: "chat-message", payload: message }))
-  // }
 }
