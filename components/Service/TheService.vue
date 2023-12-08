@@ -11,8 +11,9 @@
         </span>
       </div>
     </div>
-    <div v-if="capabilities&&capabilities?.length>=1" v-show="isCapabilitiesShow" class="service-capabilities-list-wrapper">
+    <div v-if="isMounted&&capabilities&&capabilities?.length>=1" v-show="isCapabilitiesShow" class="service-capabilities-list-wrapper">
       <the-modal
+        v-if="isMounted"
         :is-shown="isCapabilitiesShow"
         transition-fade-name="fade"
         transition-content-name="translate"
@@ -55,7 +56,7 @@
 <script setup lang="ts">
 import TheModal from "~/components/shared/TheModal.vue"
 import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
-
+const isMounted = ref(false)
 export type Service = {
   id:string
   groupId:string|number
@@ -88,6 +89,11 @@ const target = ref(null)
 const ico = useIcoByDeviceType(props.type)
 onClickOutside(target, () => {
   isCapabilitiesShow.value = false
+})
+onMounted(() => {
+  setTimeout(() => {
+    isMounted.value = true
+  }, 100)
 })
 function validateNameLength () {
   const element = document.querySelector('#service' + props.groupId + '_' + props.id)
