@@ -11,7 +11,7 @@
       <div v-if="existingFloors()?.length" class="add-group__input-group">
         <label for="floor" class="add-group__label">Выберите этаж</label>
         <div v-for="floors in existingFloors()" :key="floors.id" class="add-group__input-wrapper">
-          <input id="floor" v-model="floor" :value="floors.id" type="radio" name="floor" class="add-group__input" required>
+          <input id="floor" v-model="floor" :value="floors.id" type="radio" name="floor" class="add-group__input">
           <span class="floor-label">{{ floors.name }}</span>
         </div>
       </div>
@@ -44,9 +44,7 @@
           </div>
         </div>
       </div>
-      <div class="add-group__submit-wrapper">
-        <input type="submit" class="add-group__submit" value="Добавить">
-      </div>
+        <div class="add-group__preview-wrapper">
       <div class="add-group__preview" v-if="previewData.name.length">
         <div class="add-group__preview-section">
           <div class="add-group__preview-section-title">
@@ -56,18 +54,24 @@
           {{previewData.name}}
           </div>
         </div>
-
-        <div class="add-group__preview-section" v-if="previewData.devices?.length">
+        <div class="add-group__preview-section">
           <div class="add-group__preview-section-title">
             Устройства комнаты
           </div>
-          <div class="add-group__preview-section-value" >
+          <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
             <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
               {{item?.name}}
             <span class="mdi mdi-delete" @click="(e)=>setDevices(e,{id:item.id,name:item.name})"></span>
             </div>
           </div>
+          <div class="add-group__preview-section-value" v-else>
+            Нет выбранных устройств
+          </div>
         </div>
+        </div>
+      </div>
+      <div class="add-group__submit-wrapper">
+        <input type="submit" class="add-group__submit" value="Добавить">
       </div>
     </form>
   </div>
@@ -113,8 +117,9 @@ async function getDevicesByGroupId () {
   }
 }
 async function addGroup () {
-  const response = await groupStore.addRoom(name.value)
-  console.log(response)
+  const devicesArrayId = devices.value.map(el=>el.id)
+  const response = await groupStore.addRoom(name.value,house.value,devicesArrayId)
+  console.log(devicesArrayId)
 }
 watch(house, () => {
   getDevicesByGroupId()
@@ -263,12 +268,16 @@ watch(house, () => {
       }
     }
   }
+  .add-group__preview-wrapper{
+    width: 100%;
+  }
   &__preview{
     display: flex;
     flex-direction: column;
     align-items: center;
     width: min(100%,600px);
     gap:30px;
+    margin-inline: auto;
     .add-group__preview-section{
       width: 100%;
     }
