@@ -52,9 +52,9 @@ export const useGroupsStore = defineStore('groups', {
         useNotification('error', "Произошла ошибка в получении домов")
       }
     },
-    async addGroup (name:string) {
+    async addRoom (name:string) {
       try {
-        const { response } = await apiGroupAddRoom(name)
+        const { response } = await apiGroupAddRoom({ name })
         if (!response?.status) {
           useNotification('info', 'Комната успешно добавлена')
           await this.getAll()
