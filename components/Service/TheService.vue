@@ -314,7 +314,7 @@ watch(props, (value) => {
   border-radius: 25px;
   padding: 24px;
   position: relative;
-  width: clamp(30%, 400px, 95%);
+  width: clamp(24%, 400px, 95%);
   height: 85vh;
   overflow-y: auto;
   background: $bg-primary;
