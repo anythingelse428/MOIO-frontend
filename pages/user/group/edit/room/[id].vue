@@ -1,27 +1,14 @@
 <template>
+  <div class="--edit">
+
   <div class="add-group">
     <h1 class="add-group__header">
-      Добавить комнату
+      Изменить комнату
     </h1>
-    <form method="post" class="add-group__form" @submit.prevent="addGroup()">
+    <form method="post" class="add-group__form" @submit.prevent="editGroup()">
       <div class="add-group__input-group">
         <label for="group" class="add-group__label">Введите название комнаты</label>
         <input id="group" v-model="name"  type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
-      </div>
-      <div v-if="existingFloors()?.length" class="add-group__input-group">
-        <label for="floor" class="add-group__label">Выберите этаж</label>
-        <div v-for="floors in existingFloors()" :key="floors.id" class="add-group__input-wrapper">
-          <input id="floor" v-model="floor" :value="floors.id" type="radio" name="floor" class="add-group__input">
-          <span class="floor-label">{{ floors.name }}</span>
-        </div>
-      </div>
-      <div v-if="existingHouses()?.length" class="add-group__input-group">
-        <label for="house" class="add-group__label">Выберите дом </label>
-        <div v-for="houses in existingHouses()" :key="houses.id" class="add-group__input-wrapper">
-          <input id="house" v-model="house" :value="houses.id" type="radio" name="house" class="add-group__input">
-          <span class="floor-label">{{ houses.name }}</span>
-        </div>
-
       </div>
       <div v-if="house?.length>10" class="add-group-available-devices">
         <h2 class="add-group-available-devices__header">
@@ -71,9 +58,13 @@
         </div>
       </div>
       <div class="add-group__submit-wrapper">
-        <input type="submit" class="add-group__submit" value="Добавить">
+        <input type="submit" class="add-group__submit" value="Сохранить">
       </div>
     </form>
+    <form method="post" class="add-group__form --delete" @submit.prevent="deleteGroup()">
+      <input type="submit" value="Удалить группу" class="add-group__submit">
+    </form>
+  </div>
   </div>
 </template>
 
@@ -81,22 +72,20 @@
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
 import { useDevicesStore } from "~/store/devices"
-import { useUserStore } from "~/store/user"
 
 const name = ref('')
-const floor = ref()
+let oldName = ''
+let oldDevices = []
 const house = ref('Выбрать')
 const devices = ref<{ id: string, name:string }[]>([])
-const existingFloors = ref()
-const existingHouses = ref()
 const existingDevices = ref()
-const homeData = ref()
+const id = useRoute().params.id
 const groupStore = useGroupsStore()
-existingFloors.value = () => groupStore.floors
-existingHouses.value = () => groupStore.uppperGroups.filter(el=>el.groupCreatorId === useUserStore().id)
+const router = useRouter()
+
 let previewData = ref({
-  name: name,
-  devices: devices
+      name: name,
+      devices: devices
 })
 
 function setDevices (e:Event, data:{ id: string, name:string }) {
@@ -107,27 +96,55 @@ function setDevices (e:Event, data:{ id: string, name:string }) {
   }
   if (!isChecked && isSelected){
     const idx = devices.value.findIndex(el=>el.id === data.id)
+    oldDevices.push(data.id)
     devices.value?.splice(idx,1)
+    existingDevices.value.push(data)
   }
 }
-async function getDevicesByGroupId () {
-  existingDevices.value = []
-  await groupStore.getDevicesByGroupId(house.value)
-  for (const category of Object.values(groupStore.devices)) {
-    existingDevices.value.push(...category)
+
+async function getGroupData(){
+  const data = await groupStore.getGroupById(id)
+  const parentData = await groupStore.getGroupById(data.parentId)
+  if (parentData.typeId === 2){
+    // если этаж, то ставим дому ид родителя этажа
+    house.value = parentData.parentId
+  } else{
+   house.value = data.parentId
+  }
+  name.value = data.name
+  oldName = unref(name.value)
+  await getDevicesByGroupId(id,devices)
+  await getDevicesByGroupId(house.value,existingDevices)
+}
+getGroupData()
+async function getDevicesByGroupId (id:string,deviceRef:globalThis.Ref<any>) {
+  deviceRef.value = []
+  const devices = await groupStore.getDevicesByGroupId(id)
+  for (const [key,val] of Object.entries(devices)) {
+    // console.log("@@!@!@!@!@",id,key,val)
+    deviceRef.value.push(...val)
   }
 }
-async function addGroup () {
-  const devicesArrayId = devices.value.map(el=>el.id)
-  const parent = floor.value||house.value
-  const response = await groupStore.addRoom(name.value,parent,devicesArrayId)
-  console.log(devicesArrayId)
+async function editGroup () {
+  if (name.value !== oldName){
+   await groupStore.changeName(id, name.value)
+  }
+  if (oldDevices.length>0){
+    await groupStore.changeDevices(groupStore.currentHome, [...oldDevices])
+  }
+  if (devices.value.length>0){
+    await groupStore.changeDevices(id, devices.value.map(el=>el.id))
+  }
 }
-watch(house, () => {
-  getDevicesByGroupId()
-})
+async function deleteGroup(){
+  await groupStore.deleteGroup(id)
+}
+
+
 </script>
 <style lang="scss">
+.--edit{
+
 .add-group{
   &__header{
     @include section-header;
@@ -140,13 +157,20 @@ watch(house, () => {
     flex-wrap: wrap;
     justify-content: center;
     gap:40px;
+    width: min(600px,95%);
+    margin-inline: auto;
+    &.--delete{
+      .add-group__submit{
+        background: #D15151;
+      }
+    }
   }
   &__input-group{
     display: flex;
     align-items: flex-start;
     gap: 24px 8px;
     flex-wrap: wrap;
-    width: min(95%, 387px);
+    width: 100%;
     align-content: flex-start;
   }
   &__label{
@@ -212,6 +236,7 @@ watch(house, () => {
     background: $color-active;
     border: 0;
     color: $bg-primary;
+    cursor: pointer;
     border-radius: 15px;
   }
   .add-group-available-devices{
@@ -314,5 +339,6 @@ watch(house, () => {
       }
     }
   }
+}
 }
 </style>

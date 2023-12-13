@@ -3,7 +3,7 @@
     <button class="header-button" @click="isAddMenuShow = !isAddMenuShow">
       <span class="mdi mdi-plus-circle-outline" />
       <transition name="fade">
-        <header-menu v-show="isAddMenuShow" ref="addMenu" :items="addMenuItems" />
+        <header-menu v-show="isAddMenuShow" ref="addMenu" :items="addMenuItems" @click="isAddMenuShow=false" />
       </transition>
     </button>
     <div class="header-content__menu-container">
@@ -11,7 +11,7 @@
         <span class="mdi mdi-dots-horizontal" />
       </button>
       <transition name="fade">
-        <header-menu v-show="isSettingsMenuShow" ref="settingsMenu" :items="settingsMenuItems" />
+        <header-menu v-show="isSettingsMenuShow" ref="settingsMenu" :items="[...settingsMenuItems,...houses]" @click="isSettingsMenuShow=false" />
       </transition>
     </div>
   </div>
@@ -56,12 +56,16 @@ const settingsMenuItems = [
 ]
 const groupsStore = useGroupsStore()
 await groupsStore.getHouses()
-settingsMenuItems.push(...groupsStore.houses)
+let houses = groupsStore.houses
+groupsStore.$onAction(({ after }) => {
+  after(() => {
+    houses = groupsStore.houses
+  })
+})
 const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)
 const addMenu = ref(null)
 const settingsMenu = ref(null)
-
 onClickOutside(addMenu, (e) => {
   isAddMenuShow.value = false
 })

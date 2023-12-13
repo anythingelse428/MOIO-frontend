@@ -1,80 +1,295 @@
 <template>
-  <div class="home">
-    <div class="service-list">
-      <the-service
-        v-for="device in devices"
-        :id="device.id"
-        :key="device.id"
-        :group-id="device?.device_info?.model"
-        :name="device.name"
-        :capabilities="device.capabilities"
-        :type="device.type"
-      />
+  <div class="group">
+    <h1 class="group__header">
+      {{ groupData?.name }}
+    </h1>
+    <div v-if="groupData?.groups && !groupData.groups?.code" class="">
+      <div v-for="group in Object.keys(groupData.groups)" :key="group">
+        <h2 class="subgroup-item__header">
+          {{ group }}
+        </h2>
+        <div class="subgroup-item__service-list">
+          <the-service
+            v-for="service in groupData.groups[group]"
+            :id="service.id"
+            :key="service.groupId"
+            group-id=""
+            :name="service.name"
+            :type="service.type"
+            :capabilities="service?.capabilities"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-
-
+import useAsyncQuery from '~/composables/useAsyncQuery'
+import TheService from '~/components/Service/TheService.vue'
+import ServiceGroup from '~/components/Service/ServiceGroup.vue'
+import { useCategoriesStore } from "~/store/categories"
+import { useGroupsStore } from "~/store/groups"
 import { useDevicesStore } from "~/store/devices"
-import TheService from "~/components/Service/TheService.vue"
-import { type IAllDevicesResponse } from "~/api/device/getAll"
-import { useUserStore } from "~/store/user"
-import useSocket from "~/composables/useSocket"
 
-import useNotification from "~/composables/useNotification"
-// import useSocket from "~/composables/useSocket"
-
+const groupData = ref()
+const groupStore = useGroupsStore()
 const devicesStore = useDevicesStore()
-const devices = ref<IAllDevicesResponse[]>()
-async function fetchData () {
-  await devicesStore.getAllDevices()
-  devices.value = devicesStore.allDevices
-}
-fetchData()
-
-function callNotification (e) {
-  // const instance = getCurrentInstance()
-  // const appContext = instance?.appContext
-  // const popa = useNotification({ appContext, props: { type: 'info', message: 'asdasdasd' } })
-  // popa.show()
+async function fetchGroups () {
+  await groupStore.getAll()
+  await groupStore.getHouses()
+  const { name } = await groupStore.getGroupById(groupStore.currentHome)
+  groupData.value = {
+    name,
+    groups: await groupStore.getDevicesByGroupId(groupStore.currentHome),
+  }
+  console.log(groupData.value.groups)
 }
 
-// function ping () {
-//   useSocket('ping')
-// }
-// function sendMessage () {
-//   useSocket('echo', { data: { message: 'asdasdasdasdasdasd' } })
-// }
+fetchGroups()
 
-// const conn = useSocket()
-// const test = ref('')
-// conn.onclose = () => {
-//   alert("Подключение окончено")
+// groupData.value = {
+//   name: 'Заголовок группы',
+//   groups: [
+//     {
+//       id: 0,
+//       name: 'Заголовок подгруппы',
+//       services: [
+//         {
+//           id: 0,
+//           name: 'Обогрев',
+//           ico: 'sun',
+//         },
+//         {
+//           id: 1,
+//           name: 'Вентилятор',
+//           ico: 'vent',
+//         },
+//         {
+//           id: 2,
+//           name: 'Шторы',
+//           ico: 'shade',
+//         },
+//         {
+//           id: 3,
+//           name: 'Кран',
+//           ico: 'drop',
+//         },
+//         {
+//           id: 4,
+//           name: 'Датчики',
+//           ico: 'sensors',
+//         },
+//         {
+//           id: 5,
+//           name: 'Ворота',
+//           ico: 'gates',
+//         },
+//         {
+//           id: 6,
+//           name: 'Что-то длииииинное',
+//           ico: 'sound',
+//         },
+//         {
+//           id: 7,
+//           name: 'Что-то еще длиннее прям вот сильно капец в 3 раза',
+//           ico: 'siren',
+//         },
+//         {
+//           id: 10,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//       ],
+//     },
+//     {
+//       id: 1,
+//       name: 'Заголовок подгруппы',
+//       services: [
+//         {
+//           id: 0,
+//           name: 'Обогрев',
+//           ico: 'sun',
+//         },
+//         {
+//           id: 1,
+//           name: 'Вентилятор',
+//           ico: 'vent',
+//         },
+//         {
+//           id: 2,
+//           name: 'Шторы',
+//           ico: 'shade',
+//         },
+//         {
+//           id: 3,
+//           name: 'Кран',
+//           ico: 'drop',
+//         },
+//       ],
+//     },
+//     {
+//       id: 2,
+//       name: 'Заголовок подгруппы',
+//       services: [
+//         {
+//           id: 0,
+//           name: 'Обогрев',
+//           ico: 'sun',
+//         },
+//         {
+//           id: 1,
+//           name: 'Вентилятор',
+//           ico: 'vent',
+//         },
+//         {
+//           id: 2,
+//           name: 'Шторы',
+//           ico: 'shade',
+//         },
+//         {
+//           id: 3,
+//           name: 'Кран',
+//           ico: 'drop',
+//         },
+//         {
+//           id: 4,
+//           name: 'Датчики',
+//           ico: 'sensors',
+//         },
+//         {
+//           id: 5,
+//           name: 'Ворота',
+//           ico: 'gates',
+//         },
+//         {
+//           id: 6,
+//           name: 'Что-то длииииинное',
+//           ico: 'sound',
+//         },
+//         {
+//           id: 7,
+//           name: 'Что-то еще длиннее прям вот сильно капец в 3 раза',
+//           ico: 'siren',
+//         },
+//         {
+//           id: 10,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//       ],
+//     },
+//     {
+//       id: 3,
+//       name: 'Заголовок подгруппы',
+//       services: [
+//         {
+//           id: 0,
+//           name: 'Обогрев',
+//           ico: 'sun',
+//         },
+//         {
+//           id: 1,
+//           name: 'Вентилятор',
+//           ico: 'vent',
+//         },
+//         {
+//           id: 2,
+//           name: 'Шторы',
+//           ico: 'shade',
+//         },
+//         {
+//           id: 3,
+//           name: 'Кран',
+//           ico: 'drop',
+//         },
+//         {
+//           id: 4,
+//           name: 'Датчики',
+//           ico: 'sensors',
+//         },
+//         {
+//           id: 5,
+//           name: 'Ворота',
+//           ico: 'gates',
+//         },
+//         {
+//           id: 6,
+//           name: 'Что-то длииииинное',
+//           ico: 'sound',
+//         },
+//         {
+//           id: 7,
+//           name: 'Что-то еще длиннее прям вот сильно капец в 3 раза',
+//           ico: 'siren',
+//         },
+//         {
+//           id: 10,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//         {
+//           id: 44110,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//         {
+//           id: 1235,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//         {
+//           id: 14120,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//         {
+//           id: 123,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//         {
+//           id: 11231230,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//         {
+//           id: 14120,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//         {
+//           id: 11230,
+//           name: 'meh',
+//           ico: 'guard',
+//         },
+//       ],
+//     },
+//   ],
 // }
-// conn.onmessage = (e) => {
-//   console.log('from on message', JSON.parse(e.data))
-//   test.value = JSON.parse(e.data).payload
-// }
-// function sendMessage (message:string) {
-//   conn.send(JSON.stringify({ event: "chat-message", payload: Math.random() * 5000 }))
-// }
-
-
 </script>
 
 <style lang="scss">
-.home{
-  padding-inline: clamp(5%,100px,100px);
-  @media screen and (max-width: 768px) {
-    padding-inline: 28px;
+.group{
+  padding-inline: 80px;
+  &__header{
+    @include section-header;
   }
-.service-list{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 30px;
+  &__list{
+    margin-top: 60px;
+  }
 }
+.subgroup-item{
+  &__header {
+    @include header-submenu-item;
+    font-weight: 600;
+    margin-top: 40px;
+  }
+  &__service-list{
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap:40px;
+  }
 }
 </style>

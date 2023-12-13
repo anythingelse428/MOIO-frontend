@@ -35,6 +35,7 @@ export const useUserStore = defineStore('user', {
   getters: {
     userInfo: (state) => {
       return {
+        id: state.id,
         name: state.displayedName,
         role: state.role,
         avatarUrl: state.avatarUrl,

@@ -1,4 +1,5 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import type { IAllDevicesResponse } from "~/api/device/getAll"
 
 export interface IGroupResponseItem{
     id: string,
@@ -12,12 +13,11 @@ export interface IGroupResponseItem{
         name:string|null
     },
     name: string|null,
-    devices:any,
-    groupCreatorId:number
+    devices:IAllDevicesResponse,
+    groupCreatorId:number,
 }
-
-export default async function apiGroupGetAll (homeId:string):Promise<IGroupResponseItem[]> {
+export default async function apiGroupGetById (id:string):Promise<IGroupResponseItem> {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.get(path + '/Group/GetUserGroups?groupId=' + homeId)
+    return await axios.get(path + '/Group/GetGroupById?groupId=' + id)
   })
 }

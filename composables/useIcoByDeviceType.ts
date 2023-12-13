@@ -4,6 +4,7 @@ export default function useIcoByDeviceType (type:string) {
     return { name: 'access-point', code: "\\F0003" }
   }
   switch (type) {
+    case 'devices.types.socket':
     case 'devices.types.switch':
       return { name: 'power-socket-eu', code: '\\F07E7' }
     case 'devices.types.openable.lock':

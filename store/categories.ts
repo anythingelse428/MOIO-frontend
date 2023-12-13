@@ -11,14 +11,16 @@ export const useCategoriesStore = defineStore('categories', {
     devicesInCategory: {} as IDevicesInCategory,
   }),
   getters: {
-    allCategories: state => (array = state.categories, urlPrefix = 'category', staticIcon?:string) => {
-      return array.reduce((acc:{name:string, url:string, icon:string, id:any}[], curr, i) => {
+    allCategories: state => (array = state.categories, urlPrefix = 'category', staticIcon?:string, editable = false, activeId = '-1') => {
+      return array.reduce((acc:{name:string, url:string, icon:string, id:any, editable?:boolean, active?:boolean}[], curr, i) => {
         acc[i] =
           {
             name: curr.name,
             url: `/user/${urlPrefix}/${curr.id}`,
             icon: useIcoByGroupName(staticIcon || curr.name)?.name,
             id: curr.id,
+            editable,
+            active: curr.id === activeId,
           }
         return acc
       }, [])
@@ -37,10 +39,10 @@ export const useCategoriesStore = defineStore('categories', {
         console.log('Борода в получении категорий', e)
       }
     },
-    async getDevicesByCategoryId (id:number) {
+    async getDevicesByCategoryId (id:number, homeId:string) {
       try {
         this.devicesInCategory = {}
-        const data = await apiCategoryGetDevicesById(id)
+        const data = await apiCategoryGetDevicesById(id, homeId)
         this.devicesInCategory = data
       } catch (e) {
         useNotification('error', 'Что-то пошло не так с получением категорий')

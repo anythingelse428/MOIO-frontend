@@ -13,12 +13,12 @@
           :category-items="categories"
         />
         <aside-category
-          v-if="typeof rooms !== 'undefined'"
+          v-if="typeof rooms !== 'undefined' && rooms.length"
           category-header="Комнаты"
           :category-items="rooms"
         />
         <aside-category
-          v-if="typeof floors !== 'undefined'"
+          v-if="typeof floors !== 'undefined' && floors.length"
           category-header="Этажи"
           :category-items="floors"
         />
@@ -74,6 +74,8 @@ const categories = ref<{
   icon: string,
   name:string,
   url: string,
+  editable?:boolean
+  id?:number|string
 }[]>()
 const rooms = ref()
 const floors = ref()

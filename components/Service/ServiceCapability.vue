@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isMounted" class="service-capability">
+  <div v-if="isMounted && capability" class="service-capability">
     <div v-if="type === 'devices.capabilities.color_setting'" class="service-capability__control --color">
       <label for="color">
         {{ type }}
@@ -97,9 +97,7 @@ const slider = useNuxtApp().$slider
 const props = defineProps<ServiceCapability>()
 const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
 const devicesStore = useDevicesStore()
-if (devicesStore.devices.length === 0) {
-  await devicesStore.getAllDevices()
-}
+await devicesStore.getAllDevices()
 const capability = ref(devicesStore.capabilityById(props.deviceId + '_ch' + props.chanel, props.type))
 const brightness = ref(capability.value?.hsv?.v)
 const isMounted = ref(false)
@@ -121,7 +119,7 @@ async function actionFabric (fnName:'changeOnOf'|'changeTemperature'|'changeBrig
 const throttledAction = useThrottle(actionFabric, 1000)
 function updateDevice (val:{type:string, value:any}) {
   const mainActionProps = {
-    clientId: 'relay',
+    clientId: 'show',
     deviceId: props.deviceId,
     chanel: props.chanel,
   }
@@ -132,22 +130,20 @@ function updateDevice (val:{type:string, value:any}) {
       return throttledAction('changeOnOf', { ...mainActionProps, onOfStatus: val.value })
     case 'devices.capabilities.range':
       if (props.instance && props.instance === 'threshold_temperature') {
-        return throttledAction('changeTemperature', { ...mainActionProps, temperature: val.value })
+        throttledAction('changeTemperature', { ...mainActionProps, temperature: val.value })
       }
-      if (props.instance && props.instance === 'brightness') {
-        devicesStore.setDeviceCapability(props.deviceId, props.chanel, 'devices.capabilities.color_setting', (Number(val.value) / 100).toFixed(2))
-        return throttledAction('changeBrightness', { ...mainActionProps, brightness: val.value })
+      if ((props.instance && props.instance === 'brightness') || capability.value?.hsv?.v || props.instance === 'hsv') {
+        throttledAction('changeBrightness', { ...mainActionProps, brightness: val.value })
       }
-      return false
+      break
     case 'devices.capabilities.color_setting':
-      devicesStore.setDeviceCapability(props.deviceId, props.chanel, 'devices.capabilities.range', (val.value.v * 100).toFixed())
-      return throttledAction('changeRGB', { ...mainActionProps, ...val.value })
+      throttledAction('changeRGB', { ...mainActionProps, ...val.value })
+      break
   }
 }
 if (capability.value?.type === 'devices.capabilities.color_setting') {
   watch(capability, (value) => {
     if (value) {
-      console.log(value)
       updateDevice({
         type: 'devices.capabilities.color_setting',
         value: {

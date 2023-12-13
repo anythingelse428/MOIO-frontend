@@ -6,10 +6,12 @@
     <div class="aside-category__items">
       <aside-item
         v-for="item in categoryItems"
+        :id="item?.id"
         :key="item.url"
         :title="item.name"
         :icon="item.icon"
         :url="item.url"
+        :editable="item?.editable"
       />
     </div>
   </div>
@@ -25,6 +27,8 @@ export type AsideCategory = {
         icon: string,
         name: string,
         url: string
+        editable?:boolean
+        id?:number|string
       }[]
 }
 const props = defineProps<AsideCategory>()

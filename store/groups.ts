@@ -8,11 +8,17 @@ import { useCategoriesStore } from "~/store/categories"
 import type { IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 import apiGroupGetDevicesById from "~/api/group/getDevicesByGroupId"
 import apiGroupsGetUpperGroups from "~/api/group/getUpperGroups"
+import apiGroupGetById from "~/api/group/getById"
+import apiGroupChangeName from "~/api/group/changeName"
+import apiDevicesChangeDevices from "~/api/device/changeGroup"
+import apiGroupDelete from "~/api/group/delete"
+import { useUserStore } from "~/store/user"
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
     groups: [] as IGroupResponseItem[],
     devices: {} as IDevicesInCategory,
     uppperGroups: [] as IGroupResponseItem[],
+    currentHome: localStorage.getItem('moio-current-home') || '',
   }),
   getters: {
     allGroups: state => state.groups,
@@ -25,18 +31,18 @@ export const useGroupsStore = defineStore('groups', {
     rooms: (state) => {
       const categoriesStore = useCategoriesStore()
       // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 3), 'group', 'комната')
+      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 3), 'group', 'комната', true)
     },
     houses: (state) => {
       const categoriesStore = useCategoriesStore()
       // @ts-ignore
-      return categoriesStore.allCategories(state.uppperGroups, 'group', 'дом')
+      return categoriesStore.allCategories(state.uppperGroups, 'group', 'дом', false, state.currentHome)
     },
   },
   actions: {
     async getAll () {
       try {
-        const data = await apiGroupGetAll()
+        const data = await apiGroupGetAll(this.currentHome)
         if (data.length) {
           this.groups = data
         }
@@ -47,18 +53,35 @@ export const useGroupsStore = defineStore('groups', {
     async getHouses () {
       try {
         const response = await apiGroupsGetUpperGroups()
+        const user = useUserStore()
+        if (!Number.isInteger(user.id)) {
+          await user.init()
+        }
         this.uppperGroups = response
+        if (localStorage.getItem('moio-current-home')?.length) {
+          this.currentHome = localStorage.getItem('moio-current-home')
+        } else {
+          this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id
+          localStorage.setItem('moio-current-home', this.currentHome)
+        }
       } catch {
         useNotification('error', "Произошла ошибка в получении домов")
       }
     },
-    async addRoom (name:string, parentId?:string, devices?:string[]) {
+    async setCurrentHome (id:string) {
+      localStorage.setItem('moio-current-home', id)
+      this.currentHome = id
+      await this.getAll()
+    },
+    async addRoom (name:string, parentId?:string, devicesIds?:string[]) {
       try {
-        const { response } = await apiGroupAddRoom({ name, parentId, devices })
+        const { response } = await apiGroupAddRoom({ name, parentId, devicesIds })
         if (!response?.status) {
           useNotification('info', 'Комната успешно добавлена')
-          await this.getAll()
-          this.rooms
+          setTimeout(() => {
+            window.location.href = '/'
+          }, 1000)
+          this.getAll()
         }
       } catch (e) {
         useNotification('error', 'Произошла ошибка при добавлении комнаты')
@@ -66,12 +89,50 @@ export const useGroupsStore = defineStore('groups', {
     },
     async getDevicesByGroupId (id:string) {
       try {
+        this.devices = {}
         const data = await apiGroupGetDevicesById(id)
         if (data) {
-          this.devices = data
+          Object.keys(data).forEach((el) => {
+            if (data[el].length > 0) {
+              this.devices[el] = data[el]
+            }
+          })
+          return this.devices
         }
       } catch {
         useNotification('error', 'Произошла непредвиденная ошибка')
+      }
+    },
+    async getGroupById (id:string) {
+      return await apiGroupGetById(id)
+    },
+    async changeName (id:string, name:string) {
+      try {
+        await apiGroupChangeName(id, name)
+        await this.getAll()
+        useNotification('info', 'Имя группы успешно изменено')
+      } catch {
+        useNotification('error', 'Произошла ошибка при смене имени')
+      }
+    },
+    async changeDevices (id:string, devices:string[]) {
+      try {
+        await apiDevicesChangeDevices(id, devices)
+        useNotification('info', 'Девайсы в группе успешно изменены')
+      } catch {
+        useNotification('error', 'Произошла ошибка при изменении устройств')
+      }
+    },
+    async deleteGroup (id:string) {
+      try {
+        await apiGroupDelete(id)
+        useNotification('info', 'Группа успешно удалена')
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 1000)
+        this.getAll()
+      } catch {
+        useNotification('error', "Произошла ошибка при удалении")
       }
     },
   },

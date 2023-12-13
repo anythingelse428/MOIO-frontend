@@ -12,6 +12,8 @@ import apiDeviceChangeOpenClose from "~/api/device/changeStatusOpenClose"
 import type { DeviceChangeStatusTemperature } from "~/api/device/changeStatusTemperature"
 import apiDeviceChangeTemperature from "~/api/device/changeStatusTemperature"
 import apiDeviceGetById from "~/api/device/getById"
+import apiDeviceChangeName from "~/api/device/changeName"
+import apiDeviceDelete from "~/api/device/delete"
 // store 2 sample
 export const useDevicesStore = defineStore('devices', {
   state: () => ({
@@ -23,7 +25,6 @@ export const useDevicesStore = defineStore('devices', {
   },
   actions: {
     setDeviceCapability (deviceId:string, chanel:string, type:string, newValue:any) {
-      console.log('fromset')
       const oldDeviceIdx = this.devices.findIndex(el => el.id === deviceId + '_ch' + chanel)
       const capabilityIdx = this.devices[oldDeviceIdx].capabilities.findIndex(el => el.type === type)
       if (capabilityIdx > -1 && oldDeviceIdx > -1) {
@@ -36,7 +37,6 @@ export const useDevicesStore = defineStore('devices', {
       }
     },
     async getAllDevices () {
-      console.log('getAllDevices')
       const data = await apiDeviceGetAll()
       if (data?.length) {
         this.devices = data
@@ -50,7 +50,6 @@ export const useDevicesStore = defineStore('devices', {
       }
     },
     async changeRGB (props: DeviceChangeRGBPayload) {
-      console.log(props)
       try {
         await apiDeviceChangeRGB(props)
       } catch (e) {
@@ -58,7 +57,6 @@ export const useDevicesStore = defineStore('devices', {
       }
     },
     async changeOnOf (props:DeviceChangeStatusOnOf) {
-      console.log(new Date().getUTCDate())
       try {
         await apiDeviceChangeOnOf(props)
       } catch (e) {
@@ -79,6 +77,24 @@ export const useDevicesStore = defineStore('devices', {
       try {
         await apiDeviceChangeTemperature(props)
       } catch (e) {
+        useNotification('error', "Произошла непредвиденная ошибка")
+      }
+    },
+    async changeName (id:string, name:string) {
+      try {
+        const response = await apiDeviceChangeName(id, name)
+        if (response) {
+          useNotification('info', 'Имя устройства успешно изменено')
+        }
+      } catch {
+        useNotification('error', 'Произошла ошибка при смене имени')
+      }
+    },
+    async deleteDevice (id:string) {
+      try {
+        await apiDeviceDelete(id)
+        useNotification('info', 'Устройство успешно удалено')
+      } catch {
         useNotification('error', "Произошла непредвиденная ошибка")
       }
     },

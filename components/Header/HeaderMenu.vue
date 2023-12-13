@@ -1,7 +1,7 @@
 <template>
   <div class="header-menu">
     <nuxt-link v-for="item in items" :key="item.icon+item.name" :to="item?.url||'/'">
-      <div class="header-menu__item">
+      <div :class="`header-menu__item ${item?.active?'--active':''}`">
         <span :class="`mdi mdi-${item.icon}`" />
         <span class="header-menu__item-title">{{ item.name }}</span>
       </div>
@@ -15,6 +15,7 @@ export interface HeaderMenuProps {
     icon:string,
     name:string,
     url?:string
+    active?:boolean
   }[]
 }
 
@@ -44,7 +45,7 @@ const props = defineProps<HeaderMenuProps>()
     background: $bg-primary;
     padding: 2px 24px;
     cursor: pointer;
-
+    &.--active,
     &:hover{
       .header-menu__item-title{
         color: $color-active;
@@ -63,8 +64,7 @@ const props = defineProps<HeaderMenuProps>()
         text-align: start;
       }
       @include header-submenu-item;
-      text-wrap: nowrap;
-
+      //text-wrap: nowrap;
     }
   }
 }

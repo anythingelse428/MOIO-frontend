@@ -18,6 +18,7 @@
   --service-shadow-color:#3E96A8;
   --thumb-color:#282B3B;
   --settings-color:#1E242D;
+  --device-action:#212433;
   *{
     transition: all .3s;
   }
@@ -26,7 +27,7 @@
   --toastify-color-light:#EDF5FF;
   --toastify-text-color-light:#15161C;
       --toastify-font-family:Jura, sans-serif;
-  
+  --device-action:#D8E9FF;
   --color-primary: #15161C;
   --color-accent: #15161C;
   --color-active: #8DB8FF;
@@ -41,7 +42,7 @@
   --divider-border-color:#A6C8DA;
   --service-shadow-color:#93BAFF;
   --thumb-color:#D8E9FF;
-  --settings-color:#1E242D;
+  --settings-color:#EDF5FF;
   
   *{
   transition: all .3s;
@@ -64,3 +65,4 @@ $aside-header:var(--aside-header);
 $thumb-color:var(--thumb-color);
 $color-inactive:var(--color-inactive);
 $settings-color:var(--settings-color);
+$device-action:var(--device-action);
