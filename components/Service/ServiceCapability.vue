@@ -161,13 +161,26 @@ if (capability.value?.type === 'devices.capabilities.color_setting') {
 <style lang="scss">
 .color-input.user{
   width: 100%;
+  .saturation-area{
+    display: none;
+  }
+  .slider{
+    height: 40px;
+  }
+  .slider-container{
+    border-radius: 1em;
+  }
+  .slider-pointer{
+    height: 20px;
+    width: 20px;
+  }
   .box,
   .slider-pointer,
   .slider-active-area,
-  .slider-canvas{
-    filter: brightness(var(--bright));
-    cursor: crosshair;
-  }
+  //.slider-canvas{
+  //  filter: brightness(var(--bright));
+  //  cursor: crosshair;
+  //}
   .saturation-pointer{
     //display: none;
   }
