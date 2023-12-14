@@ -1,26 +1,10 @@
 <template>
   <div class="group">
-    <h1 class="group__header">
-      {{ groupData?.name }}
-    </h1>
-    <div v-if="groupData?.groups && !groupData.groups?.code" class="">
-      <div v-for="group in Object.keys(groupData.groups)" :key="group">
-        <h2 class="subgroup-item__header">
-          {{ group }}
-        </h2>
-        <div class="subgroup-item__service-list">
-          <the-service
-            v-for="service in groupData.groups[group]"
-            :id="service.id"
-            :key="service.groupId"
-            group-id=""
-            :name="service.name"
-            :type="service.type"
-            :capabilities="service?.capabilities"
-          />
-        </div>
-      </div>
-    </div>
+    <group-list
+      :name="groupData.name"
+      :devices="groupData.devices"
+      :inverse-parent="groupData?.inverseParent"
+    />
   </div>
 </template>
 
@@ -32,241 +16,36 @@ import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
 import { useDevicesStore } from "~/store/devices"
 
-const groupData = ref()
+const route = useRoute()
+const id = route.params.id
+const groupData = ref({ name: '', devices: [], inverseParent: [] })
 const groupStore = useGroupsStore()
 const devicesStore = useDevicesStore()
 async function fetchGroups () {
-  await groupStore.getAll()
-  await groupStore.getHouses()
-  const { name } = await groupStore.getGroupById(groupStore.currentHome)
+  groupData.value = { name: '', devices: [] }
+  const { name, devices, inverseParent } = await groupStore.getGroupById(groupStore.currentHome)
   groupData.value = {
     name,
-    groups: await groupStore.getDevicesByGroupId(groupStore.currentHome),
+    devices,
+    inverseParent,
   }
-  console.log(groupData.value.groups)
 }
-
+if (groupStore.currentHome !== id && groupStore.uppperGroups.find(el => el.id === id)?.typeId === 1) {
+  groupStore.setCurrentHome(id)
+  useNotification('info', 'Просматриваемый дом изменен')
+}
+devicesStore.$onAction(({ after, store }) => {
+  store.$onAction((c) => {
+    if (c?.name.indexOf('changeName') > -1 || c?.name.indexOf('deleteDevice') > -1) {
+      fetchGroups()
+    }
+  })
+})
 fetchGroups()
+watch(route, () => {
+  fetchGroups()
+}, { deep: true, immediate: true })
 
-// groupData.value = {
-//   name: 'Заголовок группы',
-//   groups: [
-//     {
-//       id: 0,
-//       name: 'Заголовок подгруппы',
-//       services: [
-//         {
-//           id: 0,
-//           name: 'Обогрев',
-//           ico: 'sun',
-//         },
-//         {
-//           id: 1,
-//           name: 'Вентилятор',
-//           ico: 'vent',
-//         },
-//         {
-//           id: 2,
-//           name: 'Шторы',
-//           ico: 'shade',
-//         },
-//         {
-//           id: 3,
-//           name: 'Кран',
-//           ico: 'drop',
-//         },
-//         {
-//           id: 4,
-//           name: 'Датчики',
-//           ico: 'sensors',
-//         },
-//         {
-//           id: 5,
-//           name: 'Ворота',
-//           ico: 'gates',
-//         },
-//         {
-//           id: 6,
-//           name: 'Что-то длииииинное',
-//           ico: 'sound',
-//         },
-//         {
-//           id: 7,
-//           name: 'Что-то еще длиннее прям вот сильно капец в 3 раза',
-//           ico: 'siren',
-//         },
-//         {
-//           id: 10,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//       ],
-//     },
-//     {
-//       id: 1,
-//       name: 'Заголовок подгруппы',
-//       services: [
-//         {
-//           id: 0,
-//           name: 'Обогрев',
-//           ico: 'sun',
-//         },
-//         {
-//           id: 1,
-//           name: 'Вентилятор',
-//           ico: 'vent',
-//         },
-//         {
-//           id: 2,
-//           name: 'Шторы',
-//           ico: 'shade',
-//         },
-//         {
-//           id: 3,
-//           name: 'Кран',
-//           ico: 'drop',
-//         },
-//       ],
-//     },
-//     {
-//       id: 2,
-//       name: 'Заголовок подгруппы',
-//       services: [
-//         {
-//           id: 0,
-//           name: 'Обогрев',
-//           ico: 'sun',
-//         },
-//         {
-//           id: 1,
-//           name: 'Вентилятор',
-//           ico: 'vent',
-//         },
-//         {
-//           id: 2,
-//           name: 'Шторы',
-//           ico: 'shade',
-//         },
-//         {
-//           id: 3,
-//           name: 'Кран',
-//           ico: 'drop',
-//         },
-//         {
-//           id: 4,
-//           name: 'Датчики',
-//           ico: 'sensors',
-//         },
-//         {
-//           id: 5,
-//           name: 'Ворота',
-//           ico: 'gates',
-//         },
-//         {
-//           id: 6,
-//           name: 'Что-то длииииинное',
-//           ico: 'sound',
-//         },
-//         {
-//           id: 7,
-//           name: 'Что-то еще длиннее прям вот сильно капец в 3 раза',
-//           ico: 'siren',
-//         },
-//         {
-//           id: 10,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//       ],
-//     },
-//     {
-//       id: 3,
-//       name: 'Заголовок подгруппы',
-//       services: [
-//         {
-//           id: 0,
-//           name: 'Обогрев',
-//           ico: 'sun',
-//         },
-//         {
-//           id: 1,
-//           name: 'Вентилятор',
-//           ico: 'vent',
-//         },
-//         {
-//           id: 2,
-//           name: 'Шторы',
-//           ico: 'shade',
-//         },
-//         {
-//           id: 3,
-//           name: 'Кран',
-//           ico: 'drop',
-//         },
-//         {
-//           id: 4,
-//           name: 'Датчики',
-//           ico: 'sensors',
-//         },
-//         {
-//           id: 5,
-//           name: 'Ворота',
-//           ico: 'gates',
-//         },
-//         {
-//           id: 6,
-//           name: 'Что-то длииииинное',
-//           ico: 'sound',
-//         },
-//         {
-//           id: 7,
-//           name: 'Что-то еще длиннее прям вот сильно капец в 3 раза',
-//           ico: 'siren',
-//         },
-//         {
-//           id: 10,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//         {
-//           id: 44110,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//         {
-//           id: 1235,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//         {
-//           id: 14120,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//         {
-//           id: 123,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//         {
-//           id: 11231230,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//         {
-//           id: 14120,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//         {
-//           id: 11230,
-//           name: 'meh',
-//           ico: 'guard',
-//         },
-//       ],
-//     },
-//   ],
-// }
 </script>
 
 <style lang="scss">
@@ -290,6 +69,9 @@ fetchGroups()
     display: flex;
     flex-wrap: wrap;
     gap:40px;
+    &.--empty{
+      font-size: 24px;
+    }
   }
 }
 </style>

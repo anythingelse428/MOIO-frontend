@@ -14,6 +14,7 @@ import apiDeviceChangeTemperature from "~/api/device/changeStatusTemperature"
 import apiDeviceGetById from "~/api/device/getById"
 import apiDeviceChangeName from "~/api/device/changeName"
 import apiDeviceDelete from "~/api/device/delete"
+import useChangeDeviceCapability from "~/composables/useChangeDeviceCapability"
 // store 2 sample
 export const useDevicesStore = defineStore('devices', {
   state: () => ({

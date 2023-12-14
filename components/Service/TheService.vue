@@ -2,7 +2,7 @@
   <div :class="`service`" @click="isCapabilitiesShow = !isCapabilitiesShow">
     <div :class="`on-of-teleported --${id}`" />
     <div class="service-info">
-      <div :class="`service-ico-wrapper ${isDeviceOn === true || isDeviceOpen === true || isDeviceOpen?.indexOf('open') >-1 ? '--active':''}`">
+      <div :class="`service-ico-wrapper ${isDeviceOn === true || isDeviceOpen === true || String(isDeviceOpen)?.indexOf('open') >-1 ? '--active':''}`">
         <span :class="`mdi mdi-${ico?.name}`" />
       </div>
       <div :class="`service-name ${isTooBigLength && 'marquee'}`">
@@ -49,6 +49,8 @@
                     :retrievable="item.retrievable"
                     :type="item.type"
                     :device-type="type"
+                    :hsv="item.hsv"
+                    :value="item.value"
                   />
                 </template>
               </service-capabilities-structure>
@@ -151,25 +153,17 @@ async function updateService () {
   }
 }
 async function deleteDevice () {
-  await deviceStore.deleteDevice(groupStore.currentHome)
+  await deviceStore.deleteDevice(props.id)
 }
 deviceStore.$onAction(({ after, store }) => {
   store.$onAction((c) => {
     if (c?.name.indexOf('changeName') > -1 || c?.name.indexOf('deleteDevice') > -1) {
       return updateService()
     }
-    if (props.id.includes(c.args[0]?.deviceId) && (c?.name.includes('OnOf') || c?.name.includes('OpenClose'))) {
-      for (const k of Object.keys(groupStore.devices)) {
-        if (groupStore.devices[k].find(el => el.id.includes(props.id))?.capabilities?.find(el => el.type.includes('on_of'))?.value) {
-          groupStore.devices[k].find(el => el.id.includes(props.id)).capabilities.find(el => el.type.includes('on_of')).value = !groupStore.devices[k].find(el => el.id.includes(props.id))?.capabilities.find(el => el.type.includes('on_of'))?.value
-        }
-      }
-    }
   })
 })
 function setNewDeviceName () {
   deviceStore.changeName(props.id, newDeviceName.value)
-  updateService()
   isEdit.value = false
 }
 

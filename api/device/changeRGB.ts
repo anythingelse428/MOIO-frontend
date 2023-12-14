@@ -7,8 +7,8 @@ export interface DeviceChangeRGBPayload extends ChangeStatusPayload{
     v:number
 }
 export default async function apiDeviceChangeRGB (props:DeviceChangeRGBPayload) {
-  const s = props.s * 100
-  const query = `?clientId=${props.clientId}&deviceId=${props.deviceId}&chanel=${props.chanel}&h=${props.h.toFixed(0)}&s=${s.toFixed(0)}&v=${(props.v * 100).toFixed(0)}`
+  const s = props.s
+  const query = `?clientId=${props.clientId}&deviceId=${props.deviceId}&chanel=${props.chanel}&h=${props.h.toFixed(0)}&s=${s.toFixed(0)}&v=${(props.v).toFixed(0)}`
   console.log(query)
   return await useAsyncQuery(async ({ axios, path }) => {
     return await axios.post(path + '/device/ChangeStatusHSV/' + query)

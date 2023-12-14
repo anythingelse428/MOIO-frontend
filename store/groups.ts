@@ -105,6 +105,7 @@ export const useGroupsStore = defineStore('groups', {
     },
     async getGroupById (id:string) {
       return await apiGroupGetById(id)
+      console.log('123123', await apiGroupGetById(id))
     },
     async changeName (id:string, name:string) {
       try {

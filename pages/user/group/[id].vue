@@ -1,29 +1,10 @@
 <template>
   <div class="group">
-    <h1 class="group__header">
-      {{ groupData?.name }}
-    </h1>
-    <div v-if="groupData?.groups && !groupData.groups?.code" class="">
-      <div v-for="group in Object.keys(groupData.groups)" :key="group">
-        <h2 class="subgroup-item__header">
-          {{ group }}
-        </h2>
-        <div v-if="groupData.groups[group]?.length" class="subgroup-item__service-list">
-          <the-service
-            v-for="service in groupData.groups[group]"
-            :id="service.id"
-            :key="service.groupId"
-            group-id=""
-            :name="service.name"
-            :type="service.type"
-            :capabilities="service?.capabilities"
-          />
-        </div>
-        <div v-else class="subgroup-item__service-list --empty">
-          В этой группе нет устройств
-        </div>
-      </div>
-    </div>
+    <group-list
+      :name="groupData.name"
+      :devices="groupData.devices"
+      :inverse-parent="groupData?.inverseParent"
+    />
   </div>
 </template>
 
@@ -37,25 +18,22 @@ import { useDevicesStore } from "~/store/devices"
 
 const route = useRoute()
 const id = route.params.id
-const groupData = ref({ name: '', groups: [] })
+const groupData = ref({ name: '', devices: [], inverseParent: [] })
 const groupStore = useGroupsStore()
 const devicesStore = useDevicesStore()
 async function fetchGroups () {
-  // await groupStore.getAll()
-  groupData.value = { name: '', groups: [] }
-  const { name } = await groupStore.getGroupById(id)
-  const devices = await groupStore.getDevicesByGroupId(id)
+  groupData.value = { name: '', devices: [] }
+  const { name, devices, inverseParent } = await groupStore.getGroupById(id)
   groupData.value = {
     name,
-    groups: devices,
+    devices,
+    inverseParent,
   }
 }
-
 if (groupStore.currentHome !== id && groupStore.uppperGroups.find(el => el.id === id)?.typeId === 1) {
   groupStore.setCurrentHome(id)
   useNotification('info', 'Просматриваемый дом изменен')
 }
-
 devicesStore.$onAction(({ after, store }) => {
   store.$onAction((c) => {
     if (c?.name.indexOf('changeName') > -1 || c?.name.indexOf('deleteDevice') > -1) {

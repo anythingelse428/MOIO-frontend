@@ -54,11 +54,6 @@ const asideContent =
           url: '/',
         },
         {
-          icon: 'star-outline',
-          name: 'обзор',
-          url: '/overview',
-        },
-        {
           icon: 'home-automation',
           name: 'автоматизация',
           url: '/automation',
