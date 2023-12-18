@@ -1,21 +1,18 @@
 import { defineStore } from 'pinia'
-import { consola } from "consola"
+
 import apiDeviceGetAll, { type IAllDevicesResponse } from "~/api/device/getAll"
-import type { DeviceChangeBrightnessPayload } from "~/api/device/changeBrightness"
+import type { IDeviceChangeBrightness } from "~/api/device/changeBrightness"
 import apiDeviceChangeBrightness from "~/api/device/changeBrightness"
-import type { DeviceChangeRGBPayload } from "~/api/device/changeRGB"
+import type { IDeviceChangeRGBPayload } from "~/api/device/changeRGB"
 import apiDeviceChangeRGB from "~/api/device/changeRGB"
-import type { DeviceChangeStatusOnOf } from "~/api/device/changeStatusOnOf"
+import type { IDeviceChangeStatusOnOf } from "~/api/device/changeStatusOnOf"
 import apiDeviceChangeOnOf from "~/api/device/changeStatusOnOf"
-import type { DeviceChangeStatusOpenClose } from "~/api/device/changeStatusOpenClose"
+import type { IDeviceChangeStatusOpenClose } from "~/api/device/changeStatusOpenClose"
 import apiDeviceChangeOpenClose from "~/api/device/changeStatusOpenClose"
-import type { DeviceChangeStatusTemperature } from "~/api/device/changeStatusTemperature"
+import type { IDeviceChangeStatusTemperature } from "~/api/device/changeStatusTemperature"
 import apiDeviceChangeTemperature from "~/api/device/changeStatusTemperature"
-import apiDeviceGetById from "~/api/device/getById"
 import apiDeviceChangeName from "~/api/device/changeName"
 import apiDeviceDelete from "~/api/device/delete"
-import useChangeDeviceCapability from "~/composables/useChangeDeviceCapability"
-// store 2 sample
 export const useDevicesStore = defineStore('devices', {
   state: () => ({
     devices: [] as IAllDevicesResponse[],
@@ -38,43 +35,41 @@ export const useDevicesStore = defineStore('devices', {
       }
     },
     async getAllDevices () {
+      console.error('using deprecated method')
       const data = await apiDeviceGetAll()
       if (data?.length) {
         this.devices = data
       }
     },
-    async changeBrightness (props:DeviceChangeBrightnessPayload) {
+    async changeBrightness (props:IDeviceChangeBrightness) {
       try {
         await apiDeviceChangeBrightness(props)
       } catch (e) {
         useNotification('error', "Произошла ошибка при изменении яркости")
       }
     },
-    async changeRGB (props: DeviceChangeRGBPayload) {
+    async changeRGB (props: IDeviceChangeRGBPayload) {
       try {
         await apiDeviceChangeRGB(props)
       } catch (e) {
         useNotification('error', "Произошла ошибка при изменении цвета")
       }
     },
-    async changeOnOf (props:DeviceChangeStatusOnOf) {
+    async changeOnOf (props:IDeviceChangeStatusOnOf) {
       try {
         await apiDeviceChangeOnOf(props)
       } catch (e) {
         useNotification('error', "Произошла непредвиденная ошибка")
       }
     },
-    async changeOpenClose (props:DeviceChangeStatusOpenClose) {
+    async changeOpenClose (props:IDeviceChangeStatusOpenClose) {
       try {
         await apiDeviceChangeOpenClose(props)
-        console.log('store',
-          this.devices.find(el => el.id === props.deviceId + '_ch' + props.chanel),
-        )
       } catch (e) {
         useNotification('error', "Произошла непредвиденная ошибка")
       }
     },
-    async changeTemperature (props:DeviceChangeStatusTemperature) {
+    async changeTemperature (props:IDeviceChangeStatusTemperature) {
       try {
         await apiDeviceChangeTemperature(props)
       } catch (e) {

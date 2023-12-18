@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { consola } from "consola"
 
 import type { IGroupResponseItem } from "~/api/group/getAll"
 import apiGroupGetAll from "~/api/group/getAll"
@@ -59,9 +58,9 @@ export const useGroupsStore = defineStore('groups', {
         }
         this.uppperGroups = response
         if (localStorage.getItem('moio-current-home')?.length) {
-          this.currentHome = localStorage.getItem('moio-current-home')
+          this.currentHome = localStorage.getItem('moio-current-home') as string
         } else {
-          this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id
+          this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id as string
           localStorage.setItem('moio-current-home', this.currentHome)
         }
       } catch {
@@ -79,7 +78,7 @@ export const useGroupsStore = defineStore('groups', {
         if (!response?.status) {
           useNotification('info', 'Комната успешно добавлена')
           setTimeout(() => {
-            window.location.href = '/'
+            window.location.href = useRuntimeConfig().app.baseURL || '/'
           }, 1000)
           this.getAll()
         }
@@ -105,7 +104,6 @@ export const useGroupsStore = defineStore('groups', {
     },
     async getGroupById (id:string) {
       return await apiGroupGetById(id)
-      console.log('123123', await apiGroupGetById(id))
     },
     async changeName (id:string, name:string) {
       try {
@@ -129,7 +127,7 @@ export const useGroupsStore = defineStore('groups', {
         await apiGroupDelete(id)
         useNotification('info', 'Группа успешно удалена')
         setTimeout(() => {
-          window.location.href = '/'
+          window.location.href = useRuntimeConfig().app.baseURL || '/'
         }, 1000)
         this.getAll()
       } catch {

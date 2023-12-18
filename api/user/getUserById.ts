@@ -13,7 +13,7 @@ export default async function getUserInfo (id:string):Promise<IUserInfoResponse>
     try {
       return await axios.get(path + '/user/GetMyUser?id=' + id)
     } catch (e) {
-      consola.error('ПИЗДА БОРОДА' + e)
+      useNotification('error', 'Ошибка в получении пользователя')
     }
   })
 }

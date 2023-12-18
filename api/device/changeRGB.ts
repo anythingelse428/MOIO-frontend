@@ -1,12 +1,12 @@
 import useAsyncQuery from "~/composables/useAsyncQuery"
-import type { ChangeStatusPayload } from "~/api/device/types"
+import type { IChangeDeviceStatusPayload } from "~/api/device/types"
 
-export interface DeviceChangeRGBPayload extends ChangeStatusPayload{
+export interface IDeviceChangeRGBPayload extends IChangeDeviceStatusPayload{
     h:number
     s:number
     v:number
 }
-export default async function apiDeviceChangeRGB (props:DeviceChangeRGBPayload) {
+export default async function apiDeviceChangeRGB (props:IDeviceChangeRGBPayload) {
   const s = props.s
   const query = `?clientId=${props.clientId}&deviceId=${props.deviceId}&chanel=${props.chanel}&h=${props.h.toFixed(0)}&s=${s.toFixed(0)}&v=${(props.v).toFixed(0)}`
   console.log(query)

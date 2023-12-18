@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { GetAllResponseItem } from "~/api/category/getAll"
+import type { IGetAllResponseItem } from "~/api/category/getAll"
 import apiCategoryGetAll from "~/api/category/getAll"
 import { type IAllDevicesResponse } from "~/api/device/getAll"
 import apiCategoryGetDevicesById, { type IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
@@ -7,7 +7,7 @@ import useIcoByGroupName from "~/composables/useIcoByGroupName"
 
 export const useCategoriesStore = defineStore('categories', {
   state: () => ({
-    categories: [] as GetAllResponseItem[],
+    categories: [] as IGetAllResponseItem[],
     devicesInCategory: {} as IDevicesInCategory,
   }),
   getters: {
@@ -36,7 +36,7 @@ export const useCategoriesStore = defineStore('categories', {
           this.categories = data
         }
       } catch (e) {
-        console.log('Борода в получении категорий', e)
+        useNotification('error', 'Что-то пошло не так с получением категорий')
       }
     },
     async getDevicesByCategoryId (id:number, homeId:string) {
@@ -45,7 +45,7 @@ export const useCategoriesStore = defineStore('categories', {
         const data = await apiCategoryGetDevicesById(id, homeId)
         this.devicesInCategory = data
       } catch (e) {
-        useNotification('error', 'Что-то пошло не так с получением категорий')
+        useNotification('error', 'Что-то пошло не так с получением категории')
       }
     },
   },

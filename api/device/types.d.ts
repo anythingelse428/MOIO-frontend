@@ -1,5 +1,5 @@
 
-export interface ChangeStatusPayload {
+export interface IChangeDeviceStatusPayload {
     clientId:string
     deviceId:string
     chanel:string

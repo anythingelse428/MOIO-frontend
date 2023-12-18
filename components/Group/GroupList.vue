@@ -17,7 +17,7 @@
       />
     </div>
     <div v-if="inverseParent?.length" class="group-list --child">
-      <group-list v-for="group in inverseParent" :key="group?.id" :devices="group.devices" :name="group.name" :inverse-parent="group?.inverseParent" />
+      <group-list v-for="group in inverseParent" :key="group.name" :devices="group.devices" :name="group.name" :inverse-parent="group?.inverseParent" />
     </div>
   </div>
 </template>
@@ -27,7 +27,6 @@ import type { IAllDevicesResponse } from "~/api/device/getAll"
 import TheService from "~/components/Service/TheService.vue"
 
 export interface GroupList {
-  id:string,
   name:string,
   devices:IAllDevicesResponse[],
   inverseParent?: GroupList[]

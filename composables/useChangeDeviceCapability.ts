@@ -9,7 +9,7 @@ export default function useChangeDeviceCapability (deviceId:string, capabilityTy
   const groupStore = useGroupsStore()
   const categoriesStore = useCategoriesStore()
   console.log('val', newValue)
-  function setNewProperty <T extends 'devices'|'devicesInCategory' ='devices' > (state: { [key in T]: IDevicesInCategory }):void {
+  function setNewProperty (state: { [key:string]: IDevicesInCategory }):void {
     let device = {} as IAllDevicesResponse | undefined
     for (const [k, v] of Object.entries(state?.devices || state?.devicesInCategory)) {
       if (device?.id) {
@@ -17,6 +17,7 @@ export default function useChangeDeviceCapability (deviceId:string, capabilityTy
       }
       device = v.find(el => el.id.includes(deviceId))
     }
+    console.log(device?.id)
     if (device?.id) {
       const capability = device.capabilities.find(el => el?.type.includes(capabilityType))
       if (capability) {
@@ -25,9 +26,9 @@ export default function useChangeDeviceCapability (deviceId:string, capabilityTy
     }
   }
   groupStore.$patch((state) => {
-    setNewProperty<"devices">(state)
+    setNewProperty(state)
   })
   categoriesStore.$patch((state) => {
-    setNewProperty<"devicesInCategory">(state)
+    setNewProperty(state)
   })
 }

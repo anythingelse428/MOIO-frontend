@@ -39,7 +39,7 @@
 <script setup lang="ts">
 import AsideCategory from '~/components/Aside/AsideCategory.vue'
 import { useUserStore } from "~/store/user"
-import { type GetAllResponseItem } from "~/api/category/getAll"
+import { type IGetAllResponseItem } from "~/api/category/getAll"
 import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
 

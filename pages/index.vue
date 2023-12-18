@@ -17,12 +17,11 @@ import { useGroupsStore } from "~/store/groups"
 import { useDevicesStore } from "~/store/devices"
 
 const route = useRoute()
-const id = route.params.id
 const groupData = ref({ name: '', devices: [], inverseParent: [] })
 const groupStore = useGroupsStore()
 const devicesStore = useDevicesStore()
 async function fetchGroups () {
-  groupData.value = { name: '', devices: [] }
+  groupData.value = { name: '', devices: [], inverseParent: [] }
   const { name, devices, inverseParent } = await groupStore.getGroupById(groupStore.currentHome)
   groupData.value = {
     name,
@@ -30,10 +29,7 @@ async function fetchGroups () {
     inverseParent,
   }
 }
-if (groupStore.currentHome !== id && groupStore.uppperGroups.find(el => el.id === id)?.typeId === 1) {
-  groupStore.setCurrentHome(id)
-  useNotification('info', 'Просматриваемый дом изменен')
-}
+
 devicesStore.$onAction(({ after, store }) => {
   store.$onAction((c) => {
     if (c?.name.indexOf('changeName') > -1 || c?.name.indexOf('deleteDevice') > -1) {
@@ -45,7 +41,12 @@ fetchGroups()
 watch(route, () => {
   fetchGroups()
 }, { deep: true, immediate: true })
-
+onMounted(async () => {
+  try {
+    await groupStore.getDevicesByGroupId(groupStore.currentHome)
+  } catch {
+  }
+})
 </script>
 
 <style lang="scss">

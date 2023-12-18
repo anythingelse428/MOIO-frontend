@@ -1,7 +1,4 @@
 import { defineStore } from 'pinia'
-import type { CookieOptions } from "#app"
-import { consola } from "consola"
-import { useRouter } from "vue-router"
 import type { IRegisterUserProps } from '~/api/user/register'
 import apiUserRegister from '~/api/user/register'
 import type { IAuthUserProps } from "~/api/user/auth"
@@ -10,8 +7,6 @@ import getUserInfo from "~/api/user/getUserInfo"
 import apiUserRefreshToken from "~/api/user/refreshToken"
 import useSetCookie from "~/composables/useSetCookie"
 import apiUserLogout from "~/api/user/logout"
-import useNotification from "~/composables/useNotification"
-// store 1 sample
 export interface IDecodedJwt{
   Id:string
   aud:string
@@ -101,14 +96,12 @@ export const useUserStore = defineStore('user', {
         useSetCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, '')
         window.location.pathname = '/login'
       }
-      console.log('no token')
       window.location.pathname = '/login'
     },
     async init () {
       const config = useRuntimeConfig()
       const refreshToken = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME)
       if (this.access_token.length < 16 && (refreshToken && refreshToken.value?.length)) {
-        console.log('no acess')
         try {
           const accessToken = await this.refresh()
           if (typeof accessToken === 'string') {
@@ -119,7 +112,6 @@ export const useUserStore = defineStore('user', {
             this.id = userData.id
           }
         } catch (e) {
-          console.log('clear token...')
           refreshToken.value = ''
           window.location.pathname = '/login'
         }

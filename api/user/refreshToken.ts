@@ -13,7 +13,7 @@ export default async function apiUserRefreshToken (refresh_token :string):Promis
         tokenHash: refresh_token,
       })
     } catch (e) {
-      consola.error('БОРОДА в рефреш апи ' + e)
+      useNotification('error', 'Ошибка рефреша')
     }
   })
 }

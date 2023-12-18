@@ -90,7 +90,7 @@ let previewData = ref({
 
 function setDevices (e:Event, data:{ id: string, name:string }) {
   const isChecked = (<HTMLInputElement>event.target)?.checked
-  const isSelected = devices.value?.find(el=>el?.id === data.id)
+  const isSelected = devices.value?.find(el => el?.id === data.id)
   if (isChecked && !isSelected){
     devices.value?.push(data)
   }
