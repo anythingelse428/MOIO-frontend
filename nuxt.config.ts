@@ -66,9 +66,9 @@ export default defineNuxtConfig({
       '~/assets/styles/vars/colors.scss',
       '~/assets/styles/vars/fontsizes.scss',
     ],
-    sass: [
-      '~/assets/fonts/hk-icons/homekit-icons.sass',
-    ],
+    // sass: [
+    //   '~/assets/fonts/hk-icons/homekit-icons.sass',
+    // ],
   },
   css: [
     '~/assets/fonts/Jura/stylesheet.css',

@@ -46,7 +46,7 @@
     </div>
     <div v-if="instance?.includes('temperature')" class="service-capability__control --thermostat">
       <!--       @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:e})}"-->
-      <thermostat-input :value="capability.value" :step="0.15" :min="20" :max="40" @t-input="(e)=>{capability.value=e;}" />
+      <thermostat-input :value="capability.value" :step="0.5" :min="20" :max="40" @t-input="(e)=>{capability.value=e;}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
       <toggle-switch :checked="capability.value" vertical-large :ico="`'${toggleSwitchIco?.code}'`" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
