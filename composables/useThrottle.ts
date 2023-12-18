@@ -1,3 +1,4 @@
+/* eslint-disable */
 const useThrottle = (fn: Function, wait = 1000) => {
   let inThrottle: boolean,
     lastFn: ReturnType<typeof setTimeout>,

@@ -120,6 +120,7 @@ export const useGroupsStore = defineStore('groups', {
         useNotification('info', 'Девайсы в группе успешно изменены')
       } catch {
         useNotification('error', 'Произошла ошибка при изменении устройств')
+        useRouter().push({ path: '/user/group/' + id })
       }
     },
     async deleteGroup (id:string) {

@@ -77,7 +77,7 @@ onMounted(() => {
 
       return radius
     }
-    const getPoints = () => {
+    function getPoints () {
       const points = []
       let progressLength = 0
       const trackLength = track.value.getTotalLength()
@@ -87,8 +87,11 @@ onMounted(() => {
         points.push({ x: DOMPoint.x.toFixed(3), y: DOMPoint.y.toFixed(3), d: progressLength })
         progressLength += step
       }
+      // debugger
       return points
     }
+    const throtthledPoints = useThrottle(getPoints, 500)
+    console.log(throtthledPoints())
     const setPath = (value) => {
       const percentage = (value / max)
       const offset = circumference * percentage
@@ -178,8 +181,8 @@ onMounted(() => {
       svg.value.addEventListener('touchmove', e => render(e))
     })
 
-    window.addEventListener('mouseup', dragEnd)
-    window.addEventListener('touchend', dragEnd)
+    svg.value.addEventListener('mouseup', dragEnd)
+    svg.value.addEventListener('touchend', dragEnd)
   }
 })
 

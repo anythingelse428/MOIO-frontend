@@ -121,7 +121,6 @@ async function getDevicesByGroupId (id:string,deviceRef:globalThis.Ref<any>) {
   deviceRef.value = []
   const devices = await groupStore.getDevicesByGroupId(id)
   for (const [key,val] of Object.entries(devices)) {
-    // console.log("@@!@!@!@!@",id,key,val)
     deviceRef.value.push(...val)
   }
 }

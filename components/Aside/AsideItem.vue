@@ -1,6 +1,6 @@
 <template>
-  <div class="aside-item">
-    <NuxtLink v-if="title" class="aside-item__link" :to="url">
+  <div v-if="title.length>1 && url.length" class="aside-item">
+    <NuxtLink class="aside-item__link" :to="url">
       <span :class="`mdi mdi-${icon}`" />
       <h2 class="aside-item__title">
         {{ title }}

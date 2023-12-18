@@ -25,7 +25,7 @@
       </div>
       <div class="aside-footer">
         <button class="aside-footer__item" @click="colorMode?.changeColorScheme()">
-          <span class="mdi mdi-brightness-6" />{{ colorMode?.currentScheme.value === 'scheme-dark'?"Светлая тема":"Темная тема" }}
+          <span class="mdi mdi-brightness-4" />{{ colorMode?.currentScheme.value === 'scheme-dark'?"Светлая тема":"Темная тема" }}
         </button>
         <button class="aside-footer__item" @click="logout()">
           <span class="mdi mdi-exit-to-app" />

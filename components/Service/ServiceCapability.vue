@@ -6,6 +6,7 @@
       </label>
       <div class="" :style="`display: block;height: 20px;width: 20px; background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
       <input id="" v-model="h" step="1" type="range" :min="0" :max="360" name="" class="color" @input="updateDevice({type,value:{s:capability.hsv.s,v:capability.hsv.v,h:Number(h)}})">
+      <input id="" v-model="s" step="1" type="range" :min="0" :max="100" name="" class="saturation" @input="updateDevice({type,value:{s:Number(s),v:capability.hsv.v,h:Number(h)}})">
     </div>
     <teleport v-if="isMounted" :to="`.on-of-teleported.--${deviceId}_ch${chanel}`">
       <div v-if="type === 'devices.capabilities.on_off'||instance==='open'" :class="`service-capability__control --toggle ${capability.value&&'--checked'}`" @click.stop="()=>false">
@@ -46,7 +47,7 @@
     </div>
     <div v-if="instance?.includes('temperature')" class="service-capability__control --thermostat">
       <!--       @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:e})}"-->
-      <thermostat-input :value="capability.value" :step="0.5" :min="20" :max="40" @t-input="(e)=>{capability.value=e;}" />
+      <thermostat-input :value="capability.value" :step="capability.range.precision || 1" :min="capability.range.min || 20" :max="capability.range.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:e})}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
       <toggle-switch :checked="capability.value" vertical-large :ico="`'${toggleSwitchIco?.code}'`" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
@@ -88,7 +89,8 @@ const capability = ref(temp)
 const brightness = ref(capability.value?.hsv?.v)
 const isMounted = ref(false)
 const h = ref(Number(capability.value.hsv.h))
-const rgb = computed(() => hsvToRgb(Number(h.value), capability.value.hsv.s / 100, capability.value.hsv.v / 100))
+const s = ref(Number(capability.value.hsv.s))
+const rgb = computed(() => hsvToRgb(Number(h.value), s.value / 100, capability.value.hsv.v / 100))
 onMounted(() => {
   isMounted.value = true
 })
