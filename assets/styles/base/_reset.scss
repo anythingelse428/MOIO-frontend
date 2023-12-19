@@ -5,6 +5,9 @@
   box-sizing: border-box;
   user-select: none;
 }
+svg{
+  transition: unset;
+}
 .layout {
   *{
   font-family: Jura, sans-serif;
@@ -13,3 +16,10 @@
   color: $color-primary;
   }
 }
+.Toastify__toast-body>div:last-child {
+  word-break: break-word;
+}
+div,h1,h2,h3,span,label,p,i,main,section,header,aside,nav{
+  transition: all .3s;
+}
+

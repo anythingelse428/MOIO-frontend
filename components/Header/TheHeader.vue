@@ -75,41 +75,5 @@ onClickOutside(settingsMenu, (e) => {
 </script>
 
 <style lang="scss">
-@import "~/assets/styles/transitions";
-@import "~/assets/styles/vars/functions";
-.scheme-dark{
-  .header-content{
-    background-color: rgb(0 0 0 / 30%);
-  }
-}
-.scheme-light{
-  .header-content{
-    background-color: rgb(255 255 255 / 30%);
-  }
-}
-.header-content{
-  position: relative;
-  width: 100%;
-  z-index: 10;
-  display: flex;
-  justify-content: end;
-  padding: 16px 28px;
-  align-items: center;
-  gap: 20px;
-  backdrop-filter: blur(2px);
-  &__menu-container{
-    position: relative;
-  }
-  .header-button{
-    cursor: pointer;
-    display: block;
-    position: relative;
-    background: transparent;
-    outline: none;
-    border: none;
-    .mdi{
-      font-size: 40px;
-    }
-  }
-}
+@import "assets/styles/layouts/_header";
 </style>

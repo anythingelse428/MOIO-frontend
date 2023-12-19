@@ -49,29 +49,5 @@ watch(route, () => {
 </script>
 
 <style lang="scss">
-.group{
-  padding-inline: 80px;
-  &__header{
-    @include section-header;
-  }
-  &__list{
-    margin-top: 60px;
-  }
-}
-.subgroup-item{
-  &__header {
-    @include header-submenu-item;
-    font-weight: 600;
-    margin-top: 40px;
-  }
-  &__service-list{
-    margin-top: 40px;
-    display: flex;
-    flex-wrap: wrap;
-    gap:40px;
-    &.--empty{
-      font-size: 24px;
-    }
-  }
-}
+@import "assets/styles/page/_user-group";
 </style>

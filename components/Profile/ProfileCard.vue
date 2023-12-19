@@ -25,31 +25,5 @@ const props = defineProps<ProfileCard>()
 </script>
 
 <style lang="scss">
-.profile-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  &__avatar{
-    &.--blank{
-      display: block;
-      width: 136px;
-      height: 136px;
-      border-radius: 100%;
-      background: linear-gradient(180deg, $avatar-bg-gradient-start 0%, $avatar-bg-gradient-end 100%);
-    }
-  }
-  .profile-card-info{
-    text-align: center;
-    &__role{
-      margin-top: 36px;
-      @include aside-header;
-      font-weight: 300;
-    }
-    &__name{
-      @include section-header;
-      font-weight: 600;
-    }
-  }
-}
+@import "assets/styles/components/profile-card";
 </style>

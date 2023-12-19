@@ -35,17 +35,5 @@ const props = defineProps<AsideCategory>()
 </script>
 
 <style lang="scss">
-.aside-category{
-  &__header{
-    @include aside-header;
-    margin-left: 24px;
-    color: $aside-header;
-  }
-  &__items{
-    margin-top: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-}
+
 </style>

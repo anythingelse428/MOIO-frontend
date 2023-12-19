@@ -25,39 +25,5 @@ const router = useRouter()
 </script>
 
 <style lang="scss">
-.aside-item{
-  display: flex;
-  //gap: 30px;
-  align-items: center;
-  padding: 0px 24px;
-  &__link{
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    &:hover{
-      .mdi,
-      .aside-item__title{
-        color: $color-active;
-      }
-    }
-  }
-  .mdi{
-    font-size: 32px;
-  }
-  .aside-item__edit-btn{
-    cursor: pointer;
-    margin-inline-start: auto;
-    .mdi.mdi-pencil{
-      font-size: 24px;
-    }
-    &:hover{
-      .mdi{
-        color: $color-active;
-      }
-    }
-  }
-  &__title{
-    @include aside-item
-  }
-}
+
 </style>

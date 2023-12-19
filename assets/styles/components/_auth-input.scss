@@ -1,0 +1,43 @@
+.auth-input {
+  position: relative;
+  width: min(416px,90%);
+  font-size: 40px;
+  &__label{
+    position: absolute;
+    color: $color-active;
+    z-index: 10;
+    left: 24px;
+    font-weight: 300;
+    font-size: 20px;
+    touch-action: none;
+    transition: all 0.2s;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    cursor: text;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+  }
+  &__field{
+    background: $bg-primary;
+    width: 100%;
+    display: block;
+    position: relative;
+    padding: 12px 24px;
+    border-radius: 74px;
+    font-size: 20px;
+    outline: 0;
+    border: 0;
+    &:focus,
+    &:not(:placeholder-shown) {
+      border: 1px solid $color-active;
+      &+.auth-input__label {
+        font-size: 20px;
+        bottom: auto;
+        top: -24px;
+      }
+    }
+  }
+}

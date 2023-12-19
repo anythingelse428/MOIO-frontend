@@ -61,6 +61,7 @@ const roommates = ref([
   },
 ])
 const userStore = useUserStore()
+userStore.init()
 const profileData = ref(userStore.userInfo)
 onMounted(() => {
   nextTick(async () => {
@@ -79,53 +80,6 @@ const isAddRoommatesModalShow = ref(false)
 </script>
 
 <style lang="scss">
-.profile{
-  padding-inline: 175px;
-  @media screen and (max-width: 1200px) {
-    padding-inline: min(9%, 75px);
-  }
-  &__divider{
-    margin-top: 64px;
-  }
-  .profile-roommates-section{
-    &__header{
-      font-size: 25px;
-      font-weight: 600;
-      margin-top: 20px;
-    }
-    &__add-section{
-      border: none;
-      outline: none;
-      background: $avatar-bg-gradient-start;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 52px;
-      height: 52px;
-      border-radius: 100%;
-      margin-inline:auto;
-      margin-top: 16px;
-      cursor: pointer;
-      .mdi{
-        color: $color-accent;
-        font-size: 28px;
-      }
-    }
-  }
-  .profile-roommates-section__list{
-     margin-top: 20px;
-    .roommates-card{
-      &:first-child{
-        border-top-right-radius:23px;
-        border-top-left-radius:23px;
-      }
-      &:last-child{
-        border-bottom-right-radius: 23px ;
-        border-bottom-left-radius: 23px ;
-        border-bottom: 0;
-      }
-    }
-  }
-}
+@import "assets/styles/page/_user";
 
 </style>

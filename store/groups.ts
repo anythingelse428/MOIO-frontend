@@ -17,7 +17,7 @@ export const useGroupsStore = defineStore('groups', {
     groups: [] as IGroupResponseItem[],
     devices: {} as IDevicesInCategory,
     uppperGroups: [] as IGroupResponseItem[],
-    currentHome: localStorage.getItem('moio-current-home') || '',
+    currentHome: localStorage.getItem('moio-current-home') || uppperGroups[0].id || '',
   }),
   getters: {
     allGroups: state => state.groups,
@@ -40,13 +40,15 @@ export const useGroupsStore = defineStore('groups', {
   },
   actions: {
     async getAll () {
-      try {
-        const data = await apiGroupGetAll(this.currentHome)
-        if (data.length) {
-          this.groups = data
+      if (this.currentHome.length > 1) {
+        try {
+          const data = await apiGroupGetAll(this.currentHome)
+          if (data.length) {
+            this.groups = data
+          }
+        } catch (e) {
+          useNotification('error', "Произошла ошибка в получении групп")
         }
-      } catch (e) {
-        useNotification('error', "Произошла ошибка в получении групп")
       }
     },
     async getHouses () {

@@ -44,23 +44,5 @@ const automations = ref([
 </script>
 
 <style lang="scss">
-.automation{
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  width: clamp(60%,900px,95%);
-  margin-inline: auto;
-  &-header{
-    @include section-header;
-  }
-  &-subheader{
-    font-size: 20px;
-    font-weight: 400;
-  }
-  &-items{
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-}
+@import "assets/styles/page/automation";
 </style>

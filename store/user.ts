@@ -53,26 +53,27 @@ export const useUserStore = defineStore('user', {
       return JSON.parse(jsonPayload)
     },
     async register (props:IRegisterUserProps) {
-      const { access_token, refresh_token } = await apiUserRegister(props)
-      if (access_token) {
+      const { accessToken, refreshToken } = await apiUserRegister(props)
+      if (accessToken) {
         const config = useRuntimeConfig()
-        localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, access_token)
-        this.access_token = access_token
+        localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, accessToken)
+        this.access_token = accessToken
         window.location.pathname = '/'
-        return refresh_token
+        return refreshToken
       }
     },
     async auth (props:IAuthUserProps) {
-      const { access_token, username, refresh_token, id } = await apiUserAuth(props)
-      if (access_token) {
+      const { accessToken, username, refreshToken, id } = await apiUserAuth(props)
+      console.log(await apiUserAuth(props))
+      if (accessToken) {
         const config = useRuntimeConfig()
-        this.access_token = access_token
+        this.access_token = accessToken
         this.displayedName = username
         this.id = id
-        localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, access_token)
+        localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, accessToken)
         window.location.pathname = '/'
       }
-      return refresh_token
+      return refreshToken
     },
     async logout () {
       const config = useRuntimeConfig()
@@ -86,12 +87,12 @@ export const useUserStore = defineStore('user', {
       const config = useRuntimeConfig()
       const refresh = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME)
       if (refresh.value) {
-        const { access_token } = await apiUserRefreshToken(refresh.value)
-        if (access_token.length) {
-          console.log(access_token)
-          this.access_token = access_token
-          localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME, access_token)
-          return access_token
+        const { accessToken } = await apiUserRefreshToken(refresh.value)
+        if (accessToken.length) {
+          console.log(accessToken)
+          this.access_token = accessToken
+          localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME, accessToken)
+          return accessToken
         }
         useSetCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, '')
         window.location.pathname = '/login'
@@ -101,20 +102,19 @@ export const useUserStore = defineStore('user', {
     async init () {
       const config = useRuntimeConfig()
       const refreshToken = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME)
-      if (this.access_token.length < 16 && (refreshToken && refreshToken.value?.length)) {
-        try {
-          const accessToken = await this.refresh()
-          if (typeof accessToken === 'string') {
-            this.access_token = accessToken
-            const userData = await getUserInfo()
-            this.role = userData.role
-            this.displayedName = userData.name
-            this.id = userData.id
-          }
-        } catch (e) {
-          refreshToken.value = ''
-          window.location.pathname = '/login'
+      try {
+        const accessToken = await this.refresh()
+        if (typeof accessToken === 'string') {
+          this.access_token = accessToken
+          console.log(await getUserInfo())
+          const userData = await getUserInfo()
+          this.role = userData.role
+          this.displayedName = userData.name
+          this.id = userData.id
         }
+      } catch (e) {
+        refreshToken.value = ''
+        window.location.pathname = '/login'
       }
     },
   },

@@ -1,0 +1,25 @@
+.scheme-light{
+  --toastify-color-light:#EDF5FF;
+  --toastify-text-color-light:#15161C;
+  --toastify-font-family:Jura, sans-serif;
+
+  --device-action:#D8E9FF;
+  --color-primary: #15161C;
+  --color-accent: #15161C;
+  --color-active: #8DB8FF;
+  --color-inactive:#D8E9FF;
+  --bg-primary: #EDF5FF;
+  --bg-accent: #D9EEF9;
+  --aside-header:#105FC2;
+  --main-bg-gradient-start:#FFF;
+  --main-bg-gradient-end: #fff;
+  --avatar-bg-gradient-start:#00D4FF;
+  --avatar-bg-gradient-end:#87EBFF00;
+  --divider-border-color:#A6C8DA;
+  --service-shadow-color:#93BAFF;
+  --thumb-color:#D8E9FF;
+  --settings-color:#EDF5FF;
+  svg{
+    transition: unset;
+  }
+}

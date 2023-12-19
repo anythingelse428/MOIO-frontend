@@ -1,0 +1,29 @@
+.roommates-card{
+  display: flex;
+  align-items: center;
+  background: $bg-primary;
+  padding: 8px 28px;
+  border-bottom: 2px solid $divider-border-color;
+  &__avatar{
+    &.--blank{
+      width: 45px;
+      height: 45px;
+      border-radius: 100%;
+      display: block;
+      background: linear-gradient(180deg, $avatar-bg-gradient-start 0%, $avatar-bg-gradient-end 100%);
+    }
+  }
+  &__chevron{
+    margin-left: auto;
+    font-size: 36px;
+  }
+  .roommates-card-info{
+    margin-left: 24px;
+    &__name{
+      @include action-item
+    }
+    &__role {
+      @include carousel-category-item
+    }
+  }
+}

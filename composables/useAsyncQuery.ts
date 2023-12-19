@@ -62,12 +62,14 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
   try {
     const response = await queryCallback({ axios: axiosInstance, path: config.public.API_ENDPOINT as string })
     if (response && response?.status === 200) {
-      console.log(response.config.url)
+      config.public.APP_DEBUG && console.log(response.config.url)
       return response.data
     }
   } catch (e) {
     config.public.APP_DEBUG && consola.error('[useAsyncQuery]: Catch', e)
     config.public.APP_DEBUG && useNotification('error', `Произошла ошибка при обработке запроса ${e?.config.url}`)
-    return e
+    if (e?.response.status === 400) {
+      useNotification('error', e.response.request.response)
+    }
   }
 }

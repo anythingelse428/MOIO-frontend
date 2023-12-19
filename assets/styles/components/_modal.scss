@@ -1,0 +1,20 @@
+.modal{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  background: v-bind(bgColor);
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  top: 0;
+  inset: 0;
+}
+.modal__content{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}

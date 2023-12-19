@@ -47,7 +47,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@import "@/assets/styles/vars/colors.scss";@import "@/assets/styles/vars/fontsizes.scss";',
+          additionalData: '@import "@/assets/styles/utils/_colors.scss";@import "@/assets/styles/utils/_fontsizes.scss";',
         },
       },
     },
@@ -63,8 +63,8 @@ export default defineNuxtConfig({
   },
   styleResources: {
     scss: [
-      '~/assets/styles/vars/colors.scss',
-      '~/assets/styles/vars/fontsizes.scss',
+      '~/assets/styles/utils/_colors.scss',
+      '~/assets/styles/utils/_fontsizes.scss',
     ],
     // sass: [
     //   '~/assets/fonts/hk-icons/homekit-icons.sass',

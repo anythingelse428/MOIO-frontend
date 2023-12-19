@@ -1,9 +1,9 @@
 <template>
-  <div class="register">
-    <h1 class="register__header">
+  <div class="auth">
+    <h1 class="auth__header">
       Регистрация
     </h1>
-    <form method="post" class="register__form" @submit.prevent="register()">
+    <form method="post" class="auth__form" @submit.prevent="register()">
       <auth-form-input
         :value="name"
         name="name"
@@ -28,8 +28,8 @@
         :required="true"
         @auth-input="(newVal)=>password=newVal"
       />
-      <input type="submit" value="Регистрация" class="register__form-submit">
-      <NuxtLink to="/login" class="register__form-submit --outline">
+      <input type="submit" value="Регистрация" class="auth__form-submit">
+      <NuxtLink to="/login" class="auth__form-submit --outline">
         Войти
       </NuxtLink>
     </form>
@@ -37,9 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import apiUserRegister from '~/api/user/register'
 import { useUserStore } from "~/store/user"
-import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
 
 definePageMeta({
   layout: 'auth',
@@ -64,40 +62,5 @@ async function register () {
 </script>
 
 <style lang="scss">
-.register{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  &__header{
-    color: $color-primary;
-    @include section-header
-  }
-  &__form{
-    width: 100%;
-    margin-top: 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    justify-content: center;
-    align-items: center;
-    .register__form-submit{
-      border-radius: 74px;
-      background: $color-active;
-      color: $color-accent;
-      font-size: 20px;
-      font-weight: 300;
-      padding:  12px 60px;
-      cursor: pointer;
-      border: 0;
-      outline: 0;
-      &.--outline{
-        background: transparent;
-        border: 2px solid $color-active;
-        color: $color-active;
-      }
-    }
-  }
-}
+@import "assets/styles/page/auth";
 </style>

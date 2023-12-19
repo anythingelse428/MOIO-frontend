@@ -1,22 +1,19 @@
 <template>
   <div ref="thermostat" class="thermostat-input">
-    <input id="range" ref="range" v-model="p" type="range" :min="0" :max="100" :step="props.step||1" class="form-range sr-only">
-    <div id="output" for="range" class="position-absolute">
-      p: {{ p }}
-      val: {{ value }}
+    <input id="range" ref="range" v-model="p" type="range" :min="0" :max="100" :step="props.step||1" hidden>
+    <div class="thermostat-input__range-border --min">
+      {{ props.min }}C
     </div>
-    <svg ref="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 432 216" fill="none">
-      <defs>
-        <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#00bc9b" />
-          <stop offset="100%" stop-color="#5eaefd" />
-        </linearGradient>
-      </defs>
-      <g transform="translate(-100,-120) scale(1.45)">
-        <path id="track" ref="track" d="M 324,216 A 108,108 0 0 0 108,216" fill="none" stroke="#212433" stroke-width="12" stroke-linecap="round" />
-        <path id="progress" ref="element" d="M 324,216 A 108,108 0 0 0 108,216" fill="none" stroke="url(#gradient)" stroke-width="12" stroke-linecap="round" />
-        <circle id="thumb" ref="thumb" r="14" cx="108" cy="216" fill="#B2D0F3" />
-      </g>
+    <label id="output" for="range" class="thermostat-input__value">
+      {{ value }}C
+    </label>
+    <div class="thermostat-input__range-border --max">
+      {{ props.max }}C
+    </div>
+    <svg ref="svg" class="thermostat-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" fill="none">
+      <path id="track" ref="track" d="M 240 240 A 1 1 0 0 0 0 240" fill="none" stroke="#212433" stroke-width="12" stroke-linecap="round" />
+      <path id="progress" ref="progress" class="thermostat-svg__progress" d="M 240 240 A 1 1 0 0 0 0 240" fill="none" stroke-width="12" stroke-linecap="round" />
+      <circle id="thumb" ref="thumb" r="14" cx="120.379" cy="120.379" fill="#B2D0F3" />
     </svg>
   </div>
 </template>
@@ -26,9 +23,9 @@ import type { Ref } from "vue"
 
 export interface IThermostatProps {
   value: number
-  min:number|null
-  max:number|null
-  step:number|null
+  min:number
+  max:number
+  step:number
 }
 const props = defineProps<IThermostatProps>()
 
@@ -41,12 +38,12 @@ const getSliderValue = (value) => {
 const p = ref(getSliderValue(props.value))
 const range = ref<SVGElement>(null)
 const svg = ref<SVGElement>(null)
-const element = ref<SVGElement>(null)
+const progress = ref<SVGElement>(null)
 const track = ref<SVGElement>(null)
 const thumb = ref<SVGElement>(null)
 const thermostat = ref<HTMLDivElement>(null)
-const stepped = (val:number, devider:number) => {
-  return (Math.floor((val + devider - 1) / devider)) * devider
+const stepped = (val:number, divider:number) => {
+  return (Math.floor((val + divider - 1) / divider)) * divider
 }
 
 watch(p, (newP) => {
@@ -57,26 +54,14 @@ watch(p, (newP) => {
 
 onMounted(() => {
   if (thermostat.value) {
-    const max = parseFloat(range.value.getAttribute('max'))
-    const min = parseFloat(range.value.getAttribute('min'))
+    const max = parseFloat(range.value.getAttribute('max')) || 100
+    const min = parseFloat(range.value.getAttribute('min')) || 1
     const stepAttr = props.step || 1
-    const breakpoint = window.matchMedia('(max-width: 960px)')
 
-    const scale = (360 - 90) / max
     const steps = ((max - min) / stepAttr)
-    const r = 200
-    const circumference = Math.PI * r
     let isMoving = false
 
-    const getRadius = (mq) => {
-      let radius = 200
 
-      if (mq.matches) {
-        radius = 100
-      }
-
-      return radius
-    }
     function getPoints () {
       const points = []
       let progressLength = 0
@@ -87,22 +72,20 @@ onMounted(() => {
         points.push({ x: DOMPoint.x.toFixed(3), y: DOMPoint.y.toFixed(3), d: progressLength })
         progressLength += step
       }
-      // debugger
       return points
     }
     const throtthledPoints = useThrottle(getPoints, 500)
     console.log(throtthledPoints())
     const setPath = (value) => {
       const percentage = (value / max)
-      const offset = circumference * percentage
-      element.value.style.strokeDasharray = `${track.value.getTotalLength() * percentage} 1000`
+      progress.value.style.strokeDasharray = `${track.value.getTotalLength() * percentage} 1000`
     }
     setPath(p.value)
     const setThumb = () => {
       const points = getPoints()
       const newVal = Number(p.value)
       const index = newVal / stepAttr
-      const point = points[index.toFixed()]
+      const point = points[index.toFixed() - 1]
       thumb.value.setAttribute('cx', point.x)
       thumb.value.setAttribute('cy', point.y)
     }
@@ -137,14 +120,14 @@ onMounted(() => {
         p.value = covered
       }
     }
-    const setSVG = () => {
-      svg.value.setAttribute('width', '432')
-      svg.value.setAttribute('height', '216')
-      svg.value.setAttribute('viewBox', '0 0 432 216')
-      track.value.setAttribute('d', 'M 108,216 A 108,108 0 0 1 324,216')
+    const setSVG = (w = 216, h = 216) => {
+      svg.value.setAttribute('width', `${w * 1.12}`)
+      svg.value.setAttribute('height', `${h * 1.12}`)
+      svg.value.setAttribute('viewBox', `0 ${w * 0.4} ${w} ${h * 1.12}`)
+      track.value.setAttribute('d', `M 0 ${w} A ${w / 2} ${w / 2} 0 0 1 ${w} ${w}`)
       track.value.setAttribute('stroke-width', '12')
-      element.value.setAttribute('d', 'M 108,216 A 108,108 0 0 1 324,216')
-      element.value.setAttribute('stroke-width', '12')
+      progress.value.setAttribute('d', `M 0 ${w} A ${w / 2} ${w / 2} 0 0 1 ${w} ${w}`)
+      progress.value.setAttribute('stroke-width', '12')
       thumb.value.setAttribute('stroke-width', '8')
       thumb.value.setAttribute('r', '14')
       setPath(p.value)
@@ -152,11 +135,17 @@ onMounted(() => {
 
     const dragEnd = () => {
       isMoving = false
+      if (document.querySelector('.service-capabilities-modal')?.style) {
+        document.querySelector('.service-capabilities-modal').style.overflow = 'auto'
+      }
       svg.value.classList.remove('moving')
     }
 
     const dragStart = () => {
       isMoving = true
+      if (document.querySelector('.service-capabilities-modal')?.style) {
+        document.querySelector('.service-capabilities-modal').style.overflow = 'hidden'
+      }
       svg.value.classList.add('moving')
     }
 
@@ -164,7 +153,6 @@ onMounted(() => {
     setPath(p.value)
     setThumb()
 
-    breakpoint.addEventListener('change', setSVG)
 
     range.value.addEventListener('input', () => {
       range.value.classList.remove('has-focus')
@@ -176,11 +164,11 @@ onMounted(() => {
       dragStart()
       svg.value.addEventListener('mousemove', e => render(e))
     })
+
     svg.value.addEventListener('touchstart', () => {
       dragStart()
       svg.value.addEventListener('touchmove', e => render(e))
     })
-
     svg.value.addEventListener('mouseup', dragEnd)
     svg.value.addEventListener('touchend', dragEnd)
   }
@@ -193,5 +181,5 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss">
-
+@import "assets/styles/components/thermostat-input";
 </style>

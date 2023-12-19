@@ -2,7 +2,7 @@ import { consola } from "consola"
 import useAsyncQuery from "~/composables/useAsyncQuery"
 
 export interface UserRefreshTokenResponse{
-    access_token:string,
+    accessToken:string,
     username: string
     role: string
 }

@@ -6,8 +6,8 @@ export interface IRegisterUserProps {
     password: string,
 }
 export interface IRegisterUserResponse {
-    access_token: string,
-    refresh_token: string,
+    accessToken: string,
+    refreshToken: string,
     username: string,
     role: string
 }

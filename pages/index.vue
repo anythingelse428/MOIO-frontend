@@ -1,5 +1,6 @@
 <template>
   <div class="group">
+    <loader-screen :is-loading="groupData && groupData?.name && groupData.name.length===0 && isMounted" />
     <group-list
       :name="groupData.name"
       :devices="groupData.devices"
@@ -15,7 +16,13 @@ import ServiceGroup from '~/components/Service/ServiceGroup.vue'
 import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
 import { useDevicesStore } from "~/store/devices"
-
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+const isMounted = ref(false)
+onMounted(() => {
+  setTimeout(() => {
+    isMounted.value = true
+  }, 100)
+})
 const route = useRoute()
 const groupData = ref({ name: '', devices: [], inverseParent: [] })
 const groupStore = useGroupsStore()
@@ -44,35 +51,12 @@ watch(route, () => {
 onMounted(async () => {
   try {
     await groupStore.getDevicesByGroupId(groupStore.currentHome)
+    // debugger
   } catch {
   }
 })
 </script>
 
 <style lang="scss">
-.group{
-  padding-inline: 80px;
-  &__header{
-    @include section-header;
-  }
-  &__list{
-    margin-top: 60px;
-  }
-}
-.subgroup-item{
-  &__header {
-    @include header-submenu-item;
-    font-weight: 600;
-    margin-top: 40px;
-  }
-  &__service-list{
-    margin-top: 40px;
-    display: flex;
-    flex-wrap: wrap;
-    gap:40px;
-    &.--empty{
-      font-size: 24px;
-    }
-  }
-}
+@import "assets/styles/page/_index";
 </style>

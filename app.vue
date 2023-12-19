@@ -19,7 +19,9 @@ const colorMode = useColorScheme()
 onMounted(() => {
   colorMode?.colorSchemeInit()
 })
-user.init()
+if (user.access_token) {
+  user.init()
+}
 const socket = useSocket("http://192.168.1.64:7033/chat")
 socket.connection.on("ReceiveMessage", (message:string) => {
   useNotification("info", message)
