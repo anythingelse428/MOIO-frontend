@@ -17,11 +17,13 @@ export const useGroupsStore = defineStore('groups', {
     groups: [] as IGroupResponseItem[],
     devices: {} as IDevicesInCategory,
     uppperGroups: [] as IGroupResponseItem[],
-    currentHome: localStorage.getItem('moio-current-home') || uppperGroups[0].id || '',
+    currentHome: '',
+    currentGroup: {} as IGroupResponseItem,
   }),
   getters: {
     allGroups: state => state.groups,
     groupById: state => (id:string) => state.groups.find(el => el.id === id),
+    group: state => state.currentGroup,
     floors: (state) => {
       const categoriesStore = useCategoriesStore()
       // @ts-ignore
@@ -105,7 +107,9 @@ export const useGroupsStore = defineStore('groups', {
       }
     },
     async getGroupById (id:string) {
-      return await apiGroupGetById(id)
+      const data = await apiGroupGetById(id)
+      this.currentGroup = data
+      return data
     },
     async changeName (id:string, name:string) {
       try {

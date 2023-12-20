@@ -76,6 +76,7 @@ const rooms = ref()
 const floors = ref()
 const categoriesStore = useCategoriesStore()
 const groupsStore = useGroupsStore()
+
 async function getCategories () {
   await categoriesStore.getAll()
   categories.value = categoriesStore.allCategories()

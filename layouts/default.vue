@@ -15,10 +15,12 @@
 import TheAside from '~/components/Aside/TheAside.vue'
 import TheHeader from '~/components/Header/TheHeader.vue'
 import { useUserStore } from "~/store/user"
+import { useGroupsStore } from "~/store/groups"
 
 const userStore = useUserStore()
-userStore.init()
-
+const groupStore = useGroupsStore()
+await userStore.init()
+await groupStore.getHouses()
 </script>
 <style lang="scss">
 .layout.--default{

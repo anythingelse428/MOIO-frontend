@@ -47,7 +47,7 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
       return response
     }, async (error) => {
       const originalRequest = error.config
-      if (error.response.status === 401) {
+      if (error.response?.status === 401) {
         originalRequest._retry = true
         const accessToken = await refreshAccessToken()
         axios.defaults.headers.common[config.public.REST_BASE_TOKEN as string] = `Bearer ${accessToken}`

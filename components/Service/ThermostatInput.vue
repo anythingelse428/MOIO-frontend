@@ -20,6 +20,7 @@
 
 <script setup lang="ts">
 import type { Ref } from "vue"
+import useThrottle from "~/composables/useThrottle"
 
 export interface IThermostatProps {
   value: number
@@ -49,7 +50,7 @@ const stepped = (val:number, divider:number) => {
 watch(p, (newP) => {
   const unStepped = (props.max - props.min) * (newP / 100) + props.min
 
-  emit('t-input', stepped(unStepped, (props.step || 1)) + 1 - props.step)
+  emit('t-input', (stepped(unStepped, (props.step || 1)) + 1 - props.step).toFixed(2))
 })
 
 onMounted(() => {
@@ -60,22 +61,21 @@ onMounted(() => {
 
     const steps = ((max - min) / stepAttr)
     let isMoving = false
-
+    const trackLength = track.value.getTotalLength()
+    const step = trackLength / steps
 
     function getPoints () {
+      // TODO облегчить функцию
       const points = []
       let progressLength = 0
-      const trackLength = track.value.getTotalLength()
-      const step = trackLength / steps
-      while (progressLength < trackLength + 1) {
+      while (progressLength <= trackLength + 1) {
         const DOMPoint = track.value.getPointAtLength(progressLength)
-        points.push({ x: DOMPoint.x.toFixed(3), y: DOMPoint.y.toFixed(3), d: progressLength })
+        points.push({ x: Number(DOMPoint.x.toFixed(3)), y: Number(DOMPoint.y.toFixed(3)), d: Number(progressLength) })
         progressLength += step
       }
       return points
     }
-    const throtthledPoints = useThrottle(getPoints, 500)
-    console.log(throtthledPoints())
+
     const setPath = (value) => {
       const percentage = (value / max)
       progress.value.style.strokeDasharray = `${track.value.getTotalLength() * percentage} 1000`
@@ -85,20 +85,20 @@ onMounted(() => {
       const points = getPoints()
       const newVal = Number(p.value)
       const index = newVal / stepAttr
-      const point = points[index.toFixed() - 1]
+      const point = points[Number(index.toFixed() - 1)]
       thumb.value.setAttribute('cx', point.x)
       thumb.value.setAttribute('cy', point.y)
     }
     const getClosestPoint = (x, y) => {
+      // TODO облегчить функцию
       const distances = []
       const points = getPoints()
       points.forEach((point, index) => {
         const diffX = x - point.x
         const diffY = y - point.y
-        const distance = Math.sqrt((diffX * diffX) + (diffY * diffY)).toFixed(3)
+        const distance = Number(Math.sqrt((diffX * diffX) + (diffY * diffY)).toFixed(3))
         distances.push([index, parseFloat(distance)])
       })
-
       distances.sort((a, b) => a[1] - b[1])
       return points[distances[0][0]]
     }
@@ -108,8 +108,8 @@ onMounted(() => {
         const trackLength = track.value.getTotalLength()
         if (e.touches) { e = e.touches[0] }
         const pos = {
-          x: (e.clientX - rect.left).toFixed(3),
-          y: (e.clientY - rect.top).toFixed(3),
+          x: Number((e.clientX - rect.left).toFixed(3)),
+          y: Number((e.clientY - rect.top).toFixed(3)),
         }
         const target = getClosestPoint(pos.x, pos.y)
         const covered = Math.round(target.d * max / trackLength)
@@ -138,7 +138,9 @@ onMounted(() => {
       if (document.querySelector('.service-capabilities-modal')?.style) {
         document.querySelector('.service-capabilities-modal').style.overflow = 'auto'
       }
-      svg.value.classList.remove('moving')
+      if (svg.value?.classList) {
+        svg.value.classList.remove('moving')
+      }
     }
 
     const dragStart = () => {
@@ -146,11 +148,14 @@ onMounted(() => {
       if (document.querySelector('.service-capabilities-modal')?.style) {
         document.querySelector('.service-capabilities-modal').style.overflow = 'hidden'
       }
-      svg.value.classList.add('moving')
+      if (svg.value?.classList) {
+        svg.value.classList.add('moving')
+      }
     }
 
     setSVG()
     setPath(p.value)
+    getPoints()
     setThumb()
 
 
@@ -160,17 +165,21 @@ onMounted(() => {
       setThumb()
     })
 
-    svg.value.addEventListener('mousedown', () => {
+    svg.value.addEventListener('mousedown', (e) => {
+      dragStart()
+      render(e)
+    })
+    thumb.value.addEventListener('mousedown', () => {
       dragStart()
       svg.value.addEventListener('mousemove', e => render(e))
     })
 
-    svg.value.addEventListener('touchstart', () => {
+    thumb.value.addEventListener('touchstart', () => {
       dragStart()
-      svg.value.addEventListener('touchmove', e => render(e))
+      thumb.value.addEventListener('touchmove', e => render(e))
     })
-    svg.value.addEventListener('mouseup', dragEnd)
-    svg.value.addEventListener('touchend', dragEnd)
+    window.addEventListener('mouseup', dragEnd)
+    window.addEventListener('touchend', dragEnd)
   }
 })
 

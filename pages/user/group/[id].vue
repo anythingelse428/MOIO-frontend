@@ -1,6 +1,7 @@
 <template>
   <div class="group">
     <group-list
+      :id="groupId"
       :name="groupData.name"
       :devices="groupData.devices"
       :inverse-parent="groupData?.inverseParent"
@@ -9,42 +10,55 @@
 </template>
 
 <script setup lang="ts">
-import useAsyncQuery from '~/composables/useAsyncQuery'
-import TheService from '~/components/Service/TheService.vue'
-import ServiceGroup from '~/components/Service/ServiceGroup.vue'
-import { useCategoriesStore } from "~/store/categories"
+import { storeToRefs } from "pinia"
 import { useGroupsStore } from "~/store/groups"
-import { useDevicesStore } from "~/store/devices"
-
+import type { IGroupResponseItem } from "~/api/group/getAll"
+export interface IGroupData {
+  name: string
+  devices: IGroupResponseItem['devices'],
+  inverseParent: IGroupResponseItem['inverseParent']
+}
 const route = useRoute()
 const groupId = route.params.id as string
-const groupData = ref({ name: '', devices: [], inverseParent: [] })
+const groupData = ref<IGroupData>({ name: '', devices: [], inverseParent: [] })
 const groupStore = useGroupsStore()
-const devicesStore = useDevicesStore()
-async function fetchGroups () {
-  groupData.value = { name: '', devices: [] }
-  const { name, devices, inverseParent, id } = await groupStore.getGroupById(groupId)
-  groupData.value = {
-    name,
-    devices,
-    inverseParent,
-  }
-}
-if (groupStore.currentHome !== groupId && groupStore.uppperGroups.find(el => el.id === groupId)?.typeId === 1) {
-  groupStore.setCurrentHome(groupId)
-  useNotification('info', 'Просматриваемый дом изменен')
-}
-devicesStore.$onAction(({ after, store }) => {
-  store.$onAction((c) => {
-    if (c?.name.indexOf('changeName') > -1 || c?.name.indexOf('deleteDevice') > -1) {
-      fetchGroups()
-    }
-  })
+const { currentGroup } = storeToRefs(groupStore)
+
+const isMounted = ref(false)
+onMounted(() => {
+  setTimeout(() => {
+    isMounted.value = true
+  }, 100)
 })
+
+async function fetchGroups () {
+  groupData.value = { name: '', devices: [], inverseParent: [] }
+  await groupStore.getGroupById(groupId)
+  groupData.value = currentGroup.value
+}
+
 fetchGroups()
 watch(route, () => {
   fetchGroups()
 }, { deep: true, immediate: true })
+watch(currentGroup, (newVal, oldValue) => {
+  if (oldValue && !newVal.id.includes(groupId)) {
+    const idx = groupData.value.inverseParent.findIndex(el => el.id === newVal.id)
+    groupData.value.inverseParent[idx] = newVal
+  } else {
+    groupData.value = newVal
+  }
+}, { deep: true, immediate: true })
+onMounted(async () => {
+  try {
+    await groupStore.getGroupById(groupId)
+  } catch {
+  }
+})
+if (groupStore.currentHome !== groupId && groupStore.uppperGroups.find(el => el.id === groupId)?.typeId === 1) {
+  groupStore.setCurrentHome(groupId)
+  useNotification('info', 'Просматриваемый дом изменен')
+}
 
 </script>
 

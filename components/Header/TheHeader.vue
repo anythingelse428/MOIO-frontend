@@ -55,7 +55,6 @@ const settingsMenuItems = [
   },
 ]
 const groupsStore = useGroupsStore()
-await groupsStore.getHouses()
 let houses = groupsStore.houses
 groupsStore.$onAction(({ after }) => {
   after(() => {

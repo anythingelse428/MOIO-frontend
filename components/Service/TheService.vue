@@ -1,5 +1,5 @@
 <template>
-  <div :class="`service`" @click="isCapabilitiesShow = true">
+  <div ref="service" :class="`service`" @mousedown.left="turnOnDevice()" @mousedown.right="isCapabilitiesShow = true">
     <div class="service-info">
       <div :class="`service-ico-wrapper ${isDeviceOn === true || isDeviceOpen === true || String(isDeviceOpen)?.indexOf('open') >-1 ? '--active':''}`">
         <span :class="`mdi mdi-${ico?.name}`" />
@@ -50,6 +50,7 @@
                   :device-type="type"
                   :hsv="item.hsv"
                   :value="item.value"
+                  @update-bool-val="turnOnDevice()"
                 />
               </template>
             </service-capabilities-structure>
@@ -83,6 +84,7 @@
 </template>
 
 <script setup lang="ts">
+import { onLongPress } from '@vueuse/core'
 import TheModal from "~/components/shared/TheModal.vue"
 import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useDevicesStore } from "~/store/devices"
@@ -113,7 +115,7 @@ export type Service = {
   }[]
 }
 const props = defineProps<Service>()
-const isTooBigLength = ref(false)
+const service = ref<HTMLDivElement | null>(null)
 const isCapabilitiesShow = ref(false)
 const isDeviceOn = ref(props.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value)
 const isDeviceOpen = ref(props.capabilities?.find(el => el.instance === 'open' || el.type === 'devices.types.openable.garage')?.value)
@@ -124,7 +126,8 @@ const isEdit = ref(false)
 const isDeleteModalShow = ref(false)
 const newDeviceName = ref(props.name)
 const deviceStore = useDevicesStore()
-
+const groupStore = useGroupsStore()
+const categoriesStore = useCategoriesStore()
 onClickOutside(target, (event) => {
   isCapabilitiesShow.value = false
   isDeleteModalShow.value = false
@@ -132,26 +135,54 @@ onClickOutside(target, (event) => {
 onClickOutside(deleteModal, () => {
   isDeleteModalShow.value = false
 })
+onLongPress(service, () => {
+  isCapabilitiesShow.value = true
+}, { delay: 400 })
 onMounted(() => {
   setTimeout(() => {
     isMounted.value = true
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+    })
   }, 100)
 })
+onUnmounted(() => {
+  window.removeEventListener('contextmenu', () => {})
+})
 const router = useRouter()
-
+async function turnOnDevice () {
+  const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
+  console.log(oldValue)
+  const newValue = oldValue === false || String(oldValue)?.includes('close')
+  service.value.classList.add('--pending')
+  service.value.setAttribute('disabled', 'true')
+  await deviceStore.changeOnOf({ clientId: 'relay', deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), onOfStatus: newValue })
+  setTimeout(async () => {
+    // TODO дождаться сокетов, переписать логику
+    // 1. шлем запрос
+    // 2. получаем ответ (сейчас время ответа задано таймаутом, должен быть сокет)
+    // 3. получив ответ снимаем скелетон
+    if (typeof props.groupId === 'string' && !Number.isInteger(Number(props.groupId))) {
+      await groupStore.getGroupById(props.groupId)
+    }
+    if (Number.isInteger(Number(props.groupId))) {
+      await categoriesStore.getDevicesByCategoryId(props.groupId, groupStore.currentHome)
+    }
+    service.value.classList.remove('--pending')
+    service.value.setAttribute('disabled', 'false')
+  }, 1500)
+}
 async function deleteDevice () {
   await deviceStore.deleteDevice(props.id)
 }
-deviceStore.$onAction(({ after, store }) => {
-  store.$onAction((c) => {
-    if (c?.name.indexOf('changeName') > -1 || c?.name.indexOf('deleteDevice') > -1) {
-      // return updateService()
-    }
-  })
-})
-function setNewDeviceName () {
-  deviceStore.changeName(props.id, newDeviceName.value)
+async function setNewDeviceName () {
+  await deviceStore.changeName(props.id, newDeviceName.value)
   isEdit.value = false
+  if (Number.isInteger(Number(props.groupId))) {
+    await categoriesStore.getDevicesByCategoryId(props.groupId, groupStore.currentHome)
+  } else {
+    await groupStore.getGroupById(groupStore.currentGroup.id)
+  }
 }
 
 watch(props, (value) => {

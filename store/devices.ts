@@ -35,7 +35,7 @@ export const useDevicesStore = defineStore('devices', {
       }
     },
     async getAllDevices () {
-      console.error('using deprecated method')
+      console.warn('using deprecated method from devices store')
       const data = await apiDeviceGetAll()
       if (data?.length) {
         this.devices = data

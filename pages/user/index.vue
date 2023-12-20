@@ -46,6 +46,7 @@
 import { useUserStore } from '~/store/user'
 import TheModal from "~/components/shared/TheModal.vue"
 import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
+import ThermostatInput from "~/components/Service/ThermostatInput.vue"
 const roommates = ref([
   {
     id: 0,

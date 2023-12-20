@@ -8,16 +8,6 @@
       <input id="" v-model="h" step="1" type="range" :min="0" :max="360" name="" class="color" @input="updateDevice({type,value:{s:capability.hsv.s,v:capability.hsv.v,h:Number(h)}})">
       <input id="" v-model="s" step="1" type="range" :min="0" :max="100" name="" class="saturation" @input="updateDevice({type,value:{s:Number(s),v:capability.hsv.v,h:Number(h)}})">
     </div>
-    <!--    <teleport v-if="isMounted" :to="`.on-of-teleported.&#45;&#45;${deviceId}_ch${chanel}`">-->
-    <!--      <div v-if="type === 'devices.capabilities.on_off'||instance==='open'" :class="`service-capability__control &#45;&#45;toggle ${capability.value&&'&#45;&#45;checked'}`" @click.stop="()=>false">-->
-    <!--        <input-->
-    <!--          v-model="capability.value"-->
-    <!--          type="checkbox"-->
-    <!--          @input="updateDevice({type:instance==='open'?'open':'devices.capabilities.on_off',value:!capability.value})"-->
-    <!--        >-->
-    <!--      </div>-->
-    <!--    </teleport>-->
-
     <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
       <toggle-switch
         :checked="capability.value"
@@ -58,7 +48,6 @@
 import useThrottle from "~/composables/useThrottle"
 import { useDevicesStore } from "~/store/devices"
 import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
-import useChangeDeviceCapability from "~/composables/useChangeDeviceCapability"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
 export type ServiceCapability = {
     deviceType:string
@@ -80,6 +69,7 @@ export type ServiceCapability = {
     },
   value:any
 }
+const emit = defineEmits(['update-bool-val'])
 const props = defineProps<ServiceCapability>()
 const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
 const devicesStore = useDevicesStore()
@@ -117,24 +107,22 @@ function updateDevice (val:{type:string, value:any}) {
   }
   switch (val.type) {
     case 'open':
-      useChangeDeviceCapability(props.deviceId + '_ch' + props.chanel, 'range', val.value)
-      return throttledAction('changeOpenClose', { ...mainActionProps, open: val.value })
+      throttledAction('changeOpenClose', { ...mainActionProps, open: val.value })
+      emit('update-bool-val')
+      break
     case 'devices.capabilities.on_off':
       throttledAction('changeOnOf', { ...mainActionProps, onOfStatus: val.value })
-      useChangeDeviceCapability(props.deviceId + '_ch' + props.chanel, val.type, val.value)
+      emit('update-bool-val')
       break
     case 'devices.capabilities.range':
-      useChangeDeviceCapability(props.deviceId + '_ch' + props.chanel, 'range', val.value)
       if (props.instance && props.instance === 'threshold_temperature') {
         throttledAction('changeTemperature', { ...mainActionProps, temperature: val.value })
       }
       if ((props.instance && props.instance === 'brightness') || capability.value?.hsv?.v || props.instance === 'hsv') {
-        useChangeDeviceCapability(props.deviceId + '_ch' + props.chanel, 'range', val.value)
         throttledAction('changeBrightness', { ...mainActionProps, brightness: val.value })
       }
       break
     case 'devices.capabilities.color_setting':
-      useChangeDeviceCapability(props.deviceId + '_ch' + props.chanel, 'color', val.value)
       throttledAction('changeRGB', { ...mainActionProps, ...val.value })
       break
   }
@@ -155,20 +143,6 @@ const hsvToRgb = (hue, saturation, value) => {
   }
   return { red: c, green: m, blue: x }
 }
-// if (capability.value?.type === 'devices.capabilities.color_setting') {
-//   watch(capability, (value) => {
-//     if (value) {
-//       updateDevice({
-//         type: 'devices.capabilities.color_setting',
-//         value: {
-//           h: value.hsv.h,
-//           s: value.hsv.s,
-//           v: value.hsv.v ?? 0.7,
-//         },
-//       })
-//     }
-//   }, { deep: true })
-// }
 </script>
 
 
