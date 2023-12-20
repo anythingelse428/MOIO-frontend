@@ -4,9 +4,11 @@
       <label for="color">
         {{ type }}
       </label>
-      <div class="" :style="`display: block;height: 20px;width: 20px; background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
-      <input id="" v-model="h" step="1" type="range" :min="0" :max="360" name="" class="color" @input="updateDevice({type,value:{s:capability.hsv.s,v:capability.hsv.v,h:Number(h)}})">
-      <input id="" v-model="s" step="1" type="range" :min="0" :max="100" name="" class="saturation" @input="updateDevice({type,value:{s:Number(s),v:capability.hsv.v,h:Number(h)}})">
+      <div class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
+      <div class="service-capability__color">
+        <input id="color" v-model="h" step="1" type="range" :min="0" :max="360" name="" class="service-capability__hue" @input="updateDevice({type,value:{s:capability.hsv.s,v:capability.hsv.v,h:Number(h)}})">
+      </div>
+      <input id="" v-model="s" step="1" type="range" :min="0" :max="100" name="" class="service-capability__saturation" @input="updateDevice({type,value:{s:Number(s),v:capability.hsv.v,h:Number(h)}})">
     </div>
     <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
       <toggle-switch
