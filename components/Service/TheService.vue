@@ -170,7 +170,7 @@ async function turnOnDevice () {
     }
     service.value.classList.remove('--pending')
     service.value.setAttribute('disabled', 'false')
-  }, 1500)
+  }, 3000)
 }
 async function deleteDevice () {
   await deviceStore.deleteDevice(props.id)

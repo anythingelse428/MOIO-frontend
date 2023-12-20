@@ -61,12 +61,12 @@ onMounted(() => {
 
     const steps = ((max - min) / stepAttr)
     let isMoving = false
-    const trackLength = track.value.getTotalLength()
-    const step = trackLength / steps
 
-    function getPoints () {
+    const getPoints = () => {
       // TODO облегчить функцию
       const points = []
+      const trackLength = track.value.getTotalLength()
+      const step = trackLength / steps
       let progressLength = 0
       while (progressLength <= trackLength + 1) {
         const DOMPoint = track.value.getPointAtLength(progressLength)
@@ -80,11 +80,10 @@ onMounted(() => {
       const percentage = (value / max)
       progress.value.style.strokeDasharray = `${track.value.getTotalLength() * percentage} 1000`
     }
-    setPath(p.value)
     const setThumb = () => {
       const points = getPoints()
       const newVal = Number(p.value)
-      const index = newVal / stepAttr
+      const index = Math.max(1, newVal) / stepAttr
       const point = points[Number(index.toFixed() - 1)]
       thumb.value.setAttribute('cx', point.x)
       thumb.value.setAttribute('cy', point.y)
@@ -145,18 +144,15 @@ onMounted(() => {
 
     const dragStart = () => {
       isMoving = true
+
       if (document.querySelector('.service-capabilities-modal')?.style) {
         document.querySelector('.service-capabilities-modal').style.overflow = 'hidden'
       }
+
       if (svg.value?.classList) {
         svg.value.classList.add('moving')
       }
     }
-
-    setSVG()
-    setPath(p.value)
-    getPoints()
-    setThumb()
 
 
     range.value.addEventListener('input', () => {
@@ -180,6 +176,10 @@ onMounted(() => {
     })
     window.addEventListener('mouseup', dragEnd)
     window.addEventListener('touchend', dragEnd)
+    setSVG()
+    getPoints()
+    setThumb()
+    setPath(p.value)
   }
 })
 

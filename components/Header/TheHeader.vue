@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from "vue-router"
 import { useGroupsStore } from "~/store/groups"
 
 const addMenuItems = [
@@ -55,12 +56,9 @@ const settingsMenuItems = [
   },
 ]
 const groupsStore = useGroupsStore()
-let houses = groupsStore.houses
-groupsStore.$onAction(({ after }) => {
-  after(() => {
-    houses = groupsStore.houses
-  })
-})
+const { houses } = storeToRefs(groupsStore)
+const route = useRoute()
+
 const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)
 const addMenu = ref(null)
@@ -70,6 +68,10 @@ onClickOutside(addMenu, (e) => {
 })
 onClickOutside(settingsMenu, (e) => {
   isSettingsMenuShow.value = false
+})
+watch(() => route.fullPath, () => {
+  isSettingsMenuShow.value = false
+  isAddMenuShow.value = false
 })
 </script>
 

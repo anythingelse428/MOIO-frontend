@@ -23,32 +23,5 @@ await userStore.init()
 await groupStore.getHouses()
 </script>
 <style lang="scss">
-.layout.--default{
-    main{
-      padding-top: 100px;
-      position: fixed;
-      overflow-y: auto;
-      background: linear-gradient(180deg, $main-bg-gradient-start 0%, $main-bg-gradient-end 36.46%);
-      width: calc(100% - 284px);
-      right: 0;
-      bottom: 0;
-      top: 0;
-      @media screen and (max-width: 1200px) {
-        width: 100%;
-        padding-top: 80px;
-      }
-      &::-webkit-scrollbar {
-        width: 8px;
-      }
-      &::-webkit-scrollbar-track {
-        background: $bg-primary;
-      }
-      &::-webkit-scrollbar-thumb {
-        background: #2a2a29;
-      }
-      &::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
-    }
-}
+@import "assets/styles/layouts/default-layout";
 </style>

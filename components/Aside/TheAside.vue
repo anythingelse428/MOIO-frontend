@@ -72,24 +72,18 @@ const categories = ref<{
   editable?:boolean
   id?:number|string
 }[]>()
-const rooms = ref()
-const floors = ref()
+const asideRooms = ref()
+const asideFloors = ref()
 const categoriesStore = useCategoriesStore()
 const groupsStore = useGroupsStore()
-
+const { rooms, floors } = storeToRefs(groupsStore)
 async function getCategories () {
   await categoriesStore.getAll()
   categories.value = categoriesStore.allCategories()
   await groupsStore.getAll()
-  rooms.value = groupsStore.rooms
-  floors.value = groupsStore.floors
+  asideRooms.value = rooms
+  asideFloors.value = floors
 }
-groupsStore.$onAction(({ after }) => {
-  after((r) => {
-    rooms.value = groupsStore.rooms
-    floors.value = groupsStore.floors
-  })
-})
 getCategories()
 const colorMode = useColorScheme()
 onMounted(() => {
@@ -104,6 +98,12 @@ watch(() => route.fullPath, () => {
   if (isAsideCollapsed.value) {
     isAsideCollapsed.value = false
   }
+})
+watch(rooms, (newValue) => {
+  asideRooms.value = newValue
+})
+watch(floors, (newValue) => {
+  asideFloors.value = newValue
 })
 </script>
 

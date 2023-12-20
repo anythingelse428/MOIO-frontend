@@ -138,6 +138,9 @@ async function editGroup () {
   if (devices.value.length>0){
     await groupStore.changeDevices(id, devices.value.map(el=>el.id))
   }
+  setTimeout(()=>{
+    useRouter().push({path:'/user/group/'+ id})
+  },1500)
 }
 async function deleteGroup(){
   await groupStore.deleteGroup(id)

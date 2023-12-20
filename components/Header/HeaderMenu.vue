@@ -18,7 +18,6 @@ export interface HeaderMenuProps {
     active?:boolean
   }[]
 }
-
 const props = defineProps<HeaderMenuProps>()
 </script>
 
