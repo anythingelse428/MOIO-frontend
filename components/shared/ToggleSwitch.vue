@@ -1,12 +1,12 @@
 <template>
   <div :class="`toggle-switch-wrapper${verticalLarge&&'--vertical-large'}`">
-    <label v-if="verticalLarge" for="toggle-switch">Выкл.</label>
+    <label v-if="verticalLarge" for="toggle-switch">Вкл.</label>
     <div :class="`toggle-switch ${verticalLarge?'--vertical-large':''}`">
       <input id="toggle-switch" v-model="currentValue" type="checkbox" class="toggle-switch__checkbox">
       <div class="toggle-switch__button" />
       <div class="toggle-switch__layer" />
     </div>
-    <label v-if="verticalLarge" for="toggle-switch">Вкл.</label>
+    <label v-if="verticalLarge" for="toggle-switch">Выкл.</label>
   </div>
 </template>
 
@@ -43,8 +43,6 @@ const currentValue = computed({
       font: normal normal normal 24px/1 "Material Design Icons";
       content: v-bind(ico);
       position: absolute;
-      top: 4px;
-      transform: translateX(4px);
       width: 20px;
       height: 10px;
       padding: 9px 4px;

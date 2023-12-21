@@ -1,5 +1,5 @@
 <template>
-  <div ref="service" :class="`service`" @mousedown.left="turnOnDevice()" @mousedown.right="isCapabilitiesShow = true">
+  <div ref="service" :class="`service`" role="button" @mousedown.left="turnOnDevice()" @mousedown.right="isCapabilitiesShow = true">
     <div class="service-info">
       <div :class="`service-ico-wrapper ${isDeviceOn === true || isDeviceOpen === true || String(isDeviceOpen)?.indexOf('open') >-1 ? '--active':''}`">
         <span :class="`mdi mdi-${ico?.name}`" />
@@ -21,8 +21,8 @@
       backdrop-filter="blur(5px)"
     >
       <template #inner>
-        <div ref="target" class="service-capabilities-modal">
-          <div class="mdi mdi-pencil" @click="isEdit=!isEdit" />
+        <div ref="target" class="service-capabilities-modal" role="dialog">
+          <div class="mdi mdi-pencil" role="button" @click="isEdit=!isEdit" />
           <div class="service-capabilities-modal__header">
             <form v-if="isEdit" class="service-capabilities-modal__header --edited" @submit.prevent="setNewDeviceName()">
               <input v-model="newDeviceName" type="text">
@@ -54,28 +54,28 @@
                 />
               </template>
             </service-capabilities-structure>
-          </div>
-          <div class="service-capabilities-modal__footer">
-            <button class="service-capabilities-modal__action" @click="isDeleteModalShow = true">
-              Удалить устройство
-            </button>
-            <the-modal :is-shown="isDeleteModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
-              <template #inner>
-                <div ref="deleteModal" class="delete-device-modal">
-                  <div class="delete-device-modal__header">
-                    Вы уверерны, что хотите удалить устройство {{ name }}?
-                  </div>
-                  <div class="delete-device-modal__prompt">
-                    <div class="delete-device-modal__prompt-item --danger" @click="deleteDevice()">
-                      Удалить
+            <div class="service-capabilities-modal__footer">
+              <button class="service-capabilities-modal__action" @click="isDeleteModalShow = true">
+                Удалить устройство
+              </button>
+              <the-modal :is-shown="isDeleteModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
+                <template #inner>
+                  <div ref="deleteModal" class="delete-device-modal" role="dialog">
+                    <div class="delete-device-modal__header">
+                      Вы уверерны, что хотите удалить устройство {{ name }}?
                     </div>
-                    <div class="delete-device-modal__prompt-item" @click="isDeleteModalShow = false">
-                      Отмена
+                    <div class="delete-device-modal__prompt">
+                      <div class="delete-device-modal__prompt-item --danger" role="button" @click="deleteDevice()">
+                        Удалить
+                      </div>
+                      <div class="delete-device-modal__prompt-item" role="button" @click="isDeleteModalShow = false">
+                        Отмена
+                      </div>
                     </div>
                   </div>
-                </div>
-              </template>
-            </the-modal>
+                </template>
+              </the-modal>
+            </div>
           </div>
         </div>
       </template>
@@ -115,6 +115,7 @@ export type Service = {
     }
   }[]
 }
+
 const props = defineProps<Service>()
 const isMounted = ref(false)
 const service = ref<HTMLDivElement | null>(null)
@@ -132,8 +133,10 @@ const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
 
 onClickOutside(target, (event) => {
-  isCapabilitiesShow.value = false
-  isDeleteModalShow.value = false
+  if (event.target.className.includes('modal__content')) {
+    isCapabilitiesShow.value = false
+    isDeleteModalShow.value = false
+  }
 }, { ignore: [deleteModal] })
 onClickOutside(deleteModal, () => {
   isDeleteModalShow.value = false

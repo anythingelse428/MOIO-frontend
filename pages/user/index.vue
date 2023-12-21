@@ -69,12 +69,13 @@ const isAddRoommatesModalShow = ref(false)
 const isLoading = ref(true)
 onMounted(() => {
   nextTick(async () => {
+    console.log(profileData)
     if (profileData.value.name.length < 1) {
       isLoading.value = true
       await userStore.init()
       profileData.value = userStore.userInfo
-      isLoading.value = false
     }
+    isLoading.value = false
   })
 })
 

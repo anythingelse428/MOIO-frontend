@@ -1,5 +1,5 @@
 <template>
-  <transition :name="transitionFadeName??'no-transition'">
+  <transition :name="transitionFadeName??'no-transition'" mode="out-in">
     <div v-show="isShown" class="modal" :style="backdropFilter?`backdrop-filter:${backdropFilter};`:''">
       <transition :name="transitionContentName??'no-transition'">
         <div v-show="isShown" class="modal__content">

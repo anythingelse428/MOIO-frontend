@@ -15,7 +15,11 @@ export default function useIcoByGroupName (name:string) {
     case 'микроклимат':
       return { name: 'fan', code: '\\' }
     case 'аудио':
-      return { name: 'multimedia', code: '\\' }
+      return { name: 'volume-high', code: '\\' }
+    case 'выключатели':
+      return { name: 'toggle-switch-variant-off', code: '\\' }
+    case 'розетки':
+      return { name: 'power-socket-eu ', code: '\\' }
     case 'комната':
       return { name: 'cube-outline', code: '\\' }
     case 'этаж':

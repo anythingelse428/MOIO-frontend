@@ -15,6 +15,9 @@ svg{
 
   color: $color-primary;
   }
+  input[type="submit"] {
+    cursor: pointer;
+  }
 }
 .Toastify__toast-body>div:last-child {
   word-break: break-word;

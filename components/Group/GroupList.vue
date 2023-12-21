@@ -36,7 +36,7 @@ const props = defineProps<GroupList>()
 
 <style lang="scss">
 .--child{
-  margin-left: 2em;
+  margin-left: calc(32px);
 }
 .group__header,
 .subgroup-item__service-list{
