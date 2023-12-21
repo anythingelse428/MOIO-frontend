@@ -32,7 +32,6 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
   }
 
   async function refreshAccessToken () {
-    consola.log('refresh...')
     const userStore = useUserStore()
     return await userStore.refresh()
   }

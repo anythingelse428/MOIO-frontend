@@ -5,7 +5,6 @@ export interface IDeviceChangeStatusOpenClose extends IChangeDeviceStatusPayload
 }
 export default async function apiDeviceChangeOpenClose (props:IDeviceChangeStatusOpenClose) {
   const query = `?clientId=${props.clientId}&deviceId=${props.deviceId}&chanel=${props.chanel}&open=${props.open}`
-  console.log(query)
   return await useAsyncQuery(async ({ axios, path }) => {
     return await axios.post(path + '/device/ChangeStatusOpenClose/' + query)
   })

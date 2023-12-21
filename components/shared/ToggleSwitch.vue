@@ -28,7 +28,6 @@ const currentValue = computed({
     return props.checked
   },
   set (value) {
-    console.log(value)
     emit('check', value)
   },
 })
