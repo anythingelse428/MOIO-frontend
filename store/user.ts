@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', {
       displayedName: '',
       role: '',
       avatarUrl: '',
-      access_token: '',
+      accessToken: '',
     }),
   getters: {
     userInfo: (state) => {
@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', {
         name: state.displayedName,
         role: state.role,
         avatarUrl: state.avatarUrl,
-        access_token: state.access_token,
+        accessToken: state.accessToken,
       }
     },
   },
@@ -57,17 +57,16 @@ export const useUserStore = defineStore('user', {
       if (accessToken) {
         const config = useRuntimeConfig()
         localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, accessToken)
-        this.access_token = accessToken
+        this.accessToken = accessToken
         window.location.pathname = '/'
         return refreshToken
       }
     },
     async auth (props:IAuthUserProps) {
       const { accessToken, username, refreshToken, id } = await apiUserAuth(props)
-      console.log(await apiUserAuth(props))
       if (accessToken) {
         const config = useRuntimeConfig()
-        this.access_token = accessToken
+        this.accessToken = accessToken
         this.displayedName = username
         this.id = id
         localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, accessToken)
@@ -90,7 +89,7 @@ export const useUserStore = defineStore('user', {
         const { accessToken } = await apiUserRefreshToken(refresh.value)
         if (accessToken.length) {
           console.log(accessToken)
-          this.access_token = accessToken
+          this.accessToken = accessToken
           localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME, accessToken)
           return accessToken
         }
@@ -105,8 +104,7 @@ export const useUserStore = defineStore('user', {
       try {
         const accessToken = await this.refresh()
         if (typeof accessToken === 'string') {
-          this.access_token = accessToken
-          console.log(await getUserInfo())
+          this.accessToken = accessToken
           const userData = await getUserInfo()
           this.role = userData.role
           this.displayedName = userData.name

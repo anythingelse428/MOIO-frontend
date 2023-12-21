@@ -13,7 +13,7 @@ const colorMode = useColorScheme()
 onMounted(() => {
   colorMode?.colorSchemeInit()
 })
-if (user.access_token) {
+if (user.accessToken) {
   await user.init()
 }
 // Сокеты
