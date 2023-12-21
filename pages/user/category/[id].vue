@@ -1,5 +1,6 @@
 <template>
   <div class="group">
+    <loader-screen :is-loading="isLoading" />
     <h1 class="group__header">
       {{ groupData?.name }}
     </h1>
@@ -29,28 +30,31 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-import useAsyncQuery from '~/composables/useAsyncQuery'
-import TheService from '~/components/Service/TheService.vue'
-import ServiceGroup from '~/components/Service/ServiceGroup.vue'
-import { useCategoriesStore } from "~/store/categories"
-import { useDevicesStore } from "~/store/devices"
-import { useGroupsStore } from "~/store/groups"
 
+import TheService from '~/components/Service/TheService.vue'
+import { useCategoriesStore } from "~/store/categories"
+import { useGroupsStore } from "~/store/groups"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+
+const categoryStore = useCategoriesStore()
+const groupStore = useGroupsStore()
+const { devicesInCategory } = storeToRefs(categoryStore)
 const route = useRoute()
 const categoryId = Number(route.params.id) as number
 const groupData = ref()
-const categoryStore = useCategoriesStore()
-const devicesStore = useDevicesStore()
-const groupStore = useGroupsStore()
-const { devicesInCategory } = storeToRefs(categoryStore)
+const isLoading = ref(true)
+
 async function fetchGroups () {
+  isLoading.value = true
   await categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome)
   groupData.value = {
     name: categoryStore.categoryById(categoryId)?.name,
     groups: categoryStore.devices,
   }
+  isLoading.value = false
 }
-fetchGroups()
+await fetchGroups()
+
 watch(route, () => {
   fetchGroups()
 }, { deep: true, immediate: true })

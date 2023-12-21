@@ -21,6 +21,7 @@ export type ProfileCard ={
   role:string
   displayedName:string
 }
+
 const props = defineProps<ProfileCard>()
 </script>
 

@@ -21,6 +21,7 @@ const userStore = useUserStore()
 const groupStore = useGroupsStore()
 await userStore.init()
 await groupStore.getHouses()
+
 </script>
 <style lang="scss">
 @import "assets/styles/layouts/default-layout";

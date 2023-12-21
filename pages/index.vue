@@ -1,5 +1,6 @@
 <template>
   <div class="group">
+    <loader-screen :is-loading="isLoading" />
     <group-list
       :id="groupStore.currentHome"
       :name="groupData.name"
@@ -11,38 +12,32 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-import { awaitExpression } from "@babel/types"
-import useAsyncQuery from '~/composables/useAsyncQuery'
-import TheService from '~/components/Service/TheService.vue'
-import ServiceGroup from '~/components/Service/ServiceGroup.vue'
-import { useCategoriesStore } from "~/store/categories"
+
 import { useGroupsStore } from "~/store/groups"
-import { useDevicesStore } from "~/store/devices"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import type { IGroupResponseItem } from "~/api/group/getAll"
+
 export interface IGroupData {
  name: string
  devices: IGroupResponseItem['devices'],
  inverseParent: IGroupResponseItem['inverseParent']
 }
-const isMounted = ref(false)
-onMounted(() => {
-  setTimeout(() => {
-    isMounted.value = true
-  }, 100)
-})
+
 const route = useRoute()
+const isLoading = ref(true)
 const groupData = ref<IGroupData>({ name: '', devices: [], inverseParent: [] })
 const groupStore = useGroupsStore()
-const devicesStore = useDevicesStore()
 const { currentGroup } = storeToRefs(groupStore)
+
 async function fetchGroups () {
+  isLoading.value = true
   groupData.value = { name: '', devices: [], inverseParent: [] }
   await groupStore.getGroupById(groupStore.currentHome)
   groupData.value = currentGroup.value
+  isLoading.value = false
 }
+await fetchGroups()
 
-fetchGroups()
 watch(route, () => {
   fetchGroups()
 }, { deep: true, immediate: true })
@@ -54,10 +49,12 @@ watch(currentGroup, (newVal, oldValue) => {
     groupData.value = newVal
   }
 }, { deep: true, immediate: true })
+
 onMounted(async () => {
   try {
+    isLoading.value = true
     await groupStore.getGroupById(groupStore.currentHome)
-    // debugger
+    isLoading.value = false
   } catch {
   }
 })

@@ -42,10 +42,11 @@ import { useUserStore } from "~/store/user"
 definePageMeta({
   layout: 'auth',
 })
+const userStore = useUserStore()
 const name = ref('')
 const email = ref('')
 const password = ref('')
-const userStore = useUserStore()
+
 async function register () {
   const registrationData = {
     name: name.value,

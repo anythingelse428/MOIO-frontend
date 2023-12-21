@@ -6,9 +6,9 @@
       </label>
       <div class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
       <div class="service-capability__color">
-        <input id="color" v-model="h" step="1" type="range" :min="0" :max="360" name="" class="service-capability__hue" @input="updateDevice({type,value:{s:capability.hsv.s,v:capability.hsv.v,h:Number(h)}})">
+        <input id="color" v-model="hue" step="1" type="range" :min="0" :max="360" name="" class="service-capability__hue" @input="updateDevice({type,value:{s:capability.hsv.s,v:capability.hsv.v,h:Number(hue)}})">
       </div>
-      <input id="" v-model="s" step="1" type="range" :min="0" :max="100" name="" class="service-capability__saturation" @input="updateDevice({type,value:{s:Number(s),v:capability.hsv.v,h:Number(h)}})">
+      <input id="" v-model="saturation" step="1" type="range" :min="0" :max="100" name="" class="service-capability__saturation" @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
     </div>
     <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
       <toggle-switch
@@ -51,6 +51,7 @@ import useThrottle from "~/composables/useThrottle"
 import { useDevicesStore } from "~/store/devices"
 import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
+
 export type ServiceCapability = {
     deviceType:string
     deviceId:string
@@ -71,22 +72,19 @@ export type ServiceCapability = {
     },
   value:any
 }
-const emit = defineEmits(['update-bool-val'])
+
 const props = defineProps<ServiceCapability>()
+const emit = defineEmits(['update-bool-val'])
 const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
 const devicesStore = useDevicesStore()
 const temp = ref({ ...props })
 const capability = ref(temp)
 const brightness = ref(capability.value?.hsv?.v)
 const isMounted = ref(false)
-const h = ref(Number(capability.value.hsv?.h))
-const s = ref(Number(capability.value.hsv?.s))
-const rgb = computed(() => hsvToRgb(Number(h.value), s.value / 100, capability.value.hsv.v / 100))
-onMounted(() => {
-  setTimeout(() => {
-    isMounted.value = true
-  }, 100)
-})
+const hue = ref(Number(capability.value.hsv?.h))
+const saturation = ref(Number(capability.value.hsv?.s))
+const rgb = computed(() => hsvToRgb(Number(hue.value), saturation.value / 100, capability.value.hsv.v / 100))
+
 if (capability.value && String(capability.value?.value)?.indexOf('close') > -1) {
   capability.value.value = false
 }
@@ -101,6 +99,7 @@ async function actionFabric (fnName:'changeOnOf'|'changeTemperature'|'changeBrig
   return await devicesStore[fnName](args)
 }
 const throttledAction = useThrottle(actionFabric, 1000)
+
 function updateDevice (val:{type:string, value:any}) {
   const mainActionProps = {
     clientId: 'relay',
@@ -145,6 +144,12 @@ const hsvToRgb = (hue, saturation, value) => {
   }
   return { red: c, green: m, blue: x }
 }
+
+onMounted(() => {
+  setTimeout(() => {
+    isMounted.value = true
+  }, 100)
+})
 </script>
 
 

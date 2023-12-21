@@ -71,7 +71,6 @@
 
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
-import { useDevicesStore } from "~/store/devices"
 
 const name = ref('')
 let oldName = ''

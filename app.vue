@@ -6,17 +6,9 @@
 
 <script setup lang="ts">
 
-import { useRuntimeConfig } from "#app"
-import { awaitExpression } from "@babel/types"
 import { useUserStore } from '~/store/user'
-import { useDevicesStore } from '~/store/devices'
-import useAsyncQuery from '~/composables/useAsyncQuery'
-import { useGroupsStore } from "~/store/groups"
-import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 const user = useUserStore()
-// const groups = useGroupsStore()
-// const devices = useDevicesStore()
 const colorMode = useColorScheme()
 onMounted(() => {
   colorMode?.colorSchemeInit()
@@ -29,9 +21,6 @@ if (user.access_token) {
 // socket.connection.on("ReceiveMessage", (message:string) => {
 //   useNotification("info", message)
 // })
-// groups.getAll()
-// console.log(groups.floors)
-// devices.getAllDevices()
 // const conn = useSocket()
 // console.log(conn)
 // //

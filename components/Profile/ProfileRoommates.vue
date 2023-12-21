@@ -23,6 +23,7 @@ export type ProfileRoommates = {
   name:string
   role:string
 }
+
 const props = defineProps<ProfileRoommates>()
 </script>
 

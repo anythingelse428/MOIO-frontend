@@ -18,9 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router"
 import { useGroupsStore } from "~/store/groups"
 
+const groupsStore = useGroupsStore()
+const { houses } = storeToRefs(groupsStore)
+const route = useRoute()
 const addMenuItems = [
   {
     ico: "plus-box-outline",
@@ -55,20 +57,18 @@ const settingsMenuItems = [
     url: '/',
   },
 ]
-const groupsStore = useGroupsStore()
-const { houses } = storeToRefs(groupsStore)
-const route = useRoute()
-
 const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)
 const addMenu = ref(null)
 const settingsMenu = ref(null)
+
 onClickOutside(addMenu, (e) => {
   isAddMenuShow.value = false
 })
 onClickOutside(settingsMenu, (e) => {
   isSettingsMenuShow.value = false
 })
+
 watch(() => route.fullPath, () => {
   isSettingsMenuShow.value = false
   isAddMenuShow.value = false

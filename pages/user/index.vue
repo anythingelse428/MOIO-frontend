@@ -1,5 +1,6 @@
 <template>
   <div class="profile">
+    <loader-screen :is-loading="isLoading" />
     <profile-card
       :role="profileData.role"
       :displayed-name="profileData.name"
@@ -46,7 +47,8 @@
 import { useUserStore } from '~/store/user'
 import TheModal from "~/components/shared/TheModal.vue"
 import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
-import ThermostatInput from "~/components/Service/ThermostatInput.vue"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+
 const roommates = ref([
   {
     id: 0,
@@ -62,21 +64,20 @@ const roommates = ref([
   },
 ])
 const userStore = useUserStore()
-userStore.init()
 const profileData = ref(userStore.userInfo)
+const isAddRoommatesModalShow = ref(false)
+const isLoading = ref(true)
 onMounted(() => {
   nextTick(async () => {
     if (profileData.value.name.length < 1) {
-      const data = await userStore.init()
+      isLoading.value = true
+      await userStore.init()
       profileData.value = userStore.userInfo
+      isLoading.value = false
     }
   })
 })
-// const addRoommateModal = ref(null)
-const isAddRoommatesModalShow = ref(false)
-// onClickOutside(addRoommateModal, () => {
-//   isAddRoommatesModalShow.value = false
-// })
+
 
 </script>
 

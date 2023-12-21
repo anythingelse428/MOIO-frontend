@@ -39,10 +39,13 @@
 <script setup lang="ts">
 import AsideCategory from '~/components/Aside/AsideCategory.vue'
 import { useUserStore } from "~/store/user"
-import { type IGetAllResponseItem } from "~/api/category/getAll"
 import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
 
+const categoriesStore = useCategoriesStore()
+const groupsStore = useGroupsStore()
+const { rooms, floors } = storeToRefs(groupsStore)
+const route = useRoute()
 const isAsideCollapsed = ref(false)
 const asideContent =
     {
@@ -74,9 +77,7 @@ const categories = ref<{
 }[]>()
 const asideRooms = ref()
 const asideFloors = ref()
-const categoriesStore = useCategoriesStore()
-const groupsStore = useGroupsStore()
-const { rooms, floors } = storeToRefs(groupsStore)
+
 async function getCategories () {
   await categoriesStore.getAll()
   categories.value = categoriesStore.allCategories()
@@ -86,14 +87,12 @@ async function getCategories () {
 }
 getCategories()
 const colorMode = useColorScheme()
-onMounted(() => {
-  colorMode?.colorSchemeInit()
-})
+
 function logout () {
   const userStore = useUserStore()
   userStore.logout()
 }
-const route = useRoute()
+
 watch(() => route.fullPath, () => {
   if (isAsideCollapsed.value) {
     isAsideCollapsed.value = false
@@ -104,6 +103,10 @@ watch(rooms, (newValue) => {
 })
 watch(floors, (newValue) => {
   asideFloors.value = newValue
+})
+
+onMounted(() => {
+  colorMode?.colorSchemeInit()
 })
 </script>
 

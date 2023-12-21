@@ -85,12 +85,13 @@
 
 <script setup lang="ts">
 import { onLongPress } from '@vueuse/core'
+
 import TheModal from "~/components/shared/TheModal.vue"
 import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useDevicesStore } from "~/store/devices"
 import { useGroupsStore } from "~/store/groups"
 import { useCategoriesStore } from "~/store/categories"
-const isMounted = ref(false)
+
 export type Service = {
   id:string
   groupId:string|number
@@ -115,6 +116,7 @@ export type Service = {
   }[]
 }
 const props = defineProps<Service>()
+const isMounted = ref(false)
 const service = ref<HTMLDivElement | null>(null)
 const isCapabilitiesShow = ref(false)
 const isDeviceOn = ref(props.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value)
@@ -128,6 +130,7 @@ const newDeviceName = ref(props.name)
 const deviceStore = useDevicesStore()
 const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
+
 onClickOutside(target, (event) => {
   isCapabilitiesShow.value = false
   isDeleteModalShow.value = false
@@ -135,24 +138,13 @@ onClickOutside(target, (event) => {
 onClickOutside(deleteModal, () => {
   isDeleteModalShow.value = false
 })
+
 onLongPress(service, () => {
   isCapabilitiesShow.value = true
 }, { delay: 400 })
-onMounted(() => {
-  setTimeout(() => {
-    isMounted.value = true
-    window.addEventListener('contextmenu', (e) => {
-      e.preventDefault()
-    })
-  }, 100)
-})
-onUnmounted(() => {
-  window.removeEventListener('contextmenu', () => {})
-})
-const router = useRouter()
+
 async function turnOnDevice () {
   const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
-  console.log(oldValue)
   const newValue = oldValue === false || String(oldValue)?.includes('close')
   service.value.classList.add('--pending')
   service.value.setAttribute('disabled', 'true')
@@ -189,6 +181,18 @@ watch(props, (value) => {
   isDeviceOn.value = value.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value
   isDeviceOpen.value = value.capabilities?.find(el => el.instance === 'open')?.value
 }, { deep: true })
+
+onMounted(() => {
+  setTimeout(() => {
+    isMounted.value = true
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+    })
+  }, 100)
+})
+onUnmounted(() => {
+  window.removeEventListener('contextmenu', () => {})
+})
 </script>
 
 <style lang="scss">

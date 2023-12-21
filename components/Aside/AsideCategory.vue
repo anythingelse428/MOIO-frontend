@@ -31,6 +31,7 @@ export type AsideCategory = {
         id?:number|string
       }[]
 }
+
 const props = defineProps<AsideCategory>()
 </script>
 

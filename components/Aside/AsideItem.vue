@@ -20,6 +20,7 @@ export type AsideItem = {
   editable?:boolean
   id?:number|string
 }
+
 const props = defineProps<AsideItem>()
 const router = useRouter()
 </script>

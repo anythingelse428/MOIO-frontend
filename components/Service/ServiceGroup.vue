@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import TheService from '~/components/Service/TheService.vue'
+
 export type ServiceGroup = {
   name:string,
   id:string|number
@@ -27,6 +28,7 @@ export type ServiceGroup = {
     ico:string
   }[]
 }
+
 const props = defineProps<ServiceGroup>()
 </script>
 

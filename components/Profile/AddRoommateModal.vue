@@ -39,9 +39,9 @@
 </template>
 
 <script setup lang="ts">
+
 const newRoommateData = { name: '', email: '' }
 const emit = defineEmits(['modal-close'])
-
 </script>
 
 <style lang="scss">

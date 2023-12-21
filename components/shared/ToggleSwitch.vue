@@ -21,7 +21,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-
 })
 const emit = defineEmits(['check'])
 const currentValue = computed({
@@ -40,7 +39,6 @@ const currentValue = computed({
 .toggle-switch {
   &__button {
     z-index: 2;
-
     &::before {
       font: normal normal normal 24px/1 "Material Design Icons";
       content: v-bind(ico);

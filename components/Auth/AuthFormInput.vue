@@ -26,8 +26,17 @@ export type FormInput = {
 }
 
 const props = defineProps<FormInput>()
-const authInputParent = ref(null)
 const emit = defineEmits(['auth-input'])
+const authInputParent = ref(null)
+
+const model = computed({
+  get () {
+    return props.value
+  },
+  set (value) {
+    emit('auth-input', value)
+  },
+})
 
 onMounted(() => {
   if (authInputParent.value) {
@@ -43,14 +52,6 @@ onMounted(() => {
   }
 })
 
-const model = computed({
-  get () {
-    return props.value
-  },
-  set (value) {
-    emit('auth-input', value)
-  },
-})
 </script>
 
 <style lang="scss">

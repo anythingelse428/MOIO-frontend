@@ -80,7 +80,6 @@
 
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
-import { useDevicesStore } from "~/store/devices"
 import { useUserStore } from "~/store/user"
 
 const name = ref('')
@@ -90,7 +89,6 @@ const devices = ref<{ id: string, name:string }[]>([])
 const existingFloors = ref()
 const existingHouses = ref()
 const existingDevices = ref()
-const homeData = ref()
 const groupStore = useGroupsStore()
 existingFloors.value = () => groupStore.floors
 existingHouses.value = () => groupStore.uppperGroups.filter(el=>el.groupCreatorId === useUserStore().id)
@@ -120,8 +118,8 @@ async function getDevicesByGroupId () {
 async function addGroup () {
   const devicesArrayId = devices.value.map(el=>el.id)
   const parent = floor.value||house.value
-  const response = await groupStore.addRoom(name.value,parent,devicesArrayId)
-  console.log(devicesArrayId)
+  await groupStore.addRoom(name.value,parent,devicesArrayId)
+//   TODO отправить пользователя в свежесозаднную комнату. Будет сделано после рефакторинга бека
 }
 watch(house, () => {
   getDevicesByGroupId()

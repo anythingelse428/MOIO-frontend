@@ -1,5 +1,3 @@
-<!--Групп пока нет, не знаю как будут приходить-->
-
 <template>
   <div v-if="name" class="group-list">
     <h1 class="group__header">
@@ -32,6 +30,7 @@ export interface GroupList {
   devices:IAllDevicesResponse[],
   inverseParent?: GroupList[]
 }
+
 const props = defineProps<GroupList>()
 </script>
 

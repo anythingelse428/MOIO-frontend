@@ -18,8 +18,10 @@ export interface MaskProps {
   transitionFadeName?:string
   transitionContentName?:string
 }
+
 const props = defineProps<MaskProps>()
 const isMounted = ref(false)
+
 onMounted(() => {
   isMounted.value = true
 })

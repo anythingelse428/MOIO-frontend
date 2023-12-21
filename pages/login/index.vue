@@ -35,9 +35,10 @@ import { useUserStore } from "~/store/user"
 definePageMeta({
   layout: 'auth',
 })
+const userStore = useUserStore()
 const login = ref('')
 const password = ref('')
-const userStore = useUserStore()
+
 async function auth () {
   const refreshToken = await userStore.auth({
     login: login.value,
