@@ -78,8 +78,8 @@ const props = defineProps<ServiceCapability>()
 const emit = defineEmits(['update-bool-val'])
 const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
 const devicesStore = useDevicesStore()
-const temp = ref({ ...props })
-const capability = ref(temp)
+const capabilitySource = ref({ ...props })
+const capability = ref(capabilitySource)
 const brightness = ref(capability.value?.hsv?.v)
 const isMounted = ref(false)
 const hue = ref(Number(capability.value.hsv?.h))
@@ -151,6 +151,9 @@ onMounted(() => {
     isMounted.value = true
   }, 100)
 })
+watch(props, (newVal) => {
+  capabilitySource.value = { ...newVal }
+}, { deep: true })
 </script>
 
 
