@@ -8,20 +8,16 @@
         <label for="group" class="add-group__label">Введите название комнаты</label>
         <input id="group" v-model="name"  type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
       </div>
-      <div v-if="existingFloors()?.length" class="add-group__input-group">
+      <div v-if="existingFloors?.length" class="add-group__input-group">
         <label for="floor" class="add-group__label">Выберите этаж</label>
-        <div v-for="floors in existingFloors()" :key="floors.id" class="add-group__input-wrapper">
+        <div v-for="floors in existingFloors" :key="floors.id" class="add-group__input-wrapper">
           <input id="floor" v-model="floor" :value="floors.id" type="radio" name="floor" class="add-group__input">
           <span class="floor-label">{{ floors.name }}</span>
         </div>
       </div>
-      <div v-if="existingHouses()?.length" class="add-group__input-group">
+      <div v-if="existingHouses?.length" class="add-group__input-group">
         <label for="house" class="add-group__label">Выберите дом </label>
-        <div v-for="houses in existingHouses()" :key="houses.id" class="add-group__input-wrapper">
-          <input id="house" v-model="house" :value="houses.id" type="radio" name="house" class="add-group__input">
-          <span class="floor-label">{{ houses.name }}</span>
-        </div>
-
+        <custom-select :options="selectData" :current-value="house" @custom-select="(e)=>house = e" select-name="Выберите дом"></custom-select>
       </div>
       <div v-if="house?.length>10" class="add-group-available-devices">
         <h2 class="add-group-available-devices__header">
@@ -38,7 +34,7 @@
           >
             <label for="device">{{ device?.name }}</label>
             <div class="add-group-available-devices__list-item-checkbox-wrapper">
-              <input id="device" type="checkbox" name="device" @change="(e)=>setDevices(e,{id:device.id,name:device.name})" :checked="devices.findIndex(el=>el.id === device.id)>-1">
+              <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,devices,{id:device.id,name:device.name})" :checked="devices.findIndex(el=>el.id === device.id)>-1">
               <span class="add-group-available-devices__list-item-checkbox-mask" />
             </div>
           </div>
@@ -61,7 +57,7 @@
           <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
             <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
               {{item?.name}}
-            <span class="mdi mdi-delete" @click="(e)=>setDevices(e,{id:item.id,name:item.name})"></span>
+            <span class="mdi mdi-delete" @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"></span>
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
@@ -81,31 +77,34 @@
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
 import { useUserStore } from "~/store/user"
+import CustomSelect from "~/components/shared/CustomSelect.vue"
 
+const groupStore = useGroupsStore()
+const {floors,uppperGroups} = storeToRefs(groupStore)
 const name = ref('')
 const floor = ref()
-const house = ref('Выбрать')
+const house = ref(groupStore.currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
 const existingFloors = ref()
 const existingHouses = ref()
 const existingDevices = ref()
-const groupStore = useGroupsStore()
-existingFloors.value = () => groupStore.floors
-existingHouses.value = () => groupStore.uppperGroups.filter(el=>el.groupCreatorId === useUserStore().id)
+existingFloors.value = floors
+existingHouses.value = uppperGroups.value.filter(el=>el.groupCreatorId === useUserStore().id)
 let previewData = ref({
   name: name,
   devices: devices
 })
+const selectData = ref(existingHouses.value.reduce((acc:{description:string,value:string}[], curr)=>[...acc,{description:curr.name,value:curr.id}],[]))
 
-function setDevices (e:Event, data:{ id: string, name:string }) {
+function setItem (e:Event, target:any, data:{ id: string, name:string }) {
   const isChecked = (<HTMLInputElement>event.target)?.checked
-  const isSelected = devices.value?.find(el=>el?.id === data.id)
+  const isSelected = target?.find(el=>el?.id === data.id)
   if (isChecked && !isSelected){
-    devices.value?.push(data)
+    target?.push(data)
   }
   if (!isChecked && isSelected){
-    const idx = devices.value.findIndex(el=>el.id === data.id)
-    devices.value?.splice(idx,1)
+    const idx = target.findIndex(el=>el.id === data.id)
+    target?.splice(idx,1)
   }
 }
 async function getDevicesByGroupId () {
@@ -115,14 +114,16 @@ async function getDevicesByGroupId () {
     existingDevices.value.push(...category)
   }
 }
+getDevicesByGroupId()
 async function addGroup () {
   const devicesArrayId = devices.value.map(el=>el.id)
   const parent = floor.value||house.value
-  await groupStore.addRoom(name.value,parent,devicesArrayId)
+  await groupStore.addRoom(name.value,3,parent,devicesArrayId,undefined)
 //   TODO отправить пользователя в свежесозаднную комнату. Будет сделано после рефакторинга бека
 }
 watch(house, () => {
   getDevicesByGroupId()
+  selectData.value = existingHouses.value.reduce((acc:{description:string,value:string}[], curr)=>[...acc,{description:curr.name,value:curr.id}],[])
 })
 </script>
 <style lang="scss">

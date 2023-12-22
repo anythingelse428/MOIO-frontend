@@ -27,12 +27,12 @@ const addMenuItems = [
   {
     ico: "plus-box-outline",
     title: "Добавить сценарий",
-    url: '/user/group/add',
+    url: '/#',
   },
   {
     icon: "home-automation",
     name: "Добавить автоматизацию",
-    url: '/user/group/add',
+    url: '/#',
   },
   {
     icon: "cube-outline",
@@ -40,9 +40,14 @@ const addMenuItems = [
     url: '/user/group/add/room',
   },
   {
-    icon: "account-outline",
-    name: "Добавить людей",
-    url: '/user/group/add',
+    icon: "home-floor-l",
+    name: "Добавить этаж",
+    url: '/user/group/add/floor',
+  },
+  {
+    icon: "home-plus",
+    name: "Добавить дом",
+    url: '/user/group/add/house',
   },
 ]
 const settingsMenuItems = [

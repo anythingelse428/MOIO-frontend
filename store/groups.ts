@@ -12,6 +12,7 @@ import apiGroupChangeName from "~/api/group/changeName"
 import apiDevicesChangeDevices from "~/api/device/changeGroup"
 import apiGroupDelete from "~/api/group/delete"
 import { useUserStore } from "~/store/user"
+import apiGroupAddUser from "~/api/group/addUser"
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
     groups: [] as IGroupResponseItem[],
@@ -76,9 +77,9 @@ export const useGroupsStore = defineStore('groups', {
       this.currentHome = id
       await this.getAll()
     },
-    async addRoom (name:string, parentId?:string, devicesIds?:string[]) {
+    async addRoom (name:string, typeId = 3, parentId?:string, devicesIds?:string[], groupIds?:string[]) {
       try {
-        const { response } = await apiGroupAddRoom({ name, parentId, devicesIds })
+        const { response } = await apiGroupAddRoom({ name, typeId, parentId, devicesIds, groupIds })
         if (!response?.status) {
           useNotification('info', 'Комната успешно добавлена')
           setTimeout(() => {
@@ -140,6 +141,9 @@ export const useGroupsStore = defineStore('groups', {
       } catch {
         useNotification('error', "Произошла ошибка при удалении")
       }
+    },
+    async addUserToGroup (login:string, groupId:string) {
+      await apiGroupAddUser(login, groupId)
     },
   },
 })

@@ -21,23 +21,23 @@
           :role="item.role"
         />
       </div>
-      <button class="profile-roommates-section__add-section" @click="isAddRoommatesModalShow=!isAddRoommatesModalShow">
+      <button class="profile-roommates-section__add-section" @click="isAddRoommatesModalShow = true">
         <span class="mdi mdi-plus" />
-        <the-modal
-          :is-shown="isAddRoommatesModalShow"
-          backdrop-filter="blur(3px)"
-          transition-fade-name="fade"
-          transition-content-name="translate"
-          bg-color=""
-          place=".layout"
-        >
-          <template #inner>
-            <div ref="addRoommateModal" class="">
-              <add-roommate-modal @modal-close="isAddRoommatesModalShow = false" />
-            </div>
-          </template>
-        </the-modal>
       </button>
+      <the-modal
+        :is-shown="isAddRoommatesModalShow"
+        backdrop-filter="blur(3px)"
+        transition-fade-name="fade"
+        transition-content-name="translate"
+        bg-color=""
+        place=".layout"
+      >
+        <template #inner>
+          <div ref="addRoommateModal" class="">
+            <add-roommate-modal @modal-close="isAddRoommatesModalShow = false" />
+          </div>
+        </template>
+      </the-modal>
     </div>
     <profile-settings />
   </div>
@@ -67,6 +67,7 @@ const userStore = useUserStore()
 const profileData = ref(userStore.userInfo)
 const isAddRoommatesModalShow = ref(false)
 const isLoading = ref(true)
+const addRoommateModal = ref(null)
 onMounted(() => {
   nextTick(async () => {
     if (profileData.value.name.length < 1) {
@@ -77,7 +78,9 @@ onMounted(() => {
     isLoading.value = false
   })
 })
-
+onClickOutside(addRoommateModal, () => {
+  isAddRoommatesModalShow.value = false
+})
 
 </script>
 
