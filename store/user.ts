@@ -79,6 +79,7 @@ export const useUserStore = defineStore('user', {
       const token = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME)
       token.value = ''
       localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME, '')
+      localStorage.setItem('moio-current-home', '')
       await apiUserLogout()
       window.location.pathname = '/login'
     },

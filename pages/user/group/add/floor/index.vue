@@ -12,7 +12,7 @@
         <label for="house" class="add-group__label">Выберите дом </label>
         <custom-select :options="selectData" :current-value="house" @custom-select="(e)=>house = e" select-name="Выберите дом"></custom-select>
       </div>
-      <div v-if="house?.length>10 && previewData.name.length" class="add-group-available-devices">
+      <div v-if="house?.length>10 && name.length" class="add-group-available-devices">
           <h2 class="add-group-available-devices__header">
             {{existingDevices?.length?
               'Доступные устройства':
@@ -125,10 +125,11 @@ const previewData = ref({
   rooms: rooms
 })
 async function getRoomsByHomeId(){
-  const {inverseParent} = await groupStore.getGroupById(house.value)
-  existingRooms.value = inverseParent.map(el=>{return {
-    id: el.id,
-    name: el.name,
+  await groupStore.getAll(house.value)
+  existingRooms.value = groupStore.groups.filter(el=>el.typeId===3&&el.parentId===house.value).map(el=>{
+    return {
+      id: el.id,
+      name: el.name,
   }})
 }
 getRoomsByHomeId()

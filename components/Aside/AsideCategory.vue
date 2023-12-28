@@ -12,6 +12,7 @@
         :icon="item.icon"
         :url="item.url"
         :editable="item?.editable"
+        :type-id="item?.typeId"
       />
     </div>
   </div>
@@ -29,6 +30,7 @@ export type AsideCategory = {
         url: string
         editable?:boolean
         id?:number|string
+        typeId?:number|string
       }[]
 }
 

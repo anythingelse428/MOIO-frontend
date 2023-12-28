@@ -32,7 +32,7 @@ const { currentGroup } = storeToRefs(groupStore)
 async function fetchGroups () {
   isLoading.value = true
   groupData.value = { name: '', devices: [], inverseParent: [] }
-  await groupStore.getGroupById(groupStore.currentHome)
+  await groupStore.getAll(groupStore.currentHome)
   groupData.value = currentGroup.value
   isLoading.value = false
 }

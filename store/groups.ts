@@ -13,6 +13,7 @@ import apiDevicesChangeDevices from "~/api/device/changeGroup"
 import apiGroupDelete from "~/api/group/delete"
 import { useUserStore } from "~/store/user"
 import apiGroupAddUser from "~/api/group/addUser"
+import apiGroupGetUserByGroupId from "~/api/group/getUsersByGroupId"
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
     groups: [] as IGroupResponseItem[],
@@ -28,7 +29,7 @@ export const useGroupsStore = defineStore('groups', {
     floors: (state) => {
       const categoriesStore = useCategoriesStore()
       // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 2), 'group', 'этаж')
+      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 2), 'group', 'этаж', true)
     },
     rooms: (state) => {
       const categoriesStore = useCategoriesStore()
@@ -42,10 +43,11 @@ export const useGroupsStore = defineStore('groups', {
     },
   },
   actions: {
-    async getAll () {
-      if (this.currentHome.length > 1) {
+    async getAll (groupId?:string) {
+      if (this.currentHome.length > 1 || (groupId && groupId?.length > 1)) {
         try {
-          const data = await apiGroupGetAll(this.currentHome)
+          const data = await apiGroupGetAll(this.currentHome.length > 1 ? this.currentHome : groupId)
+          console.log(data)
           if (data.length) {
             this.groups = data
           }
@@ -144,6 +146,9 @@ export const useGroupsStore = defineStore('groups', {
     },
     async addUserToGroup (login:string, groupId:string) {
       await apiGroupAddUser(login, groupId)
+    },
+    async getUsersByGroupId (id:string) {
+      return await apiGroupGetUserByGroupId(id)
     },
   },
 })

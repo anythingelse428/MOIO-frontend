@@ -50,7 +50,7 @@ const stepped = (val:number, divider:number) => {
 watch(p, (newP) => {
   const unStepped = (props.max - props.min) * (newP / 100) + props.min
 
-  emit('t-input', (stepped(unStepped, (props.step || 1)) + 1 - props.step).toFixed(2))
+  emit('t-input', Number((stepped(unStepped, (props.step || 1)) + 1 - props.step).toFixed(2)))
 })
 
 onMounted(() => {
@@ -61,11 +61,20 @@ onMounted(() => {
 
     const steps = ((max - min) / stepAttr)
     let isMoving = false
-
-    const getPoints = () => {
+    const cache:{[key:string]:{[key:string]:any}} = {}
+    function memoize (fn:Function, key:string, args:string) {
+      if (cache[key] && cache[key][args.toString()]) {
+        return cache[key][args.toString()]
+      }
+      const data = fn(...args)
+      cache[key] = {}
+      cache[key][args.toString()] = data
+      return data
+    }
+    const getPoints = (trackLength:number) => {
       // TODO облегчить функцию
       const points = []
-      const trackLength = track.value.getTotalLength()
+      // const trackLength = track.value.getTotalLength()
       const step = trackLength / steps
       let progressLength = 0
       while (progressLength <= trackLength + 1) {
@@ -81,17 +90,17 @@ onMounted(() => {
       progress.value.style.strokeDasharray = `${track.value.getTotalLength() * percentage} 1000`
     }
     const setThumb = () => {
-      const points = getPoints()
+      const points = memoize(getPoints, 'points', [track.value.getTotalLength()])
       const newVal = Number(p.value)
       const index = Math.max(1, newVal) / stepAttr
-      const point = points[Number(index.toFixed() - 1)]
+      const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points.length - 1]
       thumb.value.setAttribute('cx', point.x)
       thumb.value.setAttribute('cy', point.y)
     }
     const getClosestPoint = (x, y) => {
       // TODO облегчить функцию
       const distances = []
-      const points = getPoints()
+      const points = memoize(getPoints, 'points', [track.value.getTotalLength()])
       points.forEach((point, index) => {
         const diffX = x - point.x
         const diffY = y - point.y
@@ -134,8 +143,8 @@ onMounted(() => {
 
     const dragEnd = () => {
       isMoving = false
-      if (document.querySelector('.service-capabilities-modal')?.style) {
-        document.querySelector('.service-capabilities-modal').style.overflow = 'auto'
+      if (document.querySelector('.service-capabilities-modal__body')?.style) {
+        document.querySelector('.service-capabilities-modal__body').style.overflow = 'auto'
       }
       if (svg.value?.classList) {
         svg.value.classList.remove('moving')
@@ -145,8 +154,8 @@ onMounted(() => {
     const dragStart = () => {
       isMoving = true
 
-      if (document.querySelector('.service-capabilities-modal')?.style) {
-        document.querySelector('.service-capabilities-modal').style.overflow = 'hidden'
+      if (document.querySelector('.service-capabilities-modal__body')?.style) {
+        document.querySelector('.service-capabilities-modal__body').style.overflow = 'hidden'
       }
 
       if (svg.value?.classList) {
@@ -177,7 +186,7 @@ onMounted(() => {
     window.addEventListener('mouseup', dragEnd)
     window.addEventListener('touchend', dragEnd)
     setSVG()
-    getPoints()
+    memoize(getPoints, 'points', [track.value.getTotalLength()])
     setThumb()
     setPath(p.value)
   }

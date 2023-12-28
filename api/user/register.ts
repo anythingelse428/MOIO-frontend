@@ -4,6 +4,7 @@ export interface IRegisterUserProps {
     name: string,
     login: string,
     password: string,
+    clientId:string
 }
 export interface IRegisterUserResponse {
     accessToken: string,

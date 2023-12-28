@@ -19,7 +19,7 @@
         <label for="house" class="add-group__label">Выберите дом </label>
         <custom-select :options="selectData" :current-value="house" @custom-select="(e)=>house = e" select-name="Выберите дом"></custom-select>
       </div>
-      <div v-if="house?.length>10" class="add-group-available-devices">
+      <div v-if="house?.length>1 && name.length" class="add-group-available-devices">
         <h2 class="add-group-available-devices__header">
           {{existingDevices?.length?
           'Доступные устройства':

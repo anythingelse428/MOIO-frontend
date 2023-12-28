@@ -1,19 +1,20 @@
 <template>
   <div class="add-group --edit">
+
   <div class="add-group">
     <h1 class="add-group__header">
-      Изменить комнату
+      Изменить этаж
     </h1>
     <form method="post" class="add-group__form" @submit.prevent="editGroup()">
       <div class="add-group__input-group">
-        <label for="group" class="add-group__label">Введите название комнаты</label>
-        <input id="group" v-model="name"  type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
+        <label for="group" class="add-group__label">Введите название этажа</label>
+        <input id="group" v-model="name"  type="text" name="group" class="add-group__input" required placeholder="Название этажа">
       </div>
       <div v-if="house?.length>1" class="add-group-available-devices">
         <h2 class="add-group-available-devices__header">
           {{existingDevices?.length?
           'Доступные устройства':
-            'Устройства уже распределены по комнатам или не найдены'
+            'Устройства уже распределены по группам или не найдены'
           }}
         </h2>
         <div class="add-group-available-devices__list" v-if="existingDevices?.length>0">
@@ -25,6 +26,27 @@
             <label for="device">{{ device?.name }}</label>
             <div class="add-group-available-devices__list-item-checkbox-wrapper">
               <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,devices,{id:device.id,name:device.name})" :checked="devices.findIndex(el=>el.id === device.id)>-1">
+              <span class="add-group-available-devices__list-item-checkbox-mask" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="house?.length>1" class="add-group-available-devices">
+        <h2 class="add-group-available-devices__header">
+          {{existingDevices?.length?
+            'Доступные комнаты':
+            'Комнаты уже распределены по этажам или не найдены'
+          }}
+        </h2>
+        <div class="add-group-available-devices__list" v-if="existingRooms?.length>0">
+          <div
+              v-for="device in existingRooms"
+              :key="device.id"
+              class="add-group-available-devices__list-item"
+          >
+            <label for="device">{{ device?.name }}</label>
+            <div class="add-group-available-devices__list-item-checkbox-wrapper">
+              <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,rooms,{id:device.id,name:device.name})" :checked="rooms.findIndex(el=>el.id === device.id)>-1">
               <span class="add-group-available-devices__list-item-checkbox-mask" />
             </div>
           </div>
@@ -52,7 +74,7 @@
       <div class="add-group__preview" v-if="previewData.name.length">
         <div class="add-group__preview-section">
           <div class="add-group__preview-section-title">
-            Название комнаты
+            Название этажа
           </div>
           <div class="add-group__preview-section-value">
           {{previewData.name}}
@@ -60,12 +82,27 @@
         </div>
         <div class="add-group__preview-section">
           <div class="add-group__preview-section-title">
-            Устройства комнаты
+            Гости этажа
           </div>
-          <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
-            <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
+          <div class="add-group__preview-section-value" v-if="previewData.users?.length">
+            <div class="add-group__preview-section-device" v-for="user in previewData.users" :key="user.id">
+              {{user?.name}}
+              <span class="mdi mdi-delete" @click="(e)=>setItem(e,users,{id:user.id,name:user.name})" v-if="user.id !== groupStore.currentGroup.groupCreatorId"></span>
+            </div>
+          </div>
+          <div class="add-group__preview-section-value" v-else>
+            Нет выбранных устройств
+          </div>
+        </div>
+
+        <div class="add-group__preview-section">
+          <div class="add-group__preview-section-title">
+            Комнаты этажа
+          </div>
+          <div class="add-group__preview-section-value" v-if="previewData.rooms?.length">
+            <div class="add-group__preview-section-device" v-for="item in previewData.rooms" :key="item.id">
               {{item?.name}}
-            <span class="mdi mdi-delete" @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"></span>
+              <span class="mdi mdi-delete" @click="(e)=>setItem(e,rooms,{id:item.id,name:item.name})"></span>
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
@@ -74,12 +111,12 @@
         </div>
         <div class="add-group__preview-section">
           <div class="add-group__preview-section-title">
-            Гости комнаты
+            Устройства этажа
           </div>
-          <div class="add-group__preview-section-value" v-if="previewData.users?.length">
-            <div class="add-group__preview-section-device" v-for="user in previewData.users" :key="user.id">
-              {{user?.name}}
-            <span class="mdi mdi-delete" @click="(e)=>setItem(e,users,{id:user.id,name:user.name})" v-if="user.id !== groupStore.currentGroup.groupCreatorId"></span>
+          <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
+            <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
+              {{item?.name}}
+            <span class="mdi mdi-delete" @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"></span>
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
@@ -102,22 +139,27 @@
 
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
-import type { IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
+import { type IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
+import { use } from "h3"
 
-const id = useRoute().params.id as string
-let oldName = ''
-let oldDevices:{ id: string, name:string }[] = []
-const name = ref('')
-const house = ref("")
-const devices = ref<{ id: string, name:string }[]>([])
-const users = ref<{id:number,name:string}[]>()
-const existingDevices = ref<{id:number,name:string}[]>()
-const existingUsers = ref<IUsersByGroupResponse[]>()
 const groupStore = useGroupsStore()
+const {groups,currentHome} = storeToRefs(groupStore)
+const name = ref('')
+let oldName = ''
+let oldDevices = []
+const house = ref(currentHome)
+const devices = ref<{ id: string, name:string }[]>([])
+const existingDevices = ref()
+const users = ref<{id:number,name:string}[]>()
+const existingUsers = ref<IUsersByGroupResponse[]>()
+const id = useRoute().params.id
 const router = useRouter()
+const existingRooms = ref(groups.value.filter(el=>el.typeId===3&&el.parentId === currentHome.value))
+const rooms = ref<{ id: string, name:string }[]>([])
 const previewData = ref({
       name: name,
       devices: devices,
+      rooms:rooms,
       users:users
 })
 
@@ -135,20 +177,14 @@ function setItem (e:Event, target:any, data:{ id: string, name:string }) {
 
 async function getGroupData(){
   const data = await groupStore.getGroupById(id)
-  const parentData = await groupStore.getGroupById(data.parentId)
-  users.value = await groupStore.getUsersByGroupId(id)
-  const allUsers = [...await groupStore.getUsersByGroupId(data.parentId), ...users.value]
-  if (parentData.typeId === 2){
-    // если этаж, то ставим дому ид родителя этажа
-    house.value = parentData.parentId
-  } else{
-   house.value = data.parentId
-  }
+  house.value = data.parentId
   name.value = data.name
-  oldName = unref(name.value)
+  users.value = await groupStore.getUsersByGroupId(id)
+  const allUsers = [...await groupStore.getUsersByGroupId(house.value), ...users.value]
   existingUsers.value = allUsers.filter((value, index, self) =>
-          index === self.findIndex((t) => t.id === value.id)
+      index === self.findIndex((t) => t.id === value.id)
   )
+  oldName = unref(name.value)
   await getDevicesByGroupId(id,devices)
   await getDevicesByGroupId(house.value,existingDevices)
 }

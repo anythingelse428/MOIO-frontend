@@ -28,6 +28,14 @@
         :required="true"
         @auth-input="(newVal)=>password=newVal"
       />
+      <auth-form-input
+        name="clientId"
+        :value="clientId"
+        label="ClientID"
+        type="text"
+        :required="true"
+        @auth-input="(newVal)=>clientId=newVal"
+      />
       <input type="submit" value="Регистрация" class="auth__form-submit">
       <NuxtLink to="/login" class="auth__form-submit --outline">
         Войти
@@ -46,14 +54,14 @@ const userStore = useUserStore()
 const name = ref('')
 const email = ref('')
 const password = ref('')
+const clientId = ref('')
 
 async function register () {
   const registrationData = {
     name: name.value,
     login: email.value,
     password: password.value,
-    devices: [0],
-    role: 0,
+    clientId: clientId.value,
   }
   const refreshToken = await userStore.register(registrationData)
   const config = useRuntimeConfig()

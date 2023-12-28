@@ -12,7 +12,7 @@ export const useCategoriesStore = defineStore('categories', {
   }),
   getters: {
     allCategories: state => (array = state.categories, urlPrefix = 'category', staticIcon?:string, editable = false, activeId = '-1') => {
-      return array.reduce((acc:{name:string, url:string, icon:string, id:any, editable?:boolean, active?:boolean}[], curr, i) => {
+      return array.reduce((acc:{name:string, url:string, icon:string, id:any, editable?:boolean, active?:boolean, typeId?:number}[], curr, i) => {
         acc[i] =
           {
             name: curr.name,
@@ -21,6 +21,7 @@ export const useCategoriesStore = defineStore('categories', {
             id: curr.id,
             editable,
             active: curr.id === activeId,
+            typeId: curr?.typeId,
           }
         return acc
       }, [])
