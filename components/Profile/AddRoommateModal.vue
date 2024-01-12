@@ -8,33 +8,29 @@
         <span class="mdi mdi-close" />
       </div>
     </div>
-    <form action="" method="post" class="add-roommate-modal__form" @submit.prevent="addRoommate()">
-      <custom-select v-if="groups" class="add-roommate-modal__input-group" :options="selectData" select-name="Выберите группу" :current-value="newRoommateData.groupId" @custom-select="(e)=>newRoommateData.groupId = e" />
-      <!--      <div class="add-roommate-modal__input-group">-->
-      <!--        <label for="name" class="add-roommate-modal__input-group-label">-->
-      <!--          Имя пользователя-->
-      <!--        </label>-->
-      <!--        <input-->
-      <!--          id="name"-->
-      <!--          v-model="newRoommateData.name"-->
-      <!--          type="text"-->
-      <!--          name="name"-->
-      <!--          class="add-roommate-modal__input-group-input"-->
-      <!--        >-->
-      <!--      </div>-->
+    <form action="" method="post" class="add-roommate-modal__form">
+      <custom-select v-if="groups" class="add-roommate-modal__input-group" :options="selectData" select-name="Выберите группу" :current-value="groupId" @custom-select="(e)=>groupId = e" />
       <div class="add-roommate-modal__input-group">
+        <div class="add-roommate-modal__users">
+          <div v-for="login in logins" :key="login" class="add-roommate-modal__users-user">
+            {{ login }}
+          </div>
+        </div>
         <label for="email" class="add-roommate-modal__input-group-label">
           Email нового пользователя
         </label>
         <input
           id="email"
-          v-model="newRoommateData.login"
+          v-model="login"
           type="email"
           name="email"
           class="add-roommate-modal__input-group-input"
         >
+        <button class="add-roommate-modal__form-submit" @click.prevent="addToLoginsArray()">
+          Добавить
+        </button>
       </div>
-      <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit">
+      <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" @click.prevent="addRoommate()">
     </form>
   </div>
 </template>
@@ -45,14 +41,29 @@ import { useGroupsStore } from "~/store/groups"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 
 const groupStore = useGroupsStore()
-const newRoommateData = ref({ name: '', login: '', groupId: '' })
+const login = ref('')
+const groupId = ref('')
+const logins = ref<string[]>([])
 const { groups } = storeToRefs(groupStore)
 const emit = defineEmits(['modal-close'])
 const selectData = ref(groups.value.reduce((acc:{description:string, value:any}[], curr) => [...acc, { description: curr.name, value: curr.id }], []))
 await groupStore.getAll()
+function addToLoginsArray () {
+  if (logins.value.length > 0 && logins.value.find(el => el?.toLowerCase() === login.value.toLowerCase())) {
+    useNotification('error', 'Этот пользователь уже есть в списке')
+    return false
+  }
+  logins.value.push(login.value)
+  login.value = ''
+}
 async function addRoommate () {
+  if (groupId.value.length === 0) {
+    useNotification('error', 'Выберите группу')
+    return
+  }
   try {
-    await groupStore.addUserToGroup(newRoommateData.value.login, newRoommateData.value.groupId)
+    await groupStore.addUserToGroup(logins.value, groupId.value)
+    useNotification('info', 'Пользователи успешно добавлены')
   } catch {
 
   }

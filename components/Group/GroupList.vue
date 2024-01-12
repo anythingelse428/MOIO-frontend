@@ -41,5 +41,8 @@ const props = defineProps<GroupList>()
 .group__header,
 .subgroup-item__service-list{
   margin-top: 1em;
+  &::first-letter{
+    text-transform: capitalize;
+  }
 }
 </style>

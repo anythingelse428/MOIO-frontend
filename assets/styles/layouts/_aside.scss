@@ -36,7 +36,7 @@
     .aside-trigger{
       display: block;
       position: relative;
-      z-index: 10;
+      z-index: 11;
       font-size: 40px;
       top: -64px;
       right: -24px;
@@ -121,7 +121,8 @@
       }
     }
     &__title{
-      @include aside-item
+      @include aside-item;
+      word-break: break-word;
     }
   }
   .aside-category{

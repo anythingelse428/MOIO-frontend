@@ -24,30 +24,30 @@
           >
             <label for="device">{{ device?.name }}</label>
             <div class="add-group-available-devices__list-item-checkbox-wrapper">
-              <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,devices,{id:device.id,name:device.name})" :checked="devices.findIndex(el=>el.id === device.id)>-1">
+              <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,devices,{id:device.id,name:device.name})" :checked="devices.findIndex(el=>el.id == device.id)>-1">
               <span class="add-group-available-devices__list-item-checkbox-mask" />
             </div>
           </div>
         </div>
       </div>
-      <div v-if="house?.length>1 && existingUsers?.length" class="add-group-available-devices">
-        <h2 class="add-group-available-devices__header">
-          Добавьте гостей
-        </h2>
-        <div class="add-group-available-devices__list" v-if="existingUsers?.length>0">
-          <div
-              v-for="user in existingUsers"
-              :key="user.id"
-              class="add-group-available-devices__list-item"
-          >
-            <label for="device">{{ user?.name }}</label>
-            <div class="add-group-available-devices__list-item-checkbox-wrapper" v-if="user.id !== groupStore.currentGroup.groupCreatorId">
-              <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,users,{id:user.id,name:user.name})" :checked="users?.findIndex(el=>el.id === user.id)>-1">
-              <span class="add-group-available-devices__list-item-checkbox-mask" />
-            </div>
-          </div>
-        </div>
-      </div>
+<!--      <div v-if="house?.length>1 && existingUsers?.length" class="add-group-available-devices">-->
+<!--        <h2 class="add-group-available-devices__header">-->
+<!--          Добавьте гостей-->
+<!--        </h2>-->
+<!--        <div class="add-group-available-devices__list" v-if="existingUsers?.length>0">-->
+<!--          <div-->
+<!--              v-for="user in existingUsers"-->
+<!--              :key="user.id"-->
+<!--              class="add-group-available-devices__list-item"-->
+<!--          >-->
+<!--            <label for="device">{{ user?.name }}</label>-->
+<!--            <div class="add-group-available-devices__list-item-checkbox-wrapper" v-if="user.id !== groupStore.currentGroup.groupCreatorId">-->
+<!--              <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,users,{id:user.id,name:user.name})" :checked="users?.findIndex(el=>el.id === user.id)>-1">-->
+<!--              <span class="add-group-available-devices__list-item-checkbox-mask" />-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
         <div class="add-group__preview-wrapper">
       <div class="add-group__preview" v-if="previewData.name.length">
         <div class="add-group__preview-section">
@@ -79,11 +79,11 @@
           <div class="add-group__preview-section-value" v-if="previewData.users?.length">
             <div class="add-group__preview-section-device" v-for="user in previewData.users" :key="user.id">
               {{user?.name}}
-            <span class="mdi mdi-delete" @click="(e)=>setItem(e,users,{id:user.id,name:user.name})" v-if="user.id !== groupStore.currentGroup.groupCreatorId"></span>
+            <span class="mdi mdi-delete" @click="(e)=>{usersForRemove.push({id:user.id,name:user.name});setItem(e,users,{id:user.id,name:user.name});}" v-if="user.id !== groupStore.currentGroup.groupCreatorId"></span>
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
-            Нет выбранных устройств
+            Нет приглашенных пользователей
           </div>
         </div>
         </div>
@@ -111,8 +111,9 @@ const name = ref('')
 const house = ref("")
 const devices = ref<{ id: string, name:string }[]>([])
 const users = ref<{id:number,name:string}[]>()
-const existingDevices = ref<{id:number,name:string}[]>()
-const existingUsers = ref<IUsersByGroupResponse[]>()
+const usersForRemove = ref<{id:number,name:string}[]>([])
+const existingDevices = ref<{id:number,name:string}[]>([])
+// const existingUsers = ref<IUsersByGroupResponse[]>()
 const groupStore = useGroupsStore()
 const router = useRouter()
 const previewData = ref({
@@ -125,7 +126,7 @@ function setItem (e:Event, target:any, data:{ id: string, name:string }) {
   const isChecked = (<HTMLInputElement>event.target)?.checked
   const isSelected = target?.find(el=>el?.id === data.id)
   if (isChecked && !isSelected){
-    target?.push(data)
+    target?.push(unref(data))
   }
   if (!isChecked && isSelected){
     const idx = target.findIndex(el=>el.id === data.id)
@@ -137,6 +138,7 @@ async function getGroupData(){
   const data = await groupStore.getGroupById(id)
   const parentData = await groupStore.getGroupById(data.parentId)
   users.value = await groupStore.getUsersByGroupId(id)
+  users.value = users.value?.filter(el=>el.id!==groupStore.currentGroup.groupCreatorId)
   const allUsers = [...await groupStore.getUsersByGroupId(data.parentId), ...users.value]
   if (parentData.typeId === 2){
     // если этаж, то ставим дому ид родителя этажа
@@ -146,9 +148,9 @@ async function getGroupData(){
   }
   name.value = data.name
   oldName = unref(name.value)
-  existingUsers.value = allUsers.filter((value, index, self) =>
-          index === self.findIndex((t) => t.id === value.id)
-  )
+  // existingUsers.value = allUsers.filter((value, index, self) =>
+  //         index === self.findIndex((t) => t.id === value.id)
+  // )
   await getDevicesByGroupId(id,devices)
   await getDevicesByGroupId(house.value,existingDevices)
 }
@@ -169,6 +171,9 @@ async function editGroup () {
   }
   if (devices.value.length>0){
     await groupStore.changeDevices(id, devices.value.map(el=>el.id))
+  }
+  if (usersForRemove.value?.length>0){
+    await groupStore.removeUsersFromGroup(usersForRemove.value?.map(el=>el.id),id)
   }
   setTimeout(()=>{
     useRouter().push({path:'/user/group/' + id})
