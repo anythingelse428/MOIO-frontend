@@ -1,9 +1,9 @@
 import * as signalR from "@microsoft/signalr"
 
 
-export default function useSocket (httpCtxUrl:string, autoReconnect = false) {
+export default async function useSocket (httpCtxUrl:string, autoReconnect = false) {
   const connection = new signalR.HubConnectionBuilder()
-    .withUrl(httpCtxUrl)
+    .withUrl(httpCtxUrl, { withCredentials: false })
     .build()
   async function start () {
     try {
@@ -16,7 +16,7 @@ export default function useSocket (httpCtxUrl:string, autoReconnect = false) {
       }
     }
   }
-  start()
+  await start()
 
   connection.onclose(async () => {
     await start()
