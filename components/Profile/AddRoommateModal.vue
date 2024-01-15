@@ -11,11 +11,6 @@
     <form action="" method="post" class="add-roommate-modal__form">
       <custom-select v-if="groups" class="add-roommate-modal__input-group" :options="selectData" select-name="Выберите группу" :current-value="groupId" @custom-select="(e)=>groupId = e" />
       <div class="add-roommate-modal__input-group">
-        <div class="add-roommate-modal__users">
-          <div v-for="login in logins" :key="login" class="add-roommate-modal__users-user">
-            {{ login }}
-          </div>
-        </div>
         <label for="email" class="add-roommate-modal__input-group-label">
           Email нового пользователя
         </label>
@@ -26,9 +21,18 @@
           name="email"
           class="add-roommate-modal__input-group-input"
         >
-        <button class="add-roommate-modal__form-submit" @click.prevent="addToLoginsArray()">
-          Добавить
+        <button class="add-roommate-modal__add-button" @click.prevent="addToLoginsArray()">
+          <span class="mdi mdi-plus" />
         </button>
+      </div>
+      <div class="add-roommate-modal__users">
+        <div v-if="logins.length === 0" class="add-roommate-modal__users-user--placeholder">
+          Здесь будет отображен список пользователей
+        </div>
+        <div v-for="login in logins" :key="login" class="add-roommate-modal__users-user">
+          {{ login }}
+          <button class="mdi mdi-delete" @click.prevent="removeFromLoginsArray(login)" />
+        </div>
       </div>
       <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" @click.prevent="addRoommate()">
     </form>
@@ -53,8 +57,21 @@ function addToLoginsArray () {
     useNotification('error', 'Этот пользователь уже есть в списке')
     return false
   }
-  logins.value.push(login.value)
-  login.value = ''
+  if (login.value.length > 0) {
+    const emailRegex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gm
+    if (!login.value.match(emailRegex)) {
+      useNotification('error', 'Введите валидный email')
+      return false
+    }
+    logins.value.push(login.value)
+    login.value = ''
+  }
+}
+function removeFromLoginsArray (login:string) {
+  if (logins.value.length > 0) {
+    const idx = logins.value.findIndex(el => el.toLowerCase() === login.toLowerCase())
+    logins.value.splice(idx, 1)
+  }
 }
 async function addRoommate () {
   if (groupId.value.length === 0) {

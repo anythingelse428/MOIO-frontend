@@ -8,7 +8,7 @@
       <div class="profile-card-info__role">
         {{ role }}
       </div>
-      <div class="profile-card-info__name">
+      <div v-if="displayedName" class="profile-card-info__name">
         {{ displayedName }}
       </div>
     </div>

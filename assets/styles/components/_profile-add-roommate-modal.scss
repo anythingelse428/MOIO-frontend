@@ -16,7 +16,7 @@
     .modal-header {
       width: 100%;
       text-align: center;
-      @include aside-header
+      @include capabilities-modal-header
     }
 
     .modal-close {
@@ -35,8 +35,9 @@
   }
   &__input-group {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
     width: 100%;
     gap: 10px;
   }
@@ -47,7 +48,7 @@
     text-align: start;
   }
   &__input-group-input{
-    width: 100%;
+    width: calc(100% - 36px - 12px);
     background: $thumb-color;
     outline: none;
     padding: 10px 16px;
@@ -68,5 +69,70 @@
     border-radius: 12px;
     cursor: pointer;
     color: $color-accent;
+  }
+  &__add-button{
+    display: block;
+    width: 36px;
+    height: 36px;
+    background: $color-active;
+    text-align: center;
+    border-radius: 100%;
+    border: 0px;
+    cursor: pointer;
+    .mdi-plus{
+      font-size: 32px;
+      color: $bg-primary;
+    }
+  }
+  &__users{
+    background: $thumb-color;
+    padding: 12px 8px;
+    border-radius: 16px;
+    height: 168px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap:12px;
+    &::-webkit-scrollbar {
+      border-radius: 2px;
+      width: 8px;
+      margin-inline-start: 10px;
+      left: 10px;
+      position: absolute;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      width: 4px;
+      border-radius: 2px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $color-active;
+      width: 8px;
+      height: 32px;
+      border-radius: 12px;
+    }
+  }
+  &__users-user{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 20px;
+    border-radius: 12px;
+    background: $bg-primary;
+    word-break: break-all;
+    @include action-item;
+    .mdi-delete{
+      color: #D15151;
+      font-size: 20px;
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      padding: 0;
+    }
+    &--placeholder{
+      text-align: center;
+    }
   }
 }

@@ -37,7 +37,6 @@ async function fetchGroups () {
   groupData.value = currentGroup.value
   isLoading.value = false
 }
-await fetchGroups()
 
 if (groupStore.currentHome !== groupId && groupStore.uppperGroups.find(el => el.id === groupId)?.typeId === 1) {
   groupStore.setCurrentHome(groupId)
@@ -56,14 +55,14 @@ watch(currentGroup, (newVal, oldValue) => {
   }
 }, { deep: true, immediate: true })
 
-onMounted(async () => {
-  try {
-    isLoading.value = true
-    await groupStore.getGroupById(groupId)
-    isLoading.value = false
-  } catch {
-  }
-})
+// onMounted(async () => {
+//   try {
+//     isLoading.value = true
+//     await groupStore.getGroupById(groupId)
+//     isLoading.value = false
+//   } catch {
+//   }
+// })
 
 </script>
 

@@ -23,24 +23,12 @@ export interface IGroupData {
  inverseParent: IGroupResponseItem['inverseParent']
 }
 
-const route = useRoute()
 const isLoading = ref(true)
 const groupData = ref<IGroupData>({ name: '', devices: [], inverseParent: [] })
 const groupStore = useGroupsStore()
 const { currentGroup } = storeToRefs(groupStore)
 
-async function fetchGroups () {
-  isLoading.value = true
-  groupData.value = { name: '', devices: [], inverseParent: [] }
-  await groupStore.getAll(groupStore.currentHome)
-  groupData.value = currentGroup.value
-  isLoading.value = false
-}
-await fetchGroups()
 
-watch(route, () => {
-  fetchGroups()
-}, { deep: true, immediate: true })
 watch(currentGroup, (newVal, oldValue) => {
   if (oldValue && !newVal.id.includes(groupStore.currentHome)) {
     const idx = groupData.value.inverseParent.findIndex(el => el.id === newVal.id)

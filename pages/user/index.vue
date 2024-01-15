@@ -70,7 +70,7 @@ const isLoading = ref(true)
 const addRoommateModal = ref(null)
 onMounted(() => {
   nextTick(async () => {
-    if (profileData.value.name.length < 1) {
+    if (profileData.value.name?.length < 1) {
       isLoading.value = true
       await userStore.init()
       profileData.value = userStore.userInfo
@@ -78,10 +78,6 @@ onMounted(() => {
     isLoading.value = false
   })
 })
-onClickOutside(addRoommateModal, () => {
-  isAddRoommatesModalShow.value = false
-})
-
 </script>
 
 <style lang="scss">

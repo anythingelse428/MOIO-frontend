@@ -20,6 +20,15 @@
     z-index: 101;
     cursor: pointer;
   }
+  &__submit-name{
+    display: block;
+    background: $color-active;
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+    border: 0px;
+    cursor: pointer;
+  }
   &__header{
     @include capabilities-modal-header;
     text-align: center;
@@ -33,6 +42,7 @@
       width: calc(100% - (24px * 2));
       justify-content: space-between;
       margin-inline: auto;
+      align-items: center;
       input{
         background: $bg-primary;
         outline: none;
@@ -40,7 +50,7 @@
         font-size: 20px;
         margin-left: 12px;
         border-bottom: 1px solid;
-        width: 50%;
+        width: calc(100% - 50px);
         &[type="submit"]{
           background: $color-active;
           padding-inline: 12px;

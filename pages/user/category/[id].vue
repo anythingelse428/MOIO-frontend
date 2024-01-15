@@ -53,7 +53,7 @@ async function fetchGroups () {
   }
   isLoading.value = false
 }
-await fetchGroups()
+// await fetchGroups()
 
 watch(route, () => {
   fetchGroups()
