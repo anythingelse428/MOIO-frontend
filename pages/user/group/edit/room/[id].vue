@@ -65,7 +65,7 @@
           <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
             <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
               {{item?.name}}
-            <span class="mdi mdi-delete" @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"></span>
+            <span class="mdi mdi-delete" @click="(e)=>{setItem(e,devices,{id:item.id,name:item.name});oldDevices.push(item.id)}"></span>
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
@@ -106,7 +106,7 @@ import type { IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
 
 const id = useRoute().params.id as string
 let oldName = ''
-let oldDevices:{ id: string, name:string }[] = []
+let oldDevices:string[] = []
 const name = ref('')
 const house = ref("")
 const devices = ref<{ id: string, name:string }[]>([])
@@ -176,7 +176,7 @@ async function editGroup () {
     await groupStore.removeUsersFromGroup(usersForRemove.value?.map(el=>el.id),id)
   }
   setTimeout(()=>{
-    useRouter().push({path:'/user/group/' + id})
+    // useRouter().push({path:'/user/group/' + id})
   },1500)
 }
 async function deleteGroup(){

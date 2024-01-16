@@ -34,7 +34,7 @@
           <button class="mdi mdi-delete" @click.prevent="removeFromLoginsArray(login)" />
         </div>
       </div>
-      <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" @click.prevent="addRoommate()">
+      <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" :disabled="logins.length===0" @click.prevent="addRoommate()">
     </form>
   </div>
 </template>

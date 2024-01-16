@@ -56,6 +56,7 @@ export const useUserStore = defineStore('user', {
       const { accessToken, refreshToken } = await apiUserRegister(props)
       if (accessToken) {
         const config = useRuntimeConfig()
+        localStorage.setItem('moio-current-home', '')
         localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, accessToken)
         this.accessToken = accessToken
         window.location.pathname = '/'
@@ -69,6 +70,7 @@ export const useUserStore = defineStore('user', {
         this.accessToken = accessToken
         this.displayedName = username
         this.id = id
+        localStorage.setItem('moio-current-home', '')
         localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME as string, accessToken)
         window.location.pathname = '/'
       }

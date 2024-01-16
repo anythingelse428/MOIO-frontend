@@ -8,16 +8,16 @@
         <label for="group" class="add-group__label">Введите название комнаты</label>
         <input id="group" v-model="name"  type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
       </div>
-      <div v-if="existingFloors?.length" class="add-group__input-group">
+      <div v-if="existingHouses?.length" class="add-group__input-group">
+        <label for="house" class="add-group__label">Выберите дом </label>
+        <custom-select :options="selectData" :current-value="house" @custom-select="(e)=>house = e" select-name="Выберите дом"></custom-select>
+      </div>
+      <div v-if="existingFloors?.length>0" class="add-group__input-group">
         <label for="floor" class="add-group__label">Выберите этаж</label>
         <div v-for="floors in existingFloors" :key="floors.id" class="add-group__input-wrapper">
           <input id="floor" v-model="floor" :value="floors.id" type="radio" name="floor" class="add-group__input">
           <span class="floor-label">{{ floors.name }}</span>
         </div>
-      </div>
-      <div v-if="existingHouses?.length" class="add-group__input-group">
-        <label for="house" class="add-group__label">Выберите дом </label>
-        <custom-select :options="selectData" :current-value="house" @custom-select="(e)=>house = e" select-name="Выберите дом"></custom-select>
       </div>
       <div v-if="house?.length>1 && name.length" class="add-group-available-devices">
         <h2 class="add-group-available-devices__header">
@@ -80,12 +80,12 @@ import { useUserStore } from "~/store/user"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 
 const groupStore = useGroupsStore()
-const {floors,uppperGroups} = storeToRefs(groupStore)
+const {floors, uppperGroups} = storeToRefs(groupStore)
 const name = ref('')
 const floor = ref()
 const house = ref(groupStore.currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
-const existingFloors = ref()
+const existingFloors = ref(floors)
 const existingHouses = ref()
 const existingDevices = ref()
 existingFloors.value = floors
