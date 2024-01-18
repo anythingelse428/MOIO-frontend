@@ -1,9 +1,12 @@
 import * as signalR from "@microsoft/signalr"
+import { useUserStore } from "~/store/user"
 
 
-export default function useSocket (httpCtxUrl:string, autoReconnect = false) {
+export default async function useSocket (httpCtxUrl:string, autoReconnect = false) {
+  const userStore = useUserStore()
+  await userStore.init()
   const connection = new signalR.HubConnectionBuilder()
-    .withUrl(httpCtxUrl)
+    .withUrl(httpCtxUrl + '?uid=' + userStore.userInfo.id)
     .build()
   async function start () {
     try {

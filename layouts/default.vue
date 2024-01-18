@@ -21,7 +21,17 @@ const userStore = useUserStore()
 const groupStore = useGroupsStore()
 await userStore.init()
 await groupStore.getHouses()
-
+// Сокеты
+const socket = await useSocket("http://95.68.244.175:7033/chat")
+socket.connection.on("ReceiveMessage", (message:string) => {
+  useNotification("info", message)
+})
+// const conn = useSocket()
+// console.log(conn)
+// //
+// conn.onopen = () => {
+//   console.log(123)
+// }
 </script>
 <style lang="scss">
 @import "assets/styles/layouts/default-layout";

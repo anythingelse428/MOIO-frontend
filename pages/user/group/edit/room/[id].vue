@@ -22,7 +22,7 @@
             :key="device.id"
             class="add-group-available-devices__list-item"
           >
-            <label for="device">{{ device?.name }}</label>
+            <label for="device">{{ device?.name }} {{device.id}}</label>
             <div class="add-group-available-devices__list-item-checkbox-wrapper">
               <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,devices,{id:device.id,name:device.name})" :checked="devices.findIndex(el=>el.id == device.id)>-1">
               <span class="add-group-available-devices__list-item-checkbox-mask" />
@@ -64,8 +64,8 @@
           </div>
           <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
             <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
-              {{item?.name}}
-            <span class="mdi mdi-delete" @click="(e)=>{setItem(e,devices,{id:item.id,name:item.name});oldDevices.push(item.id)}"></span>
+              {{item?.name}} {{item.id}}
+            <span class="mdi mdi-delete" @click="(e)=>{setItem(e,devices,{id:item.id,name:item.name});oldDevices.push(item.id);existingDevices.push({id:item.id,name:item.name})}"></span>
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>

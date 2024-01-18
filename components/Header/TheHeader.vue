@@ -32,7 +32,7 @@ const addMenuItems = [
   {
     icon: "home-automation",
     name: "Добавить автоматизацию",
-    url: '/#',
+    url: '/automation/create',
   },
   {
     icon: "cube-outline",

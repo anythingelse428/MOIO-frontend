@@ -1,6 +1,9 @@
 <template>
   <div v-if="name" class="group-list">
-    <h1 class="group__header">
+    <h1 v-if="!hideEmpty" class="group__header">
+      {{ name }}
+    </h1>
+    <h1 v-if="hideEmpty && devices.length>0" class="group__header">
       {{ name }}
     </h1>
     <div v-if="devices.length" class="subgroup-item__service-list">
@@ -15,7 +18,7 @@
       />
     </div>
     <div v-if="inverseParent?.length" class="group-list --child">
-      <group-list v-for="group in inverseParent" :id="group.id" :key="group.name" :devices="group.devices" :name="group.name" :inverse-parent="group?.inverseParent" />
+      <group-list v-for="group in inverseParent" :id="group.id" :key="group.name" :hide-empty="hideEmpty" :devices="group.devices" :name="group.name" :inverse-parent="group?.inverseParent" />
     </div>
   </div>
 </template>
@@ -28,7 +31,8 @@ export interface GroupList {
   name:string,
   id:string|number
   devices:IAllDevicesResponse[],
-  inverseParent?: GroupList[]
+  inverseParent?: GroupList[],
+  hideEmpty?:boolean
 }
 
 const props = defineProps<GroupList>()

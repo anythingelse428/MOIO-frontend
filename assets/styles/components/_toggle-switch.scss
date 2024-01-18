@@ -4,6 +4,16 @@
   align-items: center;
   gap: 8px;
 }
+.toggle-switch-wrapper {
+  .toggle-switch {
+    &__button {
+      &::before {
+        top: 4px;
+        left: 5px;
+      }
+    }
+  }
+}
 .toggle-switch {
   position: relative;
   width: 60px;
@@ -32,7 +42,7 @@
 
     &:checked + .toggle-switch__button:before {
       content: v-bind(ico);
-      transform: translateX(29px);
+      transform: translateX(24px);
       background-color: $thumb-color;
       color: $color-active;
     }

@@ -36,6 +36,7 @@ watch(currentGroup, (newVal, oldValue) => {
   } else {
     groupData.value = newVal
   }
+  console.log(groupData.value)
 }, { deep: true, immediate: true })
 
 onMounted(async () => {

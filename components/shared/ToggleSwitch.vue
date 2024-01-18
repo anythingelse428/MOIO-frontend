@@ -1,5 +1,5 @@
 <template>
-  <div :class="`toggle-switch-wrapper${verticalLarge&&'--vertical-large'}`">
+  <div :class="`toggle-switch-wrapper${verticalLarge?'--vertical-large':''}`">
     <label v-if="verticalLarge" for="toggle-switch">Вкл.</label>
     <div :class="`toggle-switch ${verticalLarge?'--vertical-large':''}`">
       <input id="toggle-switch" v-model="currentValue" type="checkbox" class="toggle-switch__checkbox">

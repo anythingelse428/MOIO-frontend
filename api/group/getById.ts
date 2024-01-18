@@ -13,7 +13,7 @@ export interface IGroupResponseItem{
         name:string|null
     },
     name: string|null,
-    devices:IAllDevicesResponse,
+    devices:IAllDevicesResponse[],
     groupCreatorId:number,
 }
 export default async function apiGroupGetById (id:string):Promise<IGroupResponseItem> {
