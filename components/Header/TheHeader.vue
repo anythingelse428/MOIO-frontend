@@ -35,6 +35,11 @@ const addMenuItems = [
     url: '/automation/create',
   },
   {
+    icon: "home-automation",
+    name: "Добавить сценарий",
+    url: '/scenarios/create',
+  },
+  {
     icon: "cube-outline",
     name: "Добавить комнату",
     url: '/user/group/add/room',

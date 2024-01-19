@@ -5,7 +5,7 @@ export interface IGroupResponseItem{
     id: string,
     parentId: string|null,
     typeId: number|null,
-    inverseParent: any[],
+    inverseParent: IGroupResponseItem[],
     parent: string|null,
     type: {
         id:string

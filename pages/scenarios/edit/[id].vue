@@ -208,7 +208,7 @@ getRoomsName(data.value)
       color: #D15151;
     }
   }
-  .scenarios-create__header {
+  .scenarios-create__header{
     font-size: 40px;
     font-weight: 600;
     color: $color-primary;
@@ -238,7 +238,7 @@ getRoomsName(data.value)
       text-align: center;
       color: $color-active;
       &::placeholder{
-      color: $color-active;
+        color: $color-active;
 
       }
     }
