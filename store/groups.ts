@@ -83,10 +83,12 @@ export const useGroupsStore = defineStore('groups', {
     async addRoom (name:string, typeId = 3, parentId?:string, devicesIds?:string[], groupIds?:string[]) {
       try {
         const { response } = await apiGroupAddRoom({ name, typeId, parentId, devicesIds, groupIds })
+        console.log(response)
+        console.log(name, groupIds)
         if (!response?.status) {
           useNotification('info', 'Комната успешно добавлена')
           setTimeout(() => {
-            window.location.href = useRuntimeConfig().app.baseURL || '/'
+            // window.location.href = useRuntimeConfig().app.baseURL || '/'
           }, 1000)
           this.getAll()
         }

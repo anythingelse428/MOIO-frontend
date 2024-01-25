@@ -1,27 +1,29 @@
 <template>
-  <div class="group">
-    <loader-screen :is-loading="isLoading" />
-    <h1 class="group__header">
-      {{ groupData?.name }}
-    </h1>
-    <div v-if="groupData?.groups" class="subgroup-list">
-      <div v-for="group in Object.keys(groupData.groups)" :key="group" class="subgroup-item">
-        <h2 class="subgroup-item__header">
-          {{ group }}
-        </h2>
-        <div v-if="groupData.groups[group]?.length" class="subgroup-item__service-list">
-          <the-service
-            v-for="service in groupData.groups[group]"
-            :id="service.id"
-            :key="service.groupId"
-            :group-id="categoryId"
-            :name="service.name"
-            :type="service.type"
-            :capabilities="service?.capabilities"
-          />
-        </div>
-        <div v-else class="subgroup-item__service-list --empty">
-          В этой группе нет устройств
+  <div class="category">
+    <div class="group">
+      <loader-screen :is-loading="isLoading" />
+      <h1 class="group__header">
+        {{ groupData?.name }}
+      </h1>
+      <div v-if="groupData?.groups" class="subgroup-list">
+        <div v-for="group in Object.keys(groupData.groups)" :key="group" class="subgroup-item">
+          <h2 class="subgroup-item__header">
+            {{ group }}
+          </h2>
+          <div v-if="groupData.groups[group]?.length" class="subgroup-item__service-list">
+            <the-service
+              v-for="service in groupData.groups[group]"
+              :id="service.id"
+              :key="service.groupId"
+              :group-id="categoryId"
+              :name="service.name"
+              :type="service.type"
+              :capabilities="service?.capabilities"
+            />
+          </div>
+          <div v-else class="subgroup-item__service-list --empty">
+            В этой группе нет устройств
+          </div>
         </div>
       </div>
     </div>
@@ -67,4 +69,12 @@ watch(devicesInCategory, (newVal, oldValue) => {
 
 <style lang="scss">
 @import "assets/styles/page/user-group";
+.category {
+  .group{
+    padding-inline: 80px;
+    .subgroup-item__service-list{
+      padding-inline: 40px;
+    }
+  }
+}
 </style>

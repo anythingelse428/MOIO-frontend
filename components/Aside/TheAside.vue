@@ -66,6 +66,11 @@ const asideContent =
           name: 'профиль',
           url: '/user',
         },
+        {
+          icon: 'home-edit',
+          name: 'сценарии',
+          url: '/scenarios',
+        },
       ],
     }
 const categories = ref<{

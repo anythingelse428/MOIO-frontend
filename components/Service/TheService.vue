@@ -149,25 +149,27 @@ onLongPress(service, () => {
 }, { delay: 400 })
 
 async function turnOnDevice () {
-  const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
-  const newValue = oldValue === false || String(oldValue)?.includes('close')
-  service.value.classList.add('--pending')
-  service.value.setAttribute('disabled', 'true')
-  await deviceStore.changeOnOf({ clientId: 'relay', deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), onOfStatus: newValue })
-  setTimeout(async () => {
+  if (!props.id.includes('_sen') && service.value) {
+    const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
+    const newValue = oldValue === false || String(oldValue)?.includes('close')
+    service.value.classList.add('--pending')
+    service.value.setAttribute('disabled', 'true')
+    await deviceStore.changeOnOf({ clientId: 'relay', deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), onOfStatus: newValue })
+    setTimeout(async () => {
     // TODO дождаться сокетов, переписать логику
     // 1. шлем запрос
     // 2. получаем ответ (сейчас время ответа задано таймаутом, должен быть сокет)
     // 3. получив ответ снимаем скелетон
-    if (typeof props.groupId === 'string' && !Number.isInteger(Number(props.groupId))) {
-      await groupStore.getGroupById(props.groupId)
-    }
-    if (Number.isInteger(Number(props.groupId))) {
-      await categoriesStore.getDevicesByCategoryId(props.groupId, groupStore.currentHome)
-    }
-    service.value.classList.remove('--pending')
-    service.value.setAttribute('disabled', 'false')
-  }, 3000)
+      if (typeof props.groupId === 'string' && !Number.isInteger(Number(props.groupId))) {
+        await groupStore.getGroupById(props.groupId)
+      }
+      if (Number.isInteger(Number(props.groupId))) {
+        await categoriesStore.getDevicesByCategoryId(props.groupId, groupStore.currentHome)
+      }
+      service.value.classList.remove('--pending')
+      service.value.setAttribute('disabled', 'false')
+    }, 3000)
+  }
 }
 async function deleteDevice () {
   await deviceStore.deleteDevice(props.id)

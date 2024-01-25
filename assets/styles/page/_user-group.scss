@@ -1,10 +1,11 @@
 .group{
-  padding-inline: 32px;
+  margin-inline-start: 32px;
   &__header{
     @include section-header;
   }
-  &__list{
+  &-list{
     margin-top: 60px;
+    margin-inline-start: 32px;
   }
 }
 .subgroup-item{

@@ -1,28 +1,33 @@
-.group{
-  padding-inline: 80px;
-  &__header{
-    @include section-header;
+.main-page{
+  .group{
+    margin-inline-start: 80px;
+    &__header{
+      @include section-header;
+    }
+    &-list{
+      margin-top: 40px;
+      .group-list{
+        margin-inline-start: 32px;
+      }
+    }
+    @media screen and (max-width: 550px) {
+      padding-inline: 20px;
+    }
   }
-  &__list{
-    margin-top: 60px;
-  }
-  @media screen and (max-width: 550px) {
-    padding-inline: 20px;
-  }
-}
-.subgroup-item{
-  &__header {
-    @include header-submenu-item;
-    font-weight: 600;
-    margin-top: 40px;
-  }
-  &__service-list{
-    margin-top: 40px;
-    display: flex;
-    flex-wrap: wrap;
-    gap:40px;
-    &.--empty{
-      font-size: 24px;
+  .subgroup-item{
+    &__header {
+      @include header-submenu-item;
+      font-weight: 600;
+      margin-top: 40px;
+    }
+    &__service-list{
+      margin-top: 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap:40px;
+      &.--empty{
+        font-size: 24px;
+      }
     }
   }
 }

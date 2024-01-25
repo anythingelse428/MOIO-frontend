@@ -7,23 +7,23 @@
       <label for="scenario-name">
         Введите название сценария
       </label>
-      <input type="text" placeholder="Название сценария">
+      <input v-model="scenarioName" type="text" placeholder="Название сценария">
     </div>
     <div class="scenarios-create__selected-list">
       <h2 class="scenarios-create__selected-list-header">
         Выбранные устройства
       </h2>
+      <!--        v-for="groupId in Object.keys(selectedDevice)"-->
+      <!--        :key="groupId"-->
       <div
-        v-for="groupId in Object.keys(selectedDevice)"
-        :key="groupId"
         class="scenarios-create__selected-list-group"
       >
-        <h3 class="scenarios-create__selected-list-group-header">
-          {{ roomsName[groupId] }}
-        </h3>
+        <!--        <h3 class="scenarios-create__selected-list-group-header">-->
+        <!--          {{ roomsName[groupId] }}-->
+        <!--        </h3>-->
         <div class="scenarios-create__selected-list-group-devices">
           <scenario-service
-            v-for="service in selectedDevice[groupId]"
+            v-for="service in selectedDevice"
             :id="service.id"
             :key="service.id"
             :is-preview="false"
@@ -31,7 +31,7 @@
             :capabilities="service.capabilities"
             :type="service.type"
             :group-id="service.groupId"
-            @left-mouse-click="e=>{selectDevice(e);toggleSelected(service.id, data)}"
+            @left-mouse-click="e=>{selectDevice({...e,id:service.id});toggleSelected(service.id, data)}"
             @update-capability="e=>{setCapability(e)}"
           />
         </div>
@@ -60,7 +60,7 @@
         <h2>Группа не найдена</h2>
       </div>
     </div>
-    <button class="scenarios-create__submit">
+    <button class="scenarios-create__submit" @click="updateScenario()">
       Сохранить
     </button>
   </div>
@@ -72,9 +72,11 @@ import type { Service } from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
 import type { IGroupResponseItem } from "~/api/group/getById"
 import type { GroupList } from "~/components/Group/GroupList.vue"
+import { useScenarioStore } from "~/store/scenario"
+import type { IScenarioUpdateProps } from "~/api/scenarios/update"
 export interface ICapability {
   chanel:string
-  deviceId:string
+  id:string
   deviceType:null | string
   hsv?: { h:any, s:any, v:any }
   instance:string
@@ -87,10 +89,13 @@ export interface ICapability {
 
 const groupStore = useGroupsStore()
 const data = ref(await groupStore.getGroupById(groupStore.currentHome))
-const selectedDevice = ref<{ [key:string]: Service[] }>({})
+// const selectedDevice = ref<{ [key:string]: Service[] }>({})
+const selectedDevice = ref<Service[]>([])
 const capabilities = ref<{ [key: string]: Service['capabilities'][] }>({})
 const roomsName:{[key:string]:string} = {}
+const scenarioName = ref('')
 const searchGroupInput = ref('')
+const devicesForRemove = ref<string[]>([])
 function filterGroups (data:IGroupResponseItem, groupName:string) {
   if (data.name?.toLowerCase()?.includes(groupName.toLowerCase())) {
     return data
@@ -104,15 +109,18 @@ function filterGroups (data:IGroupResponseItem, groupName:string) {
 }
 
 function selectDevice (service:Service) {
-  const isDeviceExist = selectedDevice.value[service.groupId]?.findIndex(el => el.id === service.id)
+  const isDeviceExist = selectedDevice.value?.findIndex(el => el.id === service.id)
   if (isDeviceExist > -1) {
-    selectedDevice.value[service.groupId].splice(isDeviceExist, 1)
+    selectedDevice.value.splice(isDeviceExist, 1)
     delete capabilities.value[service.id]
+    devicesForRemove.value.push(service.id)
   } else {
-    if (selectedDevice.value[service.groupId]?.length > 0) {
-      selectedDevice.value[service.groupId].push(service)
+    const removeIdx = devicesForRemove.value.findIndex(el => el === service.id)
+    devicesForRemove.value.splice(removeIdx, 1)
+    if (selectedDevice.value?.length > 0) {
+      selectedDevice.value.push(service)
     } else {
-      selectedDevice.value[service.groupId] = [service]
+      selectedDevice.value = [service]
     }
     capabilities.value[service.id] = service.capabilities
   }
@@ -132,9 +140,8 @@ function toggleSelected (id:string, data:IGroupResponseItem) {
   return idx
 }
 function setCapability (data:ICapability) {
-  console.log(data.deviceId + '_ch' + data.chanel)
-  const capabilityIdx = capabilities.value[data.deviceId + '_ch' + data.chanel].findIndex(el => el.type === data.type)
-  capabilities.value[data.deviceId + '_ch' + data.chanel][capabilityIdx] = { ...capabilities.value[data.deviceId + '_ch' + data.chanel][capabilityIdx], value: data.value, hsv: data.hsv, range: data.range }
+  const capabilityIdx = capabilities.value[data.id + '_ch' + data.chanel].findIndex(el => el.type === data.type)
+  capabilities.value[data.id + '_ch' + data.chanel][capabilityIdx] = { ...capabilities.value[data.id + '_ch' + data.chanel][capabilityIdx], value: data.value, hsv: data.hsv, range: data.range }
 }
 
 function getRoomsName (data:IGroupResponseItem) {
@@ -144,12 +151,40 @@ function getRoomsName (data:IGroupResponseItem) {
   }
 }
 getRoomsName(data.value)
+const router = useRoute()
+const scenarioStore = useScenarioStore()
+async function getData () {
+  const response = await scenarioStore.getById(router.params.id as string)
+  selectedDevice.value = response?.devicesScenarios
+  scenarioName.value = response?.name
+  selectedDevice.value.forEach((el) => {
+    toggleSelected(el.id, data.value)
+    if (capabilities.value[el.id]) {
+      capabilities.value[el.id].push(...el.capabilities)
+    } else {
+      capabilities.value[el.id] = el.capabilities
+    }
+  })
+}
+getData()
+async function updateScenario () {
+  const updateData:IScenarioUpdateProps = {
+    id: router.params.id as string,
+    name: scenarioName.value,
+    devicesValueStates: capabilities.value,
+    removeDevicesId: devicesForRemove.value,
+  }
+  console.log(router.params.id)
+  console.log(updateData)
+  await scenarioStore.updateScenario(updateData)
+}
 </script>
 
 <style lang="scss">
 .scenarios-create {
   padding: 0 96px;
   padding-bottom: 100px;
+
   .group__header{
     font-size: 25px;
     font-weight: 400;
@@ -271,6 +306,7 @@ getRoomsName(data.value)
       flex-wrap: wrap;
       gap:28px 30px;
       padding-inline: 1em;
+      margin-top: 24px;
     }
   }
   &__available{

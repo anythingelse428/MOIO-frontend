@@ -22,7 +22,7 @@ const groupStore = useGroupsStore()
 await userStore.init()
 await groupStore.getHouses()
 // Сокеты
-const socket = await useSocket("http://95.68.244.175:7033/chat")
+const socket = await useSocket("http://176.119.157.248:7033/chat")
 socket.connection.on("ReceiveMessage", (message:string) => {
   useNotification("info", message)
 })

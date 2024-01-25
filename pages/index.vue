@@ -1,12 +1,14 @@
 <template>
-  <div class="group">
-    <loader-screen :is-loading="isLoading" />
-    <group-list
-      :id="groupStore.currentHome"
-      :name="groupData.name"
-      :devices="groupData.devices"
-      :inverse-parent="groupData?.inverseParent"
-    />
+  <div class="main-page">
+    <div class="group">
+      <loader-screen :is-loading="isLoading" />
+      <group-list
+        :id="groupStore.currentHome"
+        :name="groupData.name"
+        :devices="groupData.devices"
+        :inverse-parent="groupData?.inverseParent"
+      />
+    </div>
   </div>
 </template>
 
@@ -36,7 +38,6 @@ watch(currentGroup, (newVal, oldValue) => {
   } else {
     groupData.value = newVal
   }
-  console.log(groupData.value)
 }, { deep: true, immediate: true })
 
 onMounted(async () => {

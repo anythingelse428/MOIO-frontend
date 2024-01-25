@@ -7,7 +7,7 @@
       <label for="scenario-name">
         Введите название сценария
       </label>
-      <input type="text" placeholder="Название сценария">
+      <input v-model="roomName" type="text" placeholder="Название сценария">
     </div>
     <div class="scenarios-create__selected-list">
       <h2 class="scenarios-create__selected-list-header">
@@ -60,7 +60,7 @@
         <h2>Группа не найдена</h2>
       </div>
     </div>
-    <button class="scenarios-create__submit">
+    <button class="scenarios-create__submit" @click="createScenario()">
       Сохранить
     </button>
   </div>
@@ -72,6 +72,7 @@ import type { Service } from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
 import type { IGroupResponseItem } from "~/api/group/getById"
 import type { GroupList } from "~/components/Group/GroupList.vue"
+import { useScenarioStore } from "~/store/scenario"
 export interface ICapability {
   chanel:string
   deviceId:string
@@ -90,6 +91,7 @@ const data = ref(await groupStore.getGroupById(groupStore.currentHome))
 const selectedDevice = ref<{ [key:string]: Service[] }>({})
 const capabilities = ref<{ [key: string]: Service['capabilities'][] }>({})
 const roomsName:{[key:string]:string} = {}
+const roomName = ref()
 const searchGroupInput = ref('')
 function filterGroups (data:IGroupResponseItem, groupName:string) {
   if (data.name?.toLowerCase()?.includes(groupName.toLowerCase())) {
@@ -114,7 +116,9 @@ function selectDevice (service:Service) {
     } else {
       selectedDevice.value[service.groupId] = [service]
     }
-    capabilities.value[service.id] = service.capabilities
+    capabilities.value[service.id] = service.capabilities?.map((el) => {
+      return { value: el.value, type: el.type, hsv: el.hsv }
+    })
   }
 }
 function toggleSelected (id:string, data:IGroupResponseItem) {
@@ -144,6 +148,10 @@ function getRoomsName (data:IGroupResponseItem) {
   }
 }
 getRoomsName(data.value)
+
+async function createScenario () {
+  await useScenarioStore().createScenario({ name: roomName.value, devicesValueStates: capabilities.value })
+}
 </script>
 
 <style lang="scss">

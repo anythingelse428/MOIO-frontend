@@ -19,14 +19,12 @@
 
 <script setup lang="ts">
 
-const scenarios = ref([
-  { id: 1, name: 'Сценарий 1' },
-  { id: 2, name: 'Сценарий 2' },
-  { id: 3, name: 'Сценарий 3' },
-  { id: 4, name: 'Сценарий 4' },
-  { id: 5, name: 'Сценарий 5' },
-])
+import { useScenarioStore } from "~/store/scenario"
+import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
 
+const scenarios = ref<IAllScenariosResponse["data"]>([])
+const scenarioStore = useScenarioStore()
+scenarios.value = await scenarioStore.getAll()
 </script>
 
 <style lang="scss">
