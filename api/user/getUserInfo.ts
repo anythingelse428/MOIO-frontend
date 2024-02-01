@@ -6,6 +6,7 @@ export interface IUserInfoResponse {
     password: string,
     devices: any,
     role: string
+    clientId:string
 }
 export default async function getUserInfo ():Promise<IUserInfoResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {

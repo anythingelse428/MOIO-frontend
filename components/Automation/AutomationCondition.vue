@@ -18,7 +18,7 @@
           @click="emits('select-option',{type,value:sensor.id})"
         >
           <span class="mdi mdi-leak" />
-          <input type="checkbox">
+          <input type="radio" :name="idx">
           <span class="mask" />
           {{ sensor.name }}
         </div>

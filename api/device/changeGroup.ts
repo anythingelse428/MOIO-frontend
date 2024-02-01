@@ -4,7 +4,10 @@ import useAsyncQuery from '~/composables/useAsyncQuery'
 export default async function apiDevicesChangeDevices (id:string, devices:string[]) {
   return await useAsyncQuery(async ({ axios, path }) => {
     return await axios.post(path + `/Device/changeDevicesGroup?groupId=${id}`,
-      [...devices],
+      {
+        groupId: id,
+        devicesIds: devices,
+      },
     )
   })
 }

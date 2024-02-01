@@ -13,6 +13,8 @@ import apiScenariosGetAll from "~/api/scenarios/getAll"
 import apiScenariosGetById from "~/api/scenarios/getById"
 import type { IScenarioUpdateProps } from "~/api/scenarios/update"
 import apiScenariosUpdate from "~/api/scenarios/update"
+import apiScenariosExecute from "~/api/scenarios/execute"
+import apiScenariosDelete from "~/api/scenarios/delete"
 
 export const useScenarioStore = defineStore('scenario', {
   state: () => (
@@ -50,16 +52,23 @@ export const useScenarioStore = defineStore('scenario', {
 
       }
     },
+    async executeScenario (id:string) {
+      return await apiScenariosExecute(id)
+    },
     async updateScenario (data:IScenarioUpdateProps) {
       try {
         const response = await apiScenariosUpdate(data)
         console.log(response)
+        console.log('DF', data)
         if (response) {
           return response
         }
       } catch {
 
       }
+    },
+    async deleteScenario (id:string) {
+      await apiScenariosDelete(id)
     },
   },
 })

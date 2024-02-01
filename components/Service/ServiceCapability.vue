@@ -2,9 +2,13 @@
   <div v-if="isMounted && capability" class="service-capability">
     <div v-if="type === 'devices.capabilities.color_setting'" class="service-capability__control --color">
       <label for="color">
-        {{ type }}
+        {{ $t(type) }}
       </label>
-      <div class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
+      <div
+        class="service-capability__color-preview"
+        :style="`
+           background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`"
+      />
       <div class="service-capability__color">
         <input id="color" v-model="hue" step="1" type="range" :min="0" :max="360" name="" class="service-capability__hue" @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
       </div>
@@ -25,7 +29,7 @@
       :class="`service-capability__control --range --bright`"
     >
       <label for="range">
-        {{ type }}
+        {{ $t(type) }}
       </label>
       <input
         id="range"
@@ -52,6 +56,8 @@ import useThrottle from "~/composables/useThrottle"
 import { useDevicesStore } from "~/store/devices"
 import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
+import { useUserStore } from "~/store/user"
+import { useGroupsStore } from "~/store/groups"
 
 export type ServiceCapability = {
     deviceType:string
@@ -80,7 +86,6 @@ const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
 const devicesStore = useDevicesStore()
 const capabilitySource = ref({ ...props })
 const capability = ref(capabilitySource)
-const brightness = ref(capability.value?.hsv?.v)
 const isMounted = ref(false)
 const hue = ref(Number(capability.value.hsv?.h))
 const saturation = ref(Number(capability.value.hsv?.s))
@@ -100,36 +105,42 @@ async function actionFabric (fnName:'changeOnOf'|'changeTemperature'|'changeBrig
   return await devicesStore[fnName](args)
 }
 const throttledAction = useThrottle(actionFabric, 1000)
-
+const groupStore = useGroupsStore()
 function updateDevice (val:{type:string, value:any}) {
   const mainActionProps = {
-    clientId: 'relay',
+    clientId: groupStore.clientId,
     deviceId: props.deviceId,
     chanel: props.chanel,
   }
+  console.log(mainActionProps)
   switch (val.type) {
     case 'open':
-      throttledAction('changeOpenClose', { ...mainActionProps, open: val.value })
+      // @ts-ignore
+      // throttledAction('changeOpenClose', { ...mainActionProps, open: val.value })
       emit('update-bool-val')
       break
     case 'devices.capabilities.on_off':
-      throttledAction('changeOnOf', { ...mainActionProps, onOfStatus: val.value })
+      // @ts-ignore
+      // throttledAction('changeOnOf', { ...mainActionProps, onOffStatus: val.value })
       emit('update-bool-val')
       break
     case 'devices.capabilities.range':
       if (props.instance && props.instance === 'threshold_temperature') {
+      // @ts-ignore
         throttledAction('changeTemperature', { ...mainActionProps, temperature: val.value })
       }
       if ((props.instance && props.instance === 'brightness') || capability.value?.hsv?.v || props.instance === 'hsv') {
+      // @ts-ignore
         throttledAction('changeBrightness', { ...mainActionProps, brightness: val.value })
       }
       break
     case 'devices.capabilities.color_setting':
+      // @ts-ignore
       throttledAction('changeRGB', { ...mainActionProps, ...val.value })
       break
   }
 }
-const hsvToRgb = (hue, saturation, value) => {
+const hsvToRgb = (hue:number, saturation:number, value:number) => {
   const d = 0.0166666666666666 * hue
   let c = value * saturation
   let x = c - c * Math.abs(d % 2.0 - 1.0)
@@ -154,6 +165,7 @@ onMounted(() => {
 watch(props, (newVal) => {
   capabilitySource.value = { ...newVal }
 }, { deep: true })
+
 </script>
 
 

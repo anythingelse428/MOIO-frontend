@@ -5,6 +5,7 @@ export interface IGroupResponseItem{
     parentId: string|null,
     typeId: number|null,
     inverseParent: any[],
+    clientId?:string
     parent: string|null,
     type: {
         id:string

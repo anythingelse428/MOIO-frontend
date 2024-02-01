@@ -1,5 +1,6 @@
 <template>
   <div class="add-group --edit">
+    <loader-screen :is-loading="isLoading" />
     <div class="add-group">
       <h1 class="add-group__header">
         Изменить комнату
@@ -22,7 +23,7 @@
               :key="device.id"
               class="add-group-available-devices__list-item"
             >
-              <label for="device">{{ device?.name }} {{ device.id }}</label>
+              <label for="device">{{ device?.name }}</label>
               <div class="add-group-available-devices__list-item-checkbox-wrapper">
                 <input id="device" type="checkbox" name="device" :checked="devices.findIndex(el=>el.id == device.id)>-1" @change="(e)=>setItem(devices,{id:device.id,name:device.name})">
                 <span class="add-group-available-devices__list-item-checkbox-mask" />
@@ -64,8 +65,8 @@
               </div>
               <div v-if="previewData.devices?.length" class="add-group__preview-section-value">
                 <div v-for="item in previewData.devices" :key="item.id" class="add-group__preview-section-device">
-                  {{ item?.name }} {{ item.id }}
-                  <span class="mdi mdi-delete" @click="(e)=>{setItem(devices,{id:item.id,name:item.name});setItem(existingDevices,{id:item.id,name:item.name});}" />
+                  {{ item?.name }}
+                  <span class="mdi mdi-delete" @click="(e)=>{setItem(devices,{id:item.id,name:item.name});setItem(existingDevices,{id:item.id,name:item.name});oldDevices.push(item.id);}" />
                 </div>
               </div>
               <div v-else class="add-group__preview-section-value">
@@ -79,7 +80,7 @@
               <div v-if="previewData.users?.length" class="add-group__preview-section-value">
                 <div v-for="user in previewData.users" :key="user.id" class="add-group__preview-section-device">
                   {{ user?.name }}
-                  <span v-if="user.id !== groupStore.currentGroup.groupCreatorId" class="mdi mdi-delete" @click="(e)=>{usersForRemove.push({id:user.id,name:user.name});setItem(users,{id:user.id,name:user.name});}" />
+                  <span v-if="user.id !== groupStore.currentGroup.groupCreatorId" class="mdi mdi-delete" @click="(e)=>{usersForRemove.push({id:user.id,name:user.name});users.splice(users.findIndex(el=>el.id === user.id),1)}" />
                 </div>
               </div>
               <div v-else class="add-group__preview-section-value">
@@ -103,16 +104,18 @@
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
 import type { IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
-const id = useRoute().params.id as string
 let oldName = ''
+const isLoading = ref(false)
+const id = useRoute().params.id as string
 const oldDevices:string[] = []
 const name = ref('')
 const house = ref("")
 const devices = ref<{ id: string, name:string }[]>([])
-const users = ref<{id:number, name:string}[]>()
-const usersForRemove = ref<{id:number, name:string}[]>([])
-const existingDevices = ref<{id:number, name:string}[]>([])
+const users = ref<{id:string, name:string}[]>([])
+const usersForRemove = ref<{id:string, name:string}[]>([])
+const existingDevices = ref<{id:string, name:string}[]>([])
 // const existingUsers = ref<IUsersByGroupResponse[]>()
 const groupStore = useGroupsStore()
 const router = useRouter()
@@ -127,12 +130,13 @@ function setItem (target:any, data:{ id: string, name:string }) {
   if (isSelected === -1) {
     target?.push(unref(data))
   }
-  if (isSelected > -1 && devices.value.findIndex(el => el.id == data.id) > -1) {
+  if (isSelected > -1 && devices.value.findIndex(el => el.id === data.id) > -1) {
     target?.splice(isSelected, 1)
   }
 }
 
 async function getGroupData () {
+  isLoading.value = true
   const data = await groupStore.getGroupById(id)
   const parentData = await groupStore.getGroupById(data.parentId)
   users.value = await groupStore.getUsersByGroupId(id)
@@ -151,6 +155,7 @@ async function getGroupData () {
   // )
   await getDevicesByGroupId(id, devices)
   await getDevicesByGroupId(house.value, existingDevices)
+  isLoading.value = false
 }
 getGroupData()
 async function getDevicesByGroupId (id:string, deviceRef:globalThis.Ref<any>) {
@@ -161,11 +166,12 @@ async function getDevicesByGroupId (id:string, deviceRef:globalThis.Ref<any>) {
   }
 }
 async function editGroup () {
+  isLoading.value = true
   if (name.value !== oldName) {
     await groupStore.changeName(id, name.value)
   }
-  if (oldDevices.length > 0) {
-    await groupStore.changeDevices(groupStore.currentHome, [...oldDevices])
+  if (existingDevices.value.length > 0) {
+    await groupStore.changeDevices(groupStore.currentHome, existingDevices.value.map(el => el.id))
   }
   if (devices.value.length > 0) {
     await groupStore.changeDevices(id, devices.value.map(el => el.id))
@@ -173,6 +179,7 @@ async function editGroup () {
   if (usersForRemove.value?.length > 0) {
     await groupStore.removeUsersFromGroup(usersForRemove.value?.map(el => el.id), id)
   }
+  isLoading.value = false
   setTimeout(() => {
     useRouter().push({ path: '/user/group/' + id })
   }, 1500)

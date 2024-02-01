@@ -72,6 +72,7 @@
 <script setup lang="ts">
 import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
 import TheModal from "~/components/shared/TheModal.vue"
+import { useScenarioStore } from "~/store/scenario"
 
 const conditions = ref<{type:'sensor'|'time', id:any}[]>([])
 const runByAllConditions = ref(true)
@@ -86,16 +87,7 @@ const sensors = ref<{id:string, name:string}[]>([
   { id: '6eq223VASdca', name: 'Sen6' },
 ])
 const scenarios = ref<string[]>([])
-const existingScenarios = ref<{id:string, name:string}[]>([
-  { id: '1a4da4c321', name: 'Сценарий 1' },
-  { id: '2ad34aec321', name: 'Сценарий 2' },
-  { id: '3ade23ec321', name: 'Сценарий 3' },
-  { id: '4a32c321', name: 'Сценарий 4' },
-  { id: '5a4ac32ec321', name: 'Сценарий 5' },
-  { id: '6ad4ec321', name: 'Сценарий 6' },
-  { id: '7a3aec321', name: 'Сценарий 7' },
-  { id: '8ad4ec321', name: 'Сценарий 8' },
-])
+const existingScenarios = await useScenarioStore().getAll()
 function addConditionInArr (id:any, type:'sensor'|'time', value:string|string[]) {
   const isConditionExist = acceptedConditions.value.findIndex(el => el.id === id)
   if (isConditionExist > -1 && type === 'time') {
@@ -103,19 +95,19 @@ function addConditionInArr (id:any, type:'sensor'|'time', value:string|string[])
     return
   }
   if (isConditionExist > -1 && type === 'sensor') {
-    const elInValueExist = (acceptedConditions.value[isConditionExist].value as string[])?.findIndex(el => el === value)
-    if (elInValueExist > -1) {
-      (acceptedConditions.value[isConditionExist].value as string[])?.splice(elInValueExist, 1)
+    const elInValueExist = acceptedConditions.value[isConditionExist].value?.includes(value)
+    if (elInValueExist) {
+      acceptedConditions.value[isConditionExist].value = ''
       return
     }
-    acceptedConditions.value[isConditionExist].value = Array.from(new Set([value, ...acceptedConditions.value[isConditionExist].value])) as string[]
+    acceptedConditions.value[isConditionExist].value = value
     return
   }
   if (isConditionExist === -1 && type === "time") {
     acceptedConditions.value.push({ id, type, value })
   }
   if (isConditionExist === -1 && type === "sensor") {
-    acceptedConditions.value.push({ id, type, value: [value] })
+    acceptedConditions.value.push({ id, type, value })
   }
 }
 

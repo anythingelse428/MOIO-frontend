@@ -2,13 +2,13 @@
   <div v-if="isMounted && capability" class="service-capability">
     <div v-if="type === 'devices.capabilities.color_setting'" class="service-capability__control --color">
       <label for="color">
-        {{ type }}
+        {{ $t(type) }}
       </label>
       <div class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
       <div class="service-capability__color">
-        <input id="color" v-model="hue" step="1" type="range" :min="0" :max="360" name="" class="service-capability__hue" @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
+        <input id="color" v-model="hue" step="1" type="range" :min="0" :max="360" name="" class="service-capability__hue" @input="capability.hsv.h=Number(hue);capability.hsv.s=Number(saturation);updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
       </div>
-      <input id="" v-model="saturation" step="1" type="range" :min="0" :max="100" name="" class="service-capability__saturation" @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
+      <input id="" v-model="saturation" step="1" type="range" :min="0" :max="100" name="" class="service-capability__saturation" @input="capability.hsv.h=Number(hue);capability.hsv.s=Number(saturation);updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
     </div>
     <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
       <toggle-switch
@@ -25,7 +25,7 @@
       :class="`service-capability__control --range --bright`"
     >
       <label for="range">
-        {{ type }}
+        {{ $t(type) }}
       </label>
       <input
         id="range"
@@ -52,6 +52,7 @@ import useThrottle from "~/composables/useThrottle"
 import { useDevicesStore } from "~/store/devices"
 import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
+import { useUserStore } from "~/store/user"
 
 export type ServiceCapability = {
     deviceType:string
@@ -100,13 +101,13 @@ async function actionFabric (fnName:'changeOnOf'|'changeTemperature'|'changeBrig
   return await devicesStore[fnName](args)
 }
 const throttledAction = useThrottle(actionFabric, 1000)
-
+const userStore = useUserStore()
 function updateDevice (val:{type:string, value:any}) {
-  const mainActionProps = {
-    clientId: 'relay',
-    deviceId: props.deviceId,
-    chanel: props.chanel,
-  }
+  // const mainActionProps = {
+  //   clientId: userStore.clientId,
+  //   deviceId: props.deviceId,
+  //   chanel: props.chanel,
+  // }
   emit('update-bool-val', capability.value)
 }
 const hsvToRgb = (hue, saturation, value) => {

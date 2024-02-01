@@ -1,5 +1,6 @@
 <template>
   <div class="auth">
+    <loader-screen :is-loading="isLoading" />
     <h1 class="auth__header">
       Регистрация
     </h1>
@@ -33,7 +34,7 @@
         :value="clientId"
         label="ClientID"
         type="text"
-        :required="true"
+        :required="false"
         @auth-input="(newVal)=>clientId=newVal"
       />
       <input type="submit" value="Регистрация" class="auth__form-submit">
@@ -46,27 +47,35 @@
 
 <script setup lang="ts">
 import { useUserStore } from "~/store/user"
+import type { IRegisterUserProps } from "~/api/user/register"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 definePageMeta({
   layout: 'auth',
+
 })
 const userStore = useUserStore()
+const isLoading = ref(false)
 const name = ref('')
 const email = ref('')
 const password = ref('')
 const clientId = ref('')
 
 async function register () {
-  const registrationData = {
+  isLoading.value = true
+  const registrationData:IRegisterUserProps = {
     name: name.value,
     login: email.value,
     password: password.value,
-    clientId: clientId.value,
+  }
+  if (clientId.value.length > 0) {
+    registrationData.clientId = clientId.value
   }
   const refreshToken = await userStore.register(registrationData)
   const config = useRuntimeConfig()
   const cookie = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, { maxAge: 30 * 60 * 60 * 90 })
   cookie.value = refreshToken
+  isLoading.value = false
 }
 </script>
 

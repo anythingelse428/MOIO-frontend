@@ -1,5 +1,6 @@
 <template>
   <div class="scenarios-create">
+    <loader-screen :is-loading="isLoading" />
     <h1 class="scenarios-create__header">
       Создание сценария
     </h1>
@@ -60,9 +61,14 @@
         <h2>Группа не найдена</h2>
       </div>
     </div>
-    <button class="scenarios-create__submit" @click="updateScenario()">
-      Сохранить
-    </button>
+    <div class="scenarios-create__save">
+      <button class="scenarios-create__submit" @click="updateScenario()">
+        Сохранить
+      </button>
+      <button class="scenarios-create__submit --delete" @click="deleteScenario()">
+        Удалить
+      </button>
+    </div>
   </div>
 </template>
 
@@ -74,6 +80,7 @@ import type { IGroupResponseItem } from "~/api/group/getById"
 import type { GroupList } from "~/components/Group/GroupList.vue"
 import { useScenarioStore } from "~/store/scenario"
 import type { IScenarioUpdateProps } from "~/api/scenarios/update"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 export interface ICapability {
   chanel:string
   id:string
@@ -86,9 +93,10 @@ export interface ICapability {
   type: string
   value:any
 }
-
+const isLoading = ref(false)
 const groupStore = useGroupsStore()
 const data = ref(await groupStore.getGroupById(groupStore.currentHome))
+isLoading.value = true
 // const selectedDevice = ref<{ [key:string]: Service[] }>({})
 const selectedDevice = ref<Service[]>([])
 const capabilities = ref<{ [key: string]: Service['capabilities'][] }>({})
@@ -140,8 +148,15 @@ function toggleSelected (id:string, data:IGroupResponseItem) {
   return idx
 }
 function setCapability (data:ICapability) {
-  const capabilityIdx = capabilities.value[data.id + '_ch' + data.chanel].findIndex(el => el.type === data.type)
-  capabilities.value[data.id + '_ch' + data.chanel][capabilityIdx] = { ...capabilities.value[data.id + '_ch' + data.chanel][capabilityIdx], value: data.value, hsv: data.hsv, range: data.range }
+  const id = data.id ?? data.deviceId
+  const capabilityIdx = capabilities.value[id + '_ch' + data.chanel]?.findIndex(el => el.type === data.type)
+  if (data.instance.includes('bright')) {
+    const colorCapabilityIdx = capabilities.value[id + '_ch' + data.chanel]?.findIndex(el => el.type.includes('color'))
+    if (colorCapabilityIdx > -1) {
+      capabilities.value[id + '_ch' + data.chanel][colorCapabilityIdx] = { ...capabilities.value[id + '_ch' + data.chanel][colorCapabilityIdx], hsv: { ...capabilities.value[id + '_ch' + data.chanel][colorCapabilityIdx].hsv, v: Number(data.value) } }
+    }
+  }
+  capabilities.value[id + '_ch' + data.chanel][capabilityIdx] = { ...capabilities.value[id + '_ch' + data.chanel][capabilityIdx], value: data.value, hsv: data.hsv, range: data.range }
 }
 
 function getRoomsName (data:IGroupResponseItem) {
@@ -154,6 +169,7 @@ getRoomsName(data.value)
 const router = useRoute()
 const scenarioStore = useScenarioStore()
 async function getData () {
+  isLoading.value = false
   const response = await scenarioStore.getById(router.params.id as string)
   selectedDevice.value = response?.devicesScenarios
   scenarioName.value = response?.name
@@ -165,6 +181,7 @@ async function getData () {
       capabilities.value[el.id] = el.capabilities
     }
   })
+  isLoading.value = true
 }
 getData()
 async function updateScenario () {
@@ -174,17 +191,20 @@ async function updateScenario () {
     devicesValueStates: capabilities.value,
     removeDevicesId: devicesForRemove.value,
   }
-  console.log(router.params.id)
-  console.log(updateData)
   await scenarioStore.updateScenario(updateData)
+}
+
+async function deleteScenario () {
+  await scenarioStore.deleteScenario(router.params.id as string)
 }
 </script>
 
 <style lang="scss">
 .scenarios-create {
-  padding: 0 96px;
-  padding-bottom: 100px;
-
+  padding: 0 96px 100px;
+  @media screen and (max-width: 700px) {
+    padding: 0 20px 100px;
+  }
   .group__header{
     font-size: 25px;
     font-weight: 400;
@@ -193,6 +213,7 @@ async function updateScenario () {
   }
   .group-list{
     margin-top: 36px;
+    margin-inline: 0;
     &.--child{
       margin-left: 0;
     }
@@ -200,10 +221,12 @@ async function updateScenario () {
       display: flex;
       flex-wrap: wrap;
       gap:28px;
+      justify-content: center;
     }
   }
   .service{
-    width: 192px;
+    width: calc(25% - 22px);
+    min-width: 200px;
     padding: 14px 8px;
     aspect-ratio: auto;
     border-radius: 12px;
@@ -327,19 +350,28 @@ async function updateScenario () {
       }
     }
   }
-  &__submit{
-    display: block;
-    width: fit-content;
-    margin-inline: auto;
-    font-size: 24px;
-    font-weight: 600;
-    color: $color-accent;
-    background: $color-active;
-    padding: 4px 14px;
-    border-radius: 16px;
+  &__save{
     margin-top: 180px;
-    border: 0;
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap:32px;
+    .scenarios-create__submit{
+      display: block;
+      width: fit-content;
+      font-size: 24px;
+      font-weight: 600;
+      color: $color-accent;
+      background: $color-active;
+      padding: 4px 14px;
+      border-radius: 16px;
+      border: 0;
+      cursor: pointer;
+      &.--delete{
+        background: #D15151;
+      }
+    }
   }
+
 }
 </style>

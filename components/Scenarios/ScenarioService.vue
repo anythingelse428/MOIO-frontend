@@ -136,7 +136,7 @@ const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
 
 onClickOutside(target, (event) => {
-  if (event.target.className.includes('modal__content')) {
+  if (event.target?.className?.includes('modal__content')) {
     isCapabilitiesShow.value = false
     isDeleteModalShow.value = false
   }

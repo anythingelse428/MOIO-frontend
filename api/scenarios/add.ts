@@ -18,7 +18,13 @@ export default async function apiScenariosAdd (props:IAddScenario) {
     axios,
     path,
   }) => {
-    console.log(props)
-    return await axios.post(path + '/Scenarios/CreateScenarios', props)
+    try {
+      const response = await axios.post(path + '/Scenarios/CreateScenarios', props)
+      if (response.status === 200) {
+        useNotification('info', "Сценарий успешно добавлен")
+      }
+    } catch {
+      useNotification('error', "Произошла ошибка при создании сценария")
+    }
   })
 }

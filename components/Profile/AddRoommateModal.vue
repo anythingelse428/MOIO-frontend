@@ -1,5 +1,6 @@
 <template>
   <div class="add-roommate-modal">
+    <loader-screen :is-loading="isLoading" />
     <div class="add-roommate-modal__header">
       <div class="modal-header">
         Добавить пользователя
@@ -43,8 +44,10 @@
 
 import { useGroupsStore } from "~/store/groups"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 const groupStore = useGroupsStore()
+const isLoading = ref(false)
 const login = ref('')
 const groupId = ref('')
 const logins = ref<string[]>([])
@@ -79,7 +82,9 @@ async function addRoommate () {
     return
   }
   try {
+    isLoading.value = true
     await groupStore.addUserToGroup(logins.value, groupId.value)
+    isLoading.value = false
     useNotification('info', 'Пользователи успешно добавлены')
   } catch {
 

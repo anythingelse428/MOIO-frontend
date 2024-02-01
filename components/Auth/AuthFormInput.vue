@@ -28,7 +28,6 @@ export type FormInput = {
 const props = defineProps<FormInput>()
 const emit = defineEmits(['auth-input'])
 const authInputParent = ref(null)
-
 const model = computed({
   get () {
     return props.value
@@ -36,20 +35,6 @@ const model = computed({
   set (value) {
     emit('auth-input', value)
   },
-})
-
-onMounted(() => {
-  if (authInputParent.value) {
-    const label = (authInputParent.value as HTMLDivElement).querySelector('label')
-    const input = (authInputParent.value as HTMLDivElement).querySelector('input')
-    if (label) {
-      label.addEventListener('click', (e) => {
-        if (input) {
-          input.focus()
-        }
-      })
-    }
-  }
 })
 
 </script>

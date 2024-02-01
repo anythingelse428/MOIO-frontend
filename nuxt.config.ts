@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '@nuxtjs/style-resources',
     '@pinia/nuxt',
     '@vueuse/nuxt',
+    '@nuxtjs/i18n',
   ],
   devServer: {
     host: process.env.NITRO_HOST,

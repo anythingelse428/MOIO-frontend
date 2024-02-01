@@ -3,10 +3,10 @@
     <h1 v-if="!hideEmpty" class="group__header">
       {{ name }}
     </h1>
-    <h1 v-if="hideEmpty && devices.length>0" class="group__header">
+    <h1 v-if="hideEmpty && devices?.length>0" class="group__header">
       {{ name }}
     </h1>
-    <div v-if="devices.length&&isScenarios" class="subgroup-item__service-list">
+    <div v-if="devices?.length&&isScenarios" class="subgroup-item__service-list">
       <scenario-service
         v-for="device in devices"
         :id="device.id"
@@ -20,7 +20,7 @@
         @left-mouse-click="e=>emit('get-data',{...e,groupId:id})"
       />
     </div>
-    <div v-if="devices.length&&!isScenarios" class="subgroup-item__service-list">
+    <div v-if="devices?.length&&!isScenarios" class="subgroup-item__service-list">
       <the-service
         v-for="device in devices"
         :id="device.id"
@@ -53,9 +53,9 @@ import TheService from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
 
 export interface GroupList {
-  name:string,
+  name?:string,
   id:string|number
-  devices:IAllDevicesResponse[],
+  devices?:IAllDevicesResponse[],
   inverseParent?: GroupList[],
   hideEmpty?:boolean
   isScenarios?:boolean

@@ -1,5 +1,6 @@
 <template>
   <div class="scenarios-create">
+    <loader-screen :is-loading="isLoading" />
     <h1 class="scenarios-create__header">
       Создание сценария
     </h1>
@@ -32,7 +33,7 @@
             :type="service.type"
             :group-id="service.groupId"
             @left-mouse-click="e=>{selectDevice(e);toggleSelected(service.id, data)}"
-            @update-capability="e=>{setCapability(e)}"
+            @update-capability="e=>{setCapability(e);console.log(e)}"
           />
         </div>
       </div>
@@ -73,6 +74,7 @@ import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
 import type { IGroupResponseItem } from "~/api/group/getById"
 import type { GroupList } from "~/components/Group/GroupList.vue"
 import { useScenarioStore } from "~/store/scenario"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 export interface ICapability {
   chanel:string
   deviceId:string
@@ -85,9 +87,10 @@ export interface ICapability {
   type: string
   value:any
 }
-
+const isLoading = ref(true)
 const groupStore = useGroupsStore()
 const data = ref(await groupStore.getGroupById(groupStore.currentHome))
+isLoading.value = false
 const selectedDevice = ref<{ [key:string]: Service[] }>({})
 const capabilities = ref<{ [key: string]: Service['capabilities'][] }>({})
 const roomsName:{[key:string]:string} = {}
@@ -136,9 +139,15 @@ function toggleSelected (id:string, data:IGroupResponseItem) {
   return idx
 }
 function setCapability (data:ICapability) {
-  console.log(data.deviceId + '_ch' + data.chanel)
   const capabilityIdx = capabilities.value[data.deviceId + '_ch' + data.chanel].findIndex(el => el.type === data.type)
-  capabilities.value[data.deviceId + '_ch' + data.chanel][capabilityIdx] = { ...capabilities.value[data.deviceId + '_ch' + data.chanel][capabilityIdx], value: data.value, hsv: data.hsv, range: data.range }
+  capabilities.value[data.deviceId + '_ch' + data.chanel][capabilityIdx] =
+      { ...capabilities.value[data.deviceId + '_ch' + data.chanel][capabilityIdx], value: data.value, hsv: data.hsv, range: data.range }
+  if (data.instance.includes('bright')) {
+    const colorCapabilityIdx = capabilities.value[data.deviceId + '_ch' + data.chanel]?.findIndex(el => el.type.includes('color'))
+    if (colorCapabilityIdx > -1) {
+      capabilities.value[data.deviceId + '_ch' + data.chanel][colorCapabilityIdx] = { ...capabilities.value[data.deviceId + '_ch' + data.chanel][colorCapabilityIdx], hsv: { ...capabilities.value[data.deviceId + '_ch' + data.chanel][colorCapabilityIdx].hsv, v: Number(data.value) } }
+    }
+  }
 }
 
 function getRoomsName (data:IGroupResponseItem) {
@@ -150,14 +159,15 @@ function getRoomsName (data:IGroupResponseItem) {
 getRoomsName(data.value)
 
 async function createScenario () {
+  isLoading.value = true
   await useScenarioStore().createScenario({ name: roomName.value, devicesValueStates: capabilities.value })
+  isLoading.value = false
 }
 </script>
 
 <style lang="scss">
 .scenarios-create {
-  padding: 0 96px;
-  padding-bottom: 100px;
+  padding: 0 96px 100px;
   .group__header{
     font-size: 25px;
     font-weight: 400;
@@ -166,8 +176,9 @@ async function createScenario () {
   }
   .group-list{
     margin-top: 36px;
+    margin-inline: 0;
     &.--child{
-      margin-left: 0;
+      margin-inline: 0;
     }
     .subgroup-item__service-list {
       display: flex;
@@ -176,7 +187,8 @@ async function createScenario () {
     }
   }
   .service{
-    width: 192px;
+    width: calc(25% - 24px);
+    min-width: 192px;
     padding: 14px 8px;
     aspect-ratio: auto;
     border-radius: 12px;

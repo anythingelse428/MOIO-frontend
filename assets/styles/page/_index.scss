@@ -1,6 +1,9 @@
 .main-page{
   .group{
-    margin-inline-start: 80px;
+    margin-inline: 80px;
+    @media screen and (max-width: 600px) {
+      margin-inline: 20px;
+    }
     &__header{
       @include section-header;
     }

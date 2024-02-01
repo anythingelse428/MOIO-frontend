@@ -1,7 +1,7 @@
 <template>
   <div ref="service" :class="`service`" role="button">
     <div class="service-info" @mousedown.left="turnOnDevice()" @mousedown.right="isCapabilitiesShow = true">
-      <div :class="`service-ico-wrapper ${isDeviceOn === true || isDeviceOpen === true || String(isDeviceOpen)?.indexOf('open') >-1 ? '--active':''}`">
+      <div :class="`service-ico-wrapper ${isDeviceOn === true || isDeviceOpen == 'true' || String(isDeviceOpen)?.indexOf('open') > -1 ? '--active':''}`">
         <span :class="`mdi mdi-${ico?.name}`" />
       </div>
       <div class="service-name">
@@ -93,6 +93,7 @@ import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useDevicesStore } from "~/store/devices"
 import { useGroupsStore } from "~/store/groups"
 import { useCategoriesStore } from "~/store/categories"
+import { useUserStore } from "~/store/user"
 
 export type Service = {
   id:string
@@ -135,7 +136,7 @@ const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
 
 onClickOutside(target, (event) => {
-  if (event.target.className.includes('modal__content')) {
+  if (isCapabilitiesShow.value && event.target?.className) {
     isCapabilitiesShow.value = false
     isDeleteModalShow.value = false
   }
@@ -147,21 +148,26 @@ onClickOutside(deleteModal, () => {
 onLongPress(service, () => {
   isCapabilitiesShow.value = true
 }, { delay: 400 })
-
+const userStore = useUserStore()
 async function turnOnDevice () {
   if (!props.id.includes('_sen') && service.value) {
     const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
     const newValue = oldValue === false || String(oldValue)?.includes('close')
     service.value.classList.add('--pending')
     service.value.setAttribute('disabled', 'true')
-    await deviceStore.changeOnOf({ clientId: 'relay', deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), onOfStatus: newValue })
+    const isOpenable = props?.capabilities?.find(el => el.instance?.includes('open'))
+    if (isOpenable) {
+      await deviceStore.changeOpenClose({ clientId: groupStore.clientId, deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), open: !(isOpenable.value === 'open' || isOpenable.value === 'true' || (isOpenable.value as unknown as boolean) === true) })
+    } else {
+      await deviceStore.changeOnOf({ clientId: groupStore.clientId, deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), onOffStatus: newValue })
+    }
     setTimeout(async () => {
     // TODO дождаться сокетов, переписать логику
     // 1. шлем запрос
     // 2. получаем ответ (сейчас время ответа задано таймаутом, должен быть сокет)
     // 3. получив ответ снимаем скелетон
       if (typeof props.groupId === 'string' && !Number.isInteger(Number(props.groupId))) {
-        await groupStore.getGroupById(props.groupId)
+        await groupStore.getGroupById(groupStore.currentHome)
       }
       if (Number.isInteger(Number(props.groupId))) {
         await categoriesStore.getDevicesByCategoryId(props.groupId, groupStore.currentHome)
@@ -172,7 +178,12 @@ async function turnOnDevice () {
   }
 }
 async function deleteDevice () {
-  await deviceStore.deleteDevice(props.id)
+  try {
+    const res = await deviceStore.deleteDevice(props.id)
+    isDeleteModalShow.value = false
+  } catch {
+
+  }
 }
 async function setNewDeviceName () {
   await deviceStore.changeName(props.id, newDeviceName.value)

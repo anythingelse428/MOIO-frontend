@@ -1,5 +1,6 @@
 <template>
   <div class="auth">
+    <loader-screen :is-loading="isLoading" />
     <h1 class="auth__header">
       Вход
     </h1>
@@ -31,15 +32,18 @@
 
 <script setup lang="ts">
 import { useUserStore } from "~/store/user"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 definePageMeta({
   layout: 'auth',
 })
 const userStore = useUserStore()
+const isLoading = ref(false)
 const login = ref('')
 const password = ref('')
 
 async function auth () {
+  isLoading.value = true
   const refreshToken = await userStore.auth({
     login: login.value,
     password: password.value,
@@ -47,6 +51,7 @@ async function auth () {
   const config = useRuntimeConfig()
   const cookie = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, { maxAge: 30 * 60 * 60 * 90 })
   cookie.value = refreshToken
+  isLoading.value = false
 }
 </script>
 

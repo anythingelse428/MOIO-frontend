@@ -1,5 +1,6 @@
 <template>
   <div class="add-group">
+    <loader-screen :is-loading="isLoading"/>
     <h1 class="add-group__header">
       Добавить комнату
     </h1>
@@ -78,8 +79,10 @@
 import { useGroupsStore } from "~/store/groups"
 import { useUserStore } from "~/store/user"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 const groupStore = useGroupsStore()
+const isLoading = ref(false)
 const {floors, uppperGroups} = storeToRefs(groupStore)
 const name = ref('')
 const floor = ref()
@@ -108,17 +111,21 @@ function setItem (e:Event, target:any, data:{ id: string, name:string }) {
   }
 }
 async function getDevicesByGroupId () {
+  isLoading.value = true
   existingDevices.value = []
   await groupStore.getDevicesByGroupId(house.value)
   for (const category of Object.values(groupStore.devices)) {
     existingDevices.value.push(...category)
   }
+  isLoading.value = false
 }
 getDevicesByGroupId()
 async function addGroup () {
+  isLoading.value = true
   const devicesArrayId = devices.value.map(el=>el.id)
   const parent = floor.value||house.value
   await groupStore.addRoom(name.value,3,parent,devicesArrayId,undefined)
+  isLoading.value = false
 //   TODO отправить пользователя в свежесозаднную комнату. Будет сделано после рефакторинга бека
 }
 watch(house, () => {

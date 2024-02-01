@@ -5,14 +5,15 @@ import type { IDeviceChangeBrightness } from "~/api/device/changeBrightness"
 import apiDeviceChangeBrightness from "~/api/device/changeBrightness"
 import type { IDeviceChangeRGBPayload } from "~/api/device/changeRGB"
 import apiDeviceChangeRGB from "~/api/device/changeRGB"
-import type { IDeviceChangeStatusOnOf } from "~/api/device/changeStatusOnOf"
-import apiDeviceChangeOnOf from "~/api/device/changeStatusOnOf"
+import type { IDeviceChangeStatusOnOf } from "~/api/device/changeStatusOnOff"
+import apiDeviceChangeOnOf from "~/api/device/changeStatusOnOff"
 import type { IDeviceChangeStatusOpenClose } from "~/api/device/changeStatusOpenClose"
 import apiDeviceChangeOpenClose from "~/api/device/changeStatusOpenClose"
 import type { IDeviceChangeStatusTemperature } from "~/api/device/changeStatusTemperature"
 import apiDeviceChangeTemperature from "~/api/device/changeStatusTemperature"
 import apiDeviceChangeName from "~/api/device/changeName"
 import apiDeviceDelete from "~/api/device/delete"
+import apiDeviceGetConfig from "~/api/device/getConfig"
 export const useDevicesStore = defineStore('devices', {
   state: () => ({
     devices: [] as IAllDevicesResponse[],
@@ -50,6 +51,7 @@ export const useDevicesStore = defineStore('devices', {
     },
     async changeRGB (props: IDeviceChangeRGBPayload) {
       try {
+        console.log(props)
         await apiDeviceChangeRGB(props)
       } catch (e) {
         useNotification('error', "Произошла ошибка при изменении цвета")
@@ -93,6 +95,9 @@ export const useDevicesStore = defineStore('devices', {
       } catch {
         useNotification('error', "Произошла непредвиденная ошибка")
       }
+    },
+    async getConfig () {
+      return await apiDeviceGetConfig()
     },
   },
 })

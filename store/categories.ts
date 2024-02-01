@@ -44,7 +44,8 @@ export const useCategoriesStore = defineStore('categories', {
       try {
         this.devicesInCategory = {}
         const data = await apiCategoryGetDevicesById(id, homeId)
-        this.devicesInCategory = data
+        console.log('dataFrom GetDevicesByCategoryAndGroup', data)
+        this.devicesInCategory = (data?.item1 || {}) as unknown as IDevicesInCategory
       } catch (e) {
         useNotification('error', 'Что-то пошло не так с получением категории')
       }

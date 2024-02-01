@@ -26,6 +26,7 @@ export const useUserStore = defineStore('user', {
       role: '',
       avatarUrl: '',
       accessToken: '',
+      clientId: "",
     }),
   getters: {
     userInfo: (state) => {
@@ -35,6 +36,7 @@ export const useUserStore = defineStore('user', {
         role: state.role,
         avatarUrl: state.avatarUrl,
         accessToken: state.accessToken,
+        clientId: state.clientId,
       }
     },
   },
@@ -111,6 +113,7 @@ export const useUserStore = defineStore('user', {
           this.role = userData.role
           this.displayedName = userData.name
           this.id = userData.id
+          this.clientId = userData.clientId
         }
       } catch (e) {
         refreshToken.value = ''

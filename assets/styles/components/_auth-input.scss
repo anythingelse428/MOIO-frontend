@@ -19,6 +19,7 @@
     top: 0;
     display: flex;
     align-items: center;
+    pointer-events: none;
   }
   &__field{
     background: $bg-primary;
@@ -31,6 +32,7 @@
     outline: 0;
     border: 0;
     &:focus,
+    &:-webkit-autofill,
     &:not(:placeholder-shown) {
       border: 1px solid $color-active;
       &+.auth-input__label {

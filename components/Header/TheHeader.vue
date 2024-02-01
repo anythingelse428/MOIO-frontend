@@ -35,7 +35,7 @@ const addMenuItems = [
     url: '/automation/create',
   },
   {
-    icon: "home-automation",
+    icon: "plus-box-outline",
     name: "Добавить сценарий",
     url: '/scenarios/create',
   },
@@ -55,18 +55,17 @@ const addMenuItems = [
     url: '/user/group/add/house',
   },
 ]
-const settingsMenuItems = [
-  {
-    icon: "information",
-    name: "Обогреватель (офис) нет связи",
-    url: '/',
-  },
-  {
-    icon: "cog",
-    name: "Настройки дома",
-    url: '/',
-  },
-]
+// {
+//   icon: "information",
+//       name: "Обогреватель (офис) нет связи",
+//     url: '/',
+// },
+// {
+//   icon: "cog",
+//       name: "Настройки дома",
+//     url: '/',
+// },
+const settingsMenuItems = []
 const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)
 const addMenu = ref(null)

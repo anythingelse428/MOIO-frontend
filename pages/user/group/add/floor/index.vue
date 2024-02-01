@@ -1,5 +1,6 @@
 <template>
   <div class="add-group">
+    <loader-screen :is-loading="isLoading"></loader-screen>
     <h1 class="add-group__header">
       Добавить этаж
     </h1>
@@ -107,8 +108,10 @@ import { useGroupsStore } from "~/store/groups"
 import { useUserStore } from "~/store/user"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 import type { Ref } from "vue"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 const groupStore = useGroupsStore()
+const isLoading = ref(false)
 const name = ref('')
 const house = ref(groupStore.currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
@@ -125,12 +128,14 @@ const previewData = ref({
   rooms: rooms
 })
 async function getRoomsByHomeId(){
+  isLoading.value = true
   await groupStore.getAll(house.value)
   existingRooms.value = groupStore.groups.filter(el=>el.typeId===3&&el.parentId===house.value).map(el=>{
     return {
       id: el.id,
       name: el.name,
   }})
+  isLoading.value = false
 }
 getRoomsByHomeId()
 function setItem (e:Event, target:any, data:{ id: string, name:string }) {
@@ -145,15 +150,19 @@ function setItem (e:Event, target:any, data:{ id: string, name:string }) {
   }
 }
 async function getDevicesByGroupId () {
+  isLoading.value = true
   existingDevices.value = []
   const { devices } = await groupStore.getGroupById(house.value)
   existingDevices.value = devices
+  isLoading.value = false
 }
 getDevicesByGroupId()
 async function addGroup () {
+  isLoading.value = true
   const devicesArrayId = devices.value.map(el=>el.id)
   const roomsArrayId = rooms.value.map(el=>el.id)
   await groupStore.addRoom(name.value,2, house.value,devicesArrayId.length>0?devicesArrayId:undefined,roomsArrayId.length>0?roomsArrayId:undefined)
+  isLoading.value = false
 //   TODO отправить пользователя в свежесозаднную комнату. Будет сделано после рефакторинга бека
 }
 watch(house, () => {

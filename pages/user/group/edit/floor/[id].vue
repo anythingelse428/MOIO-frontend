@@ -1,6 +1,6 @@
 <template>
   <div class="add-group --edit">
-
+  <loader-screen :is-loading="isLoading"/>
   <div class="add-group">
     <h1 class="add-group__header">
       Изменить этаж
@@ -95,20 +95,20 @@
           </div>
         </div>
 
-        <div class="add-group__preview-section">
-          <div class="add-group__preview-section-title">
-            Комнаты этажа
-          </div>
-          <div class="add-group__preview-section-value" v-if="previewData.rooms?.length">
-            <div class="add-group__preview-section-device" v-for="item in previewData.rooms" :key="item.id">
-              {{item?.name}}
-              <span class="mdi mdi-delete" @click="(e)=>setItem(e,rooms,{id:item.id,name:item.name})"></span>
-            </div>
-          </div>
-          <div class="add-group__preview-section-value" v-else>
-            Нет выбранных комнат
-          </div>
-        </div>
+<!--        <div class="add-group__preview-section">-->
+<!--          <div class="add-group__preview-section-title">-->
+<!--            Комнаты этажа-->
+<!--          </div>-->
+<!--          <div class="add-group__preview-section-value" v-if="previewData.rooms?.length">-->
+<!--            <div class="add-group__preview-section-device" v-for="item in previewData.rooms" :key="item.id">-->
+<!--              {{item?.name}}-->
+<!--              <span class="mdi mdi-delete" @click="(e)=>setItem(e,rooms,{id:item.id,name:item.name})"></span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="add-group__preview-section-value" v-else>-->
+<!--            Нет выбранных комнат-->
+<!--          </div>-->
+<!--        </div>-->
         <div class="add-group__preview-section">
           <div class="add-group__preview-section-title">
             Устройства этажа
@@ -143,12 +143,14 @@ import { type IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
 import { use } from "h3"
 import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
 import TheModal from "~/components/shared/TheModal.vue"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
+let oldName = ''
+const isLoading = ref(false)
 const groupStore = useGroupsStore()
 const {groups,currentHome} = storeToRefs(groupStore)
 const isAddRoommatesModalShow = ref(false)
 const name = ref('')
-let oldName = ''
 let oldDevices = []
 const house = ref(currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
@@ -180,15 +182,17 @@ function setItem (e:Event, target:any, data:{ id: string, name:string }) {
 }
 
 async function getGroupData(){
+  isLoading.value = true
   const data = await groupStore.getGroupById(id)
   house.value = data.parentId
   name.value = data.name
   users.value = await groupStore.getUsersByGroupId(id)
   users.value = users.value?.filter(el=>el.id !== groupStore.currentGroup.groupCreatorId)
-  console.log(users.value,groupStore.currentGroup.groupCreatorId)
+
   oldName = unref(name.value)
-  await getDevicesByGroupId(id,devices)
+  await getDevicesByGroupId(id as string,devices)
   await getDevicesByGroupId(house.value,existingDevices)
+  isLoading.value = false
 }
 getGroupData()
 async function getDevicesByGroupId (id:string,deviceRef:globalThis.Ref<any>) {
@@ -199,6 +203,7 @@ async function getDevicesByGroupId (id:string,deviceRef:globalThis.Ref<any>) {
   }
 }
 async function editGroup () {
+  isLoading.value = true
   if (name.value !== oldName){
    await groupStore.changeName(id, name.value)
   }
@@ -213,12 +218,13 @@ async function editGroup () {
   if (usersForRemove.value?.length>0){
     await groupStore.removeUsersFromGroup(usersForRemove.value?.map(el=>el.id),id)
   }
+  isLoading.value = false
   setTimeout(()=>{
     useRouter().push({path:'/user/group/' + id})
   },1500)
 }
 async function deleteGroup(){
-  await groupStore.deleteGroup(id)
+  await groupStore.deleteGroup(id as string)
 }
 
 

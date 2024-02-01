@@ -21,6 +21,7 @@ export const useGroupsStore = defineStore('groups', {
     devices: {} as IDevicesInCategory,
     uppperGroups: [] as IGroupResponseItem[],
     currentHome: '',
+    clientId: '',
     currentGroup: {} as IGroupResponseItem,
   }),
   getters: {
@@ -71,6 +72,7 @@ export const useGroupsStore = defineStore('groups', {
           this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id as string
           localStorage.setItem('moio-current-home', this.currentHome)
         }
+        this.clientId = this.uppperGroups.find(el => el.id === this.currentHome)?.clientId ?? ''
       } catch {
         useNotification('error', "Произошла ошибка в получении домов")
       }
@@ -88,9 +90,9 @@ export const useGroupsStore = defineStore('groups', {
         if (!response?.status) {
           useNotification('info', 'Комната успешно добавлена')
           setTimeout(() => {
-            // window.location.href = useRuntimeConfig().app.baseURL || '/'
+            window.location.href = useRuntimeConfig().app.baseURL || '/'
           }, 1000)
-          this.getAll()
+          await this.getAll()
         }
       } catch (e) {
         useNotification('error', 'Произошла ошибка при добавлении комнаты')

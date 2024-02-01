@@ -40,6 +40,9 @@
       </the-modal>
     </div>
     <profile-settings />
+    <button class="profile__sync-device" @click="aliceSync()">
+      Синхронизировать с Алисой
+    </button>
   </div>
 </template>
 
@@ -48,6 +51,7 @@ import { useUserStore } from '~/store/user'
 import TheModal from "~/components/shared/TheModal.vue"
 import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import { useDevicesStore } from "~/store/devices"
 
 const roommates = ref([
   {
@@ -68,10 +72,14 @@ const profileData = ref(userStore.userInfo)
 const isAddRoommatesModalShow = ref(false)
 const isLoading = ref(true)
 const addRoommateModal = ref(null)
+const devicesStore = useDevicesStore()
+function aliceSync () {
+  devicesStore.getConfig()
+}
 onMounted(() => {
+  isLoading.value = true
   nextTick(async () => {
     if (profileData.value.name?.length < 1) {
-      isLoading.value = true
       await userStore.init()
       profileData.value = userStore.userInfo
     }
@@ -82,5 +90,17 @@ onMounted(() => {
 
 <style lang="scss">
 @import "assets/styles/page/_user";
-
+.profile__sync-device{
+  display: block;
+  cursor: pointer;
+  margin-inline: auto;
+  margin-top: 20px;
+  padding: 8px 12px;
+  font-size: 25px;
+  font-weight: 600;
+  background: $color-active;
+  border-radius: 16px;
+  color: $color-accent;
+  border: 0;
+}
 </style>

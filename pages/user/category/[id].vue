@@ -72,8 +72,14 @@ watch(devicesInCategory, (newVal, oldValue) => {
 .category {
   .group{
     padding-inline: 80px;
+    @media screen and (max-width: 600px){
+      padding-inline: 32px;
+    }
     .subgroup-item__service-list{
       padding-inline: 40px;
+      @media screen and (max-width: 600px){
+        padding-inline: 0px;
+      }
     }
   }
 }

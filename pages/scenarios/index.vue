@@ -1,5 +1,6 @@
 <template>
   <div class="scenarios">
+    <loader-screen :is-loading="isLoading" />
     <h1 class="scenarios__header">
       Сценарии
     </h1>
@@ -8,10 +9,12 @@
         Список доступных сценариев
       </h2>
       <div class="scenarios-available__list">
-        <nuxt-link v-for="scenario in scenarios" :key="scenario.id" class="scenarios-available__list-item" :to="`scenarios/edit/${scenario.id}`">
+        <div v-for="scenario in scenarios" :key="scenario.id" class="scenarios-available__list-item" @click="executeScenario(scenario.id)">
           {{ scenario.name }}
-          <span class="mdi mdi-pencil" />
-        </nuxt-link>
+          <div class="scenarios-available__list-item-edit">
+            <span class="mdi mdi-pencil" @click.stop="redirect(`scenarios/edit/${scenario.id}`)" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -19,12 +22,24 @@
 
 <script setup lang="ts">
 
+import router from "#app/plugins/router"
 import { useScenarioStore } from "~/store/scenario"
 import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
-const scenarios = ref<IAllScenariosResponse["data"]>([])
+const isLoading = ref(true)
+const scenarios = ref<IAllScenariosResponse["data"]>([{ id: "1231212", name: 'name' }])
 const scenarioStore = useScenarioStore()
-scenarios.value = await scenarioStore.getAll()
+scenarios.value = await scenarioStore.getAll() as IAllScenariosResponse["data"]
+isLoading.value = false
+async function executeScenario (id:string) {
+  isLoading.value = true
+  await scenarioStore.executeScenario(id)
+  isLoading.value = false
+}
+function redirect (to:string) {
+  useRouter().push(to)
+}
 </script>
 
 <style lang="scss">
@@ -57,6 +72,7 @@ scenarios.value = await scenarioStore.getAll()
         height: 120px;
         width: calc(50% - 40px);
         border-radius: 12px;
+        cursor: pointer;
         .mdi.mdi-pencil {
           position: absolute;
           color: $color-active;

@@ -4,7 +4,7 @@ export interface IUsersByGroupResponse {
   id: number,
   name: string,
   login: string,
-  clientId: any,
+  clientId: string,
   password: any,
   role: number
 }
