@@ -7,7 +7,7 @@
 .toggle-switch-wrapper {
   .toggle-switch {
     &__button {
-      &::before {
+      &-icon {
         top: 4px;
         left: 5px;
       }
@@ -40,11 +40,10 @@
     cursor: pointer;
     z-index: 3;
 
-    &:checked + .toggle-switch__button:before {
-      content: v-bind(ico);
+    &:checked + .toggle-switch__button>.toggle-switch__button-icon {
       transform: translateX(24px);
       background-color: $thumb-color;
-      color: $color-active;
+      color: $color-active!important;
     }
 
     &:checked ~ .toggle-switch__layer {
@@ -71,7 +70,7 @@
     .toggle-switch__button{
       display: flex;
       justify-content: center;
-      &::before{
+      &-icon{
         width: 58px;
         height: 64px;
         padding: 0;
@@ -82,7 +81,7 @@
     }
 
     .toggle-switch__checkbox {
-      &:checked + .toggle-switch__button:before {
+      &:checked + .toggle-switch__button>.toggle-switch__button-icon {
         transform: translateX(0) translateY(8px);
         content: v-bind(ico);
         background-color: $thumb-color;

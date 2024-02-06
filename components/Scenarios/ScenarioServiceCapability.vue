@@ -14,7 +14,7 @@
       <toggle-switch
         role="button"
         :checked="capability.value"
-        :ico="`'${toggleSwitchIco?.code}'`"
+        :ico="toggleSwitchIco?.name"
         vertical-large
         @check="(e)=>{capability.value=e;updateDevice({type,value:capability.value})}"
       />
@@ -42,7 +42,7 @@
       <thermostat-input :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
-      <toggle-switch :checked="capability.value" vertical-large :ico="`'${toggleSwitchIco?.code}'`" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
+      <toggle-switch :checked="capability.value" vertical-large :ico="toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
     </div>
   </div>
 </template>

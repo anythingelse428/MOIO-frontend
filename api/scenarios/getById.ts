@@ -14,6 +14,6 @@ data:{
 }
 export default async function apiScenariosGetById (id:string):Promise<IScenarioResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.get(path + '/Scenarios/GetUserScenarioById?scenarios=' + id)
+    return await axios.get(path + '/v1/scenarios/' + id)
   })
 }

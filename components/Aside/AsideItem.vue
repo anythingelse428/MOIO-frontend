@@ -1,7 +1,7 @@
 <template>
   <div v-if="title.length>1 && url.length" class="aside-item">
     <NuxtLink class="aside-item__link" :to="url">
-      <span :class="`mdi mdi-${icon}`" />
+      <icon :name="icon" size="28" />
       <h2 class="aside-item__title">
         {{ title }}
       </h2>
@@ -13,8 +13,11 @@
 </template>
 
 <script setup lang="ts">
+import Icon from "~/components/shared/Icon.vue"
+import type { TUiIconNames } from "#build/types/ui-icon"
+
 export type AsideItem = {
-  icon:string,
+  icon:TUiIconNames,
   url:string,
   title:string
   editable?:boolean

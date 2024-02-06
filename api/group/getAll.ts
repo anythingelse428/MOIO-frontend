@@ -1,10 +1,11 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import type { Service } from "~/components/Service/TheService.vue"
 
 export interface IGroupResponseItem{
     id: string,
     parentId: string|null,
     typeId: number|null,
-    inverseParent: any[],
+    inverseParent: IGroupResponseItem[],
     clientId?:string
     parent: string|null,
     type: {
@@ -13,7 +14,7 @@ export interface IGroupResponseItem{
         name:string|null
     },
     name: string|null,
-    devices:any,
+    devices:Service[],
     groupCreatorId:number
 }
 

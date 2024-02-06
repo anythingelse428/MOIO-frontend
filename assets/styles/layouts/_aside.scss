@@ -99,9 +99,9 @@
       align-items: center;
       gap: 30px;
       &:hover{
-        .mdi,
+        span,
         .aside-item__title{
-          color: $color-active;
+          color: $color-active!important;
         }
       }
     }

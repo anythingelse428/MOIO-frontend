@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     '@nuxtjs/i18n',
+    'nuxt-icons',
   ],
   devServer: {
     host: process.env.NITRO_HOST,

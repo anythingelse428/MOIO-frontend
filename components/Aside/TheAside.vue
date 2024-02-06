@@ -25,10 +25,10 @@
       </div>
       <div class="aside-footer">
         <button class="aside-footer__item" @click="colorMode?.changeColorScheme()">
-          <span class="mdi mdi-brightness-4" />{{ colorMode?.currentScheme.value === 'scheme-dark'?"Светлая тема":"Темная тема" }}
+          <icon name="aside/theme" size="28" />{{ colorMode?.currentScheme.value === 'scheme-dark'?"Светлая тема":"Темная тема" }}
         </button>
         <button class="aside-footer__item" @click="logout()">
-          <span class="mdi mdi-exit-to-app" />
+          <icon name="aside/logout" size="26" />
           Выйти
         </button>
       </div>
@@ -41,40 +41,50 @@ import AsideCategory from '~/components/Aside/AsideCategory.vue'
 import { useUserStore } from "~/store/user"
 import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
+import Icon from "~/components/shared/Icon.vue"
+import type { TUiIconNames } from "#build/types/ui-icon"
 
+export interface IAsideContent {
+  categoryTitle:string
+  categoryContent:{
+    icon:TUiIconNames
+    name:string,
+    url:string
+  }[]
+}
 const categoriesStore = useCategoriesStore()
 const groupsStore = useGroupsStore()
 const { rooms, floors } = storeToRefs(groupsStore)
 const route = useRoute()
 const isAsideCollapsed = ref(false)
-const asideContent =
+const asideContent:IAsideContent =
     {
       categoryTitle: 'Основное',
       categoryContent: [
         {
-          icon: 'home',
+          icon: 'aside/home',
           name: 'дом',
           url: '/',
         },
         {
-          icon: 'home-automation',
+          icon: 'aside/automation',
           name: 'автоматизация',
           url: '/automation',
         },
         {
-          icon: 'account-outline',
+          icon: 'aside/profile',
           name: 'профиль',
           url: '/user',
         },
         {
-          icon: 'home-edit',
+          icon: 'aside/scenarios',
           name: 'сценарии',
           url: '/scenarios',
         },
       ],
     }
 const categories = ref<{
-  icon: string,
+  icon: TUiIconNames,
   name:string,
   url: string,
   editable?:boolean

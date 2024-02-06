@@ -18,7 +18,7 @@
       <toggle-switch
         role="button"
         :checked="capability.value"
-        :ico="`'${toggleSwitchIco?.code}'`"
+        :ico="toggleSwitchIco?.name"
         vertical-large
         @check="(e)=>{capability.value=e;updateDevice({type,value:capability.value})}"
       />
@@ -46,7 +46,7 @@
       <thermostat-input :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
-      <toggle-switch :checked="capability.value" vertical-large :ico="`'${toggleSwitchIco?.code}'`" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
+      <toggle-switch :checked="capability.value" vertical-large :ico="toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
     </div>
   </div>
 </template>
@@ -90,7 +90,7 @@ const isMounted = ref(false)
 const hue = ref(Number(capability.value.hsv?.h))
 const saturation = ref(Number(capability.value.hsv?.s))
 const rgb = computed(() => hsvToRgb(Number(hue.value), saturation.value / 100, capability.value.hsv.v / 100))
-
+const { $event } = useNuxtApp()
 if (capability.value && String(capability.value?.value)?.indexOf('close') > -1) {
   capability.value.value = false
 }
@@ -112,7 +112,7 @@ function updateDevice (val:{type:string, value:any}) {
     deviceId: props.deviceId,
     chanel: props.chanel,
   }
-  console.log(mainActionProps)
+
   switch (val.type) {
     case 'open':
       // @ts-ignore

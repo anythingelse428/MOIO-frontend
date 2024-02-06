@@ -1,33 +1,35 @@
-export default function useIcoByGroupName (name:string) {
+import type { TUiIconNames } from "#build/types/ui-icon"
+
+export default function useIcoByGroupName (name:string):{name:TUiIconNames, code?:string} {
   if (!name) { return { name: 'help', code: '\\F02D6' } }
   if (name.includes('devices.types.sensor')) {
     return { name: 'access-point', code: "\\F0003" }
   }
   switch (name.toLowerCase()) {
     case 'безопасность':
-      return { name: 'shield-outline', code: '\\' }
+      return { name: 'aside/secure', code: '\\' }
     case 'свет':
-      return { name: 'lightbulb-outline', code: '\\' }
+      return { name: 'aside/light', code: '\\' }
     case 'вода':
-      return { name: 'water-outline', code: '\\' }
+      return { name: 'aside/water', code: '\\' }
     case 'электроника':
-      return { name: 'volume-high', code: '\\' }
+      return { name: 'aside/electronic', code: '\\' }
     case 'микроклимат':
-      return { name: 'fan', code: '\\' }
+      return { name: 'aside/climate', code: '\\' }
     case 'аудио':
-      return { name: 'volume-high', code: '\\' }
+      return { name: 'aside/electronic', code: '\\' }
     case 'выключатели':
-      return { name: 'toggle-switch-variant-off', code: '\\' }
+      return { name: 'aside/water', code: '\\' }
     case 'розетки':
-      return { name: 'power-socket-eu ', code: '\\' }
+      return { name: 'aside/water', code: '\\' }
     case 'комната':
-      return { name: 'cube-outline', code: '\\' }
+      return { name: 'aside/room', code: '\\' }
     case 'этаж':
-      return { name: 'home-floor-l', code: '\\' }
+      return { name: 'aside/floor', code: '\\' }
     case 'дом':
-      return { name: 'home', code: '\\' }
+      return { name: 'aside/home', code: '\\' }
     default:
-      return { name: 'help', code: '\\F02D6' }
+      return { name: 'aside/water', code: '\\F02D6' }
   }
 }
 

@@ -20,12 +20,13 @@
 
 <script setup lang="ts">
 import AsideItem from '~/components/Aside/AsideItem.vue'
+import type { TUiIconNames } from "#build/types/ui-icon"
 
 export type AsideCategory = {
   categoryHeader:string,
   categoryItems:
       {
-        icon: string,
+        icon: TUiIconNames,
         name: string,
         url: string
         editable?:boolean

@@ -1,24 +1,24 @@
-import axios, { AxiosError, type AxiosInstance } from 'axios'
+import { AxiosError, type AxiosInstance } from 'axios'
 import { consola } from 'consola'
 import { useRuntimeConfig } from '#app'
 import { useUserStore } from '~/store/user'
 import useNotification from "~/composables/useNotification"
 
-const isAxiosInit = ref(false)
-const axiosInstance = axios.create()
-const basicHeaders = {
-  accept: '*',
-  'Content-Type': 'application/json-patch+json',
-  'Access-Control-Allow-Origin': '*',
-  // 'Content-Type': 'application/x-www-form-urlencoded',
-}
 
 interface IArgs {
   axios: AxiosInstance
   path: string
 }
 export default async function (queryCallback = async ({ axios }: IArgs): Promise<any> => {}) {
-  const config = useRuntimeConfig()
+  const nuxtApp = useNuxtApp()
+  const config = nuxtApp.$config
+  const {
+    axiosInstance,
+    isAxiosInit,
+    noRetry$,
+    basicHeaders,
+  } = nuxtApp.$axiosPlugin
+
   function createAuthHeaders () {
     if (process.server) {
       return {}
@@ -37,8 +37,10 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
   }
 
   if (!isAxiosInit.value) {
-    axiosInstance.interceptors.request.use((config) => {
-      config.headers = Object.assign({}, config.headers, basicHeaders, createAuthHeaders())
+    axiosInstance.interceptors.request.use(async (config) => {
+      await nuxtApp.runWithContext(() => {
+        config.headers = Object.assign({}, config.headers, basicHeaders, createAuthHeaders())
+      })
       return config
     })
 
@@ -49,7 +51,7 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
       if (error.response?.status === 401) {
         originalRequest._retry = true
         const accessToken = await refreshAccessToken()
-        axios.defaults.headers.common[config.public.REST_BASE_TOKEN as string] = `Bearer ${accessToken}`
+        axiosInstance.defaults.headers.common[config.public.REST_BASE_TOKEN as string] = `Bearer ${accessToken}`
         return axiosInstance(originalRequest)
       }
       return Promise.reject(error)
@@ -61,7 +63,7 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
   try {
     const response = await queryCallback({ axios: axiosInstance, path: config.public.API_ENDPOINT as string })
     if (response && response?.status === 200) {
-      config.public.APP_DEBUG && console.log(response.config.url)
+      config.public.APP_DEBUG && consola.box(`[useAsyncQuery] ${response.config.url}`, response)
       return response.data
     }
   } catch (e) {

@@ -2,7 +2,7 @@
   <div ref="service" :class="`service`" role="button">
     <div class="service-info" @mousedown.left="turnOnDevice()" @mousedown.right="isCapabilitiesShow = true">
       <div :class="`service-ico-wrapper ${isDeviceOn === true || isDeviceOpen == 'true' || String(isDeviceOpen)?.indexOf('open') > -1 ? '--active':''}`">
-        <span :class="`mdi mdi-${ico?.name}`" />
+        <icon :name="ico.name" size="88" />
       </div>
       <div class="service-name">
         <span>
@@ -94,6 +94,7 @@ import { useDevicesStore } from "~/store/devices"
 import { useGroupsStore } from "~/store/groups"
 import { useCategoriesStore } from "~/store/categories"
 import { useUserStore } from "~/store/user"
+import Icon from "~/components/shared/Icon.vue"
 
 export type Service = {
   id:string
@@ -161,20 +162,8 @@ async function turnOnDevice () {
     } else {
       await deviceStore.changeOnOf({ clientId: groupStore.clientId, deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), onOffStatus: newValue })
     }
-    setTimeout(async () => {
-    // TODO дождаться сокетов, переписать логику
-    // 1. шлем запрос
-    // 2. получаем ответ (сейчас время ответа задано таймаутом, должен быть сокет)
-    // 3. получив ответ снимаем скелетон
-      if (typeof props.groupId === 'string' && !Number.isInteger(Number(props.groupId))) {
-        await groupStore.getGroupById(groupStore.currentHome)
-      }
-      if (Number.isInteger(Number(props.groupId))) {
-        await categoriesStore.getDevicesByCategoryId(props.groupId, groupStore.currentHome)
-      }
-      service.value.classList.remove('--pending')
-      service.value.setAttribute('disabled', 'false')
-    }, 3000)
+    service.value.classList.remove('--pending')
+    service.value.setAttribute('disabled', 'false')
   }
 }
 async function deleteDevice () {
@@ -185,6 +174,7 @@ async function deleteDevice () {
 
   }
 }
+
 async function setNewDeviceName () {
   await deviceStore.changeName(props.id, newDeviceName.value)
   isEdit.value = false

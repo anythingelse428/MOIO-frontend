@@ -4,7 +4,8 @@ export default {
   locale: 'ru',
   messages: {
     en: {
-      welcome: 'Welcome',
+      'devices.capabilities.range': 'Brightness',
+      'devices.capabilities.color_setting': 'Color',
     },
     ru: {
       'devices.capabilities.range': 'Яркость',

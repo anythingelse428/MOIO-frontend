@@ -19,7 +19,7 @@ export default async function apiScenariosAdd (props:IAddScenario) {
     path,
   }) => {
     try {
-      const response = await axios.post(path + '/Scenarios/CreateScenarios', props)
+      const response = await axios.post(path + 'v1/scenarios/create', props)
       if (response.status === 200) {
         useNotification('info', "Сценарий успешно добавлен")
       }

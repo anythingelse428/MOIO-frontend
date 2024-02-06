@@ -26,12 +26,12 @@ import router from "#app/plugins/router"
 import { useScenarioStore } from "~/store/scenario"
 import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-
 const isLoading = ref(true)
-const scenarios = ref<IAllScenariosResponse["data"]>([{ id: "1231212", name: 'name' }])
+const scenarios = ref<IAllScenariosResponse[]>([])
 const scenarioStore = useScenarioStore()
-scenarios.value = await scenarioStore.getAll() as IAllScenariosResponse["data"]
+scenarios.value = await scenarioStore.getAll() as IAllScenariosResponse[]
 isLoading.value = false
+
 async function executeScenario (id:string) {
   isLoading.value = true
   await scenarioStore.executeScenario(id)

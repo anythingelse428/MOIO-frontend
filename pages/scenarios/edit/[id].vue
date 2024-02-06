@@ -169,11 +169,12 @@ getRoomsName(data.value)
 const router = useRoute()
 const scenarioStore = useScenarioStore()
 async function getData () {
-  isLoading.value = false
+  isLoading.value = true
   const response = await scenarioStore.getById(router.params.id as string)
   selectedDevice.value = response?.devicesScenarios
   scenarioName.value = response?.name
-  selectedDevice.value.forEach((el) => {
+  isLoading.value = false
+  selectedDevice.value?.forEach((el) => {
     toggleSelected(el.id, data.value)
     if (capabilities.value[el.id]) {
       capabilities.value[el.id].push(...el.capabilities)
@@ -181,7 +182,6 @@ async function getData () {
       capabilities.value[el.id] = el.capabilities
     }
   })
-  isLoading.value = true
 }
 getData()
 async function updateScenario () {

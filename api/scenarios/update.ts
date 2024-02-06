@@ -13,7 +13,6 @@ export interface IScenarioUpdateProps {
 }
 export default async function apiScenariosUpdate (props:IScenarioUpdateProps) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    console.log(await axios.post(path + '/scenarios/updateScenarios', props))
-    return await axios.post(path + '/scenarios/updateScenarios', props)
+    return await axios.put(path + '/v1/scenarios/update', props)
   })
 }

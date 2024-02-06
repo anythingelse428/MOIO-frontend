@@ -25,32 +25,32 @@ const { houses } = storeToRefs(groupsStore)
 const route = useRoute()
 const addMenuItems = [
   {
-    ico: "plus-box-outline",
+    ico: "aside/automation",
     title: "Добавить сценарий",
     url: '/#',
   },
   {
-    icon: "home-automation",
+    icon: "aside/automation",
     name: "Добавить автоматизацию",
     url: '/automation/create',
   },
   {
-    icon: "plus-box-outline",
+    icon: "header/scenario",
     name: "Добавить сценарий",
     url: '/scenarios/create',
   },
   {
-    icon: "cube-outline",
+    icon: "aside/room",
     name: "Добавить комнату",
     url: '/user/group/add/room',
   },
   {
-    icon: "home-floor-l",
+    icon: "aside/floor",
     name: "Добавить этаж",
     url: '/user/group/add/floor',
   },
   {
-    icon: "home-plus",
+    icon: "header/home",
     name: "Добавить дом",
     url: '/user/group/add/house',
   },

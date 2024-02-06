@@ -35,18 +35,17 @@ export const useScenarioStore = defineStore('scenario', {
     async getAll () {
       try {
         const data = await apiScenariosGetAll()
-        if (data?.data) {
-          return data.data
-        }
+        console.log(data)
+        return data
       } catch (e) {
-
+        console.log(e)
       }
     },
     async getById (id:string) {
       try {
         const data = await apiScenariosGetById(id)
-        if (data?.data) {
-          return data.data
+        if (data) {
+          return data
         }
       } catch {
 
@@ -59,7 +58,6 @@ export const useScenarioStore = defineStore('scenario', {
       try {
         const response = await apiScenariosUpdate(data)
         console.log(response)
-        console.log('DF', data)
         if (response) {
           return response
         }
