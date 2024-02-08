@@ -7,14 +7,14 @@
     <form class="automation-add-condition__form" @submit.prevent="emit('add-condition',condition)">
       <div class="automation-add-condition__conditions">
         <div :class="`automation-add-condition__condition ${condition==='time'&&'--active'}`" @click="condition='time'">
-          <input id="" type="radio" name="new_condition">
+          <input id="time" type="radio" name="new_condition">
           <span class="mdi mdi-clock-time-three-outline" />
           <div class="automation-add-condition__condition-name">
             Время
           </div>
         </div>
         <div :class="`automation-add-condition__condition ${condition==='sensor'&&'--active'}`" @click="condition='sensor'">
-          <input id="" type="radio" name="new_condition">
+          <input id="sensor" type="radio" name="new_condition">
           <span class="mdi mdi-leak" />
           <div class="automation-add-condition__condition-name">
             Датчик

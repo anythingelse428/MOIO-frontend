@@ -71,10 +71,12 @@ async function register () {
   if (clientId.value.length > 0) {
     registrationData.clientId = clientId.value
   }
-  const refreshToken = await userStore.register(registrationData)
-  const config = useRuntimeConfig()
-  const cookie = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, { maxAge: 30 * 60 * 60 * 90 })
-  cookie.value = refreshToken
+  try {
+    const refreshToken = await userStore.register(registrationData)
+    const config = useRuntimeConfig()
+    const cookie = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, { maxAge: 30 * 60 * 60 * 90 })
+    cookie.value = refreshToken
+  } catch {}
   isLoading.value = false
 }
 </script>

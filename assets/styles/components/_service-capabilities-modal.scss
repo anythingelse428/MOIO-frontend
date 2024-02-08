@@ -4,7 +4,8 @@
   position: relative;
   //width: clamp(24%, 400px, 95%);
   width:clamp(15%, 320px, 95%);
-  height: 85vh;
+  max-height: 90vh;
+  height: auto;
   overflow: hidden;
   background: $bg-primary;
   display: flex;
@@ -33,16 +34,19 @@
     @include capabilities-modal-header;
     text-align: center;
     display: inline-block;
-    position: absolute;
+    position: relative;
+    top: calc(-24px - 6px);
     right: 0;
     left: 0;
     padding-inline: 20px;
     &.--edited{
       display: flex;
-      width: calc(100% - (24px * 2));
+      width: 100%;
       justify-content: space-between;
       margin-inline: auto;
       align-items: center;
+      top: 4px;
+      padding-inline: 8px;
       input{
         background: $bg-primary;
         outline: none;
@@ -93,14 +97,17 @@
     }
   }
   &__footer{
+    margin-top: 24px;
+    padding-top: 24px;
     display: flex;
-    min-height: 260px;
     flex-direction: column;
     justify-content: flex-end;
     align-items: stretch;
     bottom: 0;
     position: relative;
     flex: 1;
+    gap: 12px;
+    border-top: 2px solid $settings-color;
   }
 
   &__action {

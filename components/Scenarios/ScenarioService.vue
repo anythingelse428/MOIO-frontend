@@ -2,7 +2,7 @@
   <div ref="service" :class="`service ${selected&&'--active'}`" role="button">
     <div class="service-info" @mousedown.left="handleLeftMouse()">
       <div class="service-ico-wrapper">
-        <span :class="`mdi mdi-${ico?.name}`" />
+        <icon :name="ico.name" size="30" />
       </div>
       <div class="service-name">
         <span>
@@ -94,6 +94,7 @@ import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useDevicesStore } from "~/store/devices"
 import { useGroupsStore } from "~/store/groups"
 import { useCategoriesStore } from "~/store/categories"
+import Icon from "~/components/shared/Icon.vue"
 
 export type Service = {
   id:string

@@ -72,8 +72,8 @@ watch(devicesInCategory, (newVal, oldValue) => {
 .category {
   .group{
     padding-inline: 80px;
-    @media screen and (max-width: 600px){
-      padding-inline: 32px;
+    @media screen and (max-width: 768px){
+      padding-inline: 8px;
     }
     .subgroup-item__service-list{
       padding-inline: 40px;

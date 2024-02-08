@@ -1,15 +1,26 @@
 .service{
   cursor: pointer;
-  width: min(30%, 186px);
-  padding-inline: 8px;
-  padding-top: 20px;
-  display: block;
-  aspect-ratio: 1 / 1;
-  border-radius: 24px;
-  background: $bg-primary;
-  box-shadow: 0px 0px 27px 0px $service-shadow-color;
-  position: relative;
+  width: min(36%, 160px);
 
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 24px;
+  background: $color-accent;
+  box-shadow: 0px 0px 24px 0px rgb($service-shadow-color / 0.5);
+  position: relative;
+  border: 2px solid transparent;
+  &.--active {
+    box-shadow: 0px 0px 30px 0px rgb($service-shadow-color / 1);
+    border-color: rgb($service-shadow-color / 1);
+    background: $settings-color;
+    .service-ico-wrapper {
+      color: $color-active;
+      transition: color .1s;
+      .ui-icon{
+        transition: color .1s;
+      }
+    }
+  }
   &.--pending{
     cursor: progress;
     pointer-events: none;
@@ -34,15 +45,16 @@
   }
 
   @media screen and (max-width: 768px) {
-    width: 45%;
+    width: 38%;
     display: flex;
     flex-direction: column;
-    aspect-ratio: auto;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
     padding-bottom: 20px;
   }
   @media screen and (max-width: 560px) {
-    width: 100%;
-
+    width: max(60%, 168px);
   }
   .on-of-teleported{
     cursor: pointer;
@@ -53,39 +65,35 @@
     right: 4px;
   }
   .service-ico-wrapper{
-    width: 88px;
-    height: 88px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    display: block;
-    margin-inline: auto;
-    .mdi{
-      font-size: 100px;
-      transition: color .51s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    width: 100%;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     &.--active{
         color: $color-active;
+        transition: color .1s;
+      .ui-icon{
+        transition: color .1s;
+      }
     }
   }
   .service-info{
-    //display: flex;
-    //flex-direction: column;
-    //justify-content: center;
-    //align-items: center;
     width: 100%;
-    //gap: 16px;
+    height: 100%;
+    padding: 16px;
     .service-name {
       @include tool-item;
-      text-align: center;
+      text-align: start;
       margin-top: 16px;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
       -webkit-box-orient: vertical;
-      overflow-y: hidden;
+      overflow: hidden;
+      span {
+        word-break: break-word;
+      }
     }
   }
   .service-capabilities-list-wrapper{

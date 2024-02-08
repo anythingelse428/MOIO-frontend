@@ -14,7 +14,7 @@ import type { TUiIconNames } from '#build/types/ui-icon'
 interface Props {
   name: TUiIconNames
   filled?: boolean
-  size?: number
+  size?: number|string
   color?:string
 }
 

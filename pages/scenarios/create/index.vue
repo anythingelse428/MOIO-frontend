@@ -53,6 +53,7 @@
           :inverse-parent="filterGroups(data, searchGroupInput).inverseParent"
           :name="filterGroups(data, searchGroupInput)?.name"
           :hide-empty="true"
+          :hide-sensors="true"
           :is-scenarios="true"
           @get-data="e=>{selectDevice(e);toggleSelected(e.id, data)}"
         />

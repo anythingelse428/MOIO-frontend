@@ -1,8 +1,21 @@
 <template>
-  <div ref="service" :class="`service`" role="button">
+  <div
+    ref="service"
+    :class="`service ${isDeviceOn === true ||
+      isDeviceOpen == 'true' ||
+      String(isDeviceOpen)?.indexOf('open') > -1
+      ? '--active':''}`"
+    role="button"
+  >
     <div class="service-info" @mousedown.left="turnOnDevice()" @mousedown.right="isCapabilitiesShow = true">
-      <div :class="`service-ico-wrapper ${isDeviceOn === true || isDeviceOpen == 'true' || String(isDeviceOpen)?.indexOf('open') > -1 ? '--active':''}`">
-        <icon :name="ico.name" size="88" />
+      <div
+        :style="isDeviceOn&&`color:rgb(${Math.round(color?.red*255)},${Math.round(color?.green*255)},${Math.round(color?.blue*255)})`"
+        class="service-ico-wrapper"
+      >
+        <icon :name="ico.name" size="36" />
+        <div v-if="stuff?.value" class="service-stuff">
+          {{ stuff.value }}{{ stuff.instance.includes('temp')?'°C':'' }}
+        </div>
       </div>
       <div class="service-name">
         <span>
@@ -33,7 +46,7 @@
                 {{ name }}
               </span>
             </div>
-            <div class="service-capabilities-modal__body">
+            <div :class="`service-capabilities-modal__body ${isDeviceOn === true || isDeviceOpen == 'true' || String(isDeviceOpen)?.indexOf('open') > -1 ? '--active':''}`">
               <service-capabilities-structure>
                 <template
                   v-for="item in capabilities"
@@ -51,7 +64,7 @@
                     :device-type="type"
                     :hsv="item.hsv"
                     :value="item.value"
-                    @update-bool-val="turnOnDevice()"
+                    @update-bool-val="e=>turnOnDevice(e)"
                   />
                 </template>
               </service-capabilities-structure>
@@ -88,6 +101,7 @@
 <script setup lang="ts">
 import { onLongPress } from '@vueuse/core'
 
+import type { ArrayEntry } from "type-fest/source/entry"
 import TheModal from "~/components/shared/TheModal.vue"
 import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useDevicesStore } from "~/store/devices"
@@ -95,29 +109,31 @@ import { useGroupsStore } from "~/store/groups"
 import { useCategoriesStore } from "~/store/categories"
 import { useUserStore } from "~/store/user"
 import Icon from "~/components/shared/Icon.vue"
-
+import useHSVToRGB from "~/composables/useHSVToRGB"
+import useThrottle from "~/composables/useThrottle"
+export interface ICapability {
+  type: string
+  retrievable: boolean
+  reportable: boolean
+  value: string
+  instance: string
+  range?: {
+    min: number
+    max: number
+    precision: number
+  }
+  hsv?: {
+    h: number
+    s: number
+    v: number
+  }
+}
 export type Service = {
   id:string
   groupId:string|number
   name: string
   type:string
-  capabilities?:{
-    type: string
-    retrievable: boolean
-    reportable: boolean
-    value: string
-    instance: string
-    range: {
-      min: number
-      max: number
-      precision: number
-    }
-    hsv: {
-      h: number
-      s: number
-      v: number
-    }
-  }[]
+  capabilities?:ICapability[]
 }
 
 const props = defineProps<Service>()
@@ -135,11 +151,14 @@ const newDeviceName = ref(props.name)
 const deviceStore = useDevicesStore()
 const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
-
+const stuff = ref<ICapability>({} as ICapability)
+const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v && useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100))
 onClickOutside(target, (event) => {
   if (isCapabilitiesShow.value && event.target?.className) {
     isCapabilitiesShow.value = false
     isDeleteModalShow.value = false
+    // после закрытия модалки обновляю данные
+    setDisplayedStuff()
   }
 }, { ignore: [deleteModal] })
 onClickOutside(deleteModal, () => {
@@ -149,9 +168,8 @@ onClickOutside(deleteModal, () => {
 onLongPress(service, () => {
   isCapabilitiesShow.value = true
 }, { delay: 400 })
-const userStore = useUserStore()
-async function turnOnDevice () {
-  if (!props.id.includes('_sen') && service.value) {
+async function turnOnDevice (isChangeRange?:any) {
+  if (!props.id.includes('_sen') && service.value && !isChangeRange) {
     const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
     const newValue = oldValue === false || String(oldValue)?.includes('close')
     service.value.classList.add('--pending')
@@ -170,6 +188,10 @@ async function deleteDevice () {
   try {
     const res = await deviceStore.deleteDevice(props.id)
     isDeleteModalShow.value = false
+    isCapabilitiesShow.value = false
+    if (service.value) {
+      service.value.style.display = 'none'
+    }
   } catch {
 
   }
@@ -185,14 +207,29 @@ async function setNewDeviceName () {
   }
 }
 
+function setDisplayedStuff () {
+  if ((props?.capabilities?.length && props?.capabilities?.length <= 1) || props.type.includes('_sen')) { return }
+  const capabilityWithNumValueIdx = props.capabilities?.findIndex(el => Number.isInteger(el.value)) as number
+  const hsvIdx = props.capabilities?.findIndex(el => el?.hsv?.h || el?.hsv?.s || el?.hsv?.v) as number
+  if (props?.capabilities && props?.capabilities[capabilityWithNumValueIdx]) {
+    stuff.value = reactive(props?.capabilities[capabilityWithNumValueIdx])
+  }
+  if (props?.capabilities && props?.capabilities[hsvIdx] && isDeviceOn.value) {
+    stuff.value.hsv = props?.capabilities[hsvIdx].hsv
+  }
+  if (!isDeviceOn.value) {
+    stuff.value.hsv = { h: null, s: null, v: null }
+  }
+}
 watch(props, (value) => {
   isDeviceOn.value = value.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value
-  isDeviceOpen.value = value.capabilities?.find(el => el.instance === 'open')?.value
+  isDeviceOpen.value = value.capabilities?.find(el => el.instance === 'open' || el.type === 'devices.types.openable.garage')?.value
 }, { deep: true })
 
 onMounted(() => {
   setTimeout(() => {
     isMounted.value = true
+    setDisplayedStuff()
     window.addEventListener('contextmenu', (e) => {
       e.preventDefault()
     })

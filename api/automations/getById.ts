@@ -1,0 +1,23 @@
+export interface IAutomationByIdResponse {
+id:string,
+  name:string
+  scenarios:{
+    orderId:number,
+    scenarioId:string
+  }[]
+  triggers:{
+    time:{
+      automationTriggerId: string,
+      time: string
+    }[]
+    sensors:{
+      automationTriggerId: string,
+      sensor: string
+    }[]
+  }
+}
+export default async function apiAutomationsGetById (id:string):Promise<IAutomationByIdResponse> {
+  return await useAsyncQuery(async ({ axios, path }) => {
+    return await axios.get(path + '/v1/automations/' + id)
+  })
+}

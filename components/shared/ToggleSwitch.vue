@@ -4,8 +4,8 @@
     <div :class="`toggle-switch ${verticalLarge?'--vertical-large':''}`">
       <input id="toggle-switch" v-model="currentValue" type="checkbox" class="toggle-switch__checkbox">
       <div class="toggle-switch__button">
-        <div v-if="verticalLarge" class="toggle-switch__button-icon">
-          <icon :name="ico" size="40" />
+        <div class="toggle-switch__button-icon">
+          <icon v-if="verticalLarge" :name="ico" size="40" />
         </div>
       </div>
       <div class="toggle-switch__layer" />

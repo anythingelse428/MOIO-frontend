@@ -44,13 +44,17 @@ const password = ref('')
 
 async function auth () {
   isLoading.value = true
-  const refreshToken = await userStore.auth({
-    login: login.value,
-    password: password.value,
-  })
-  const config = useRuntimeConfig()
-  const cookie = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, { maxAge: 30 * 60 * 60 * 90 })
-  cookie.value = refreshToken
+  try {
+    const refreshToken = await userStore.auth({
+      login: login.value,
+      password: password.value,
+    })
+    const config = useRuntimeConfig()
+    const cookie = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, { maxAge: 30 * 60 * 60 * 90 })
+    cookie.value = refreshToken
+  } catch {
+
+  }
   isLoading.value = false
 }
 </script>

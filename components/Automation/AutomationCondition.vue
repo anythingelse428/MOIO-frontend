@@ -8,7 +8,8 @@
         {{ type==='sensor'?'Сценарий выполняется если сработал датчик':'Время начала активности автоматизации:' }}
       </div>
       <div v-if="type==='time'" class="automation-condition__value">
-        <input id="" v-model="time" type="time" name=""> часов
+        {{ Date().match(/GMT.\d\d.\d\d/gm)[0] }}
+        <input v-model="time" type="time" name="" :disabled="Number(editable) === 0"> часов
       </div>
       <div v-if="type==='sensor'" class="automation-condition__sensors">
         <div
@@ -18,7 +19,7 @@
           @click="emits('select-option',{type,value:sensor.id})"
         >
           <span class="mdi mdi-leak" />
-          <input type="radio" :name="idx">
+          <input type="radio" :name="idx" :disabled="Number(editable) === 0">
           <span class="mask" />
           {{ sensor.name }}
         </div>
@@ -34,14 +35,21 @@ export interface AutomationConditionProps {
   sensors?:{
     id:string,
     name:string,
-  }[]
+  }[],
+  currTime?:string,
+  editable?:boolean
 }
-const props = defineProps<AutomationConditionProps>()
+const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`, editable: true })
 const emits = defineEmits(['select-option'])
-const time = ref('')
-watch(time, (newVal) => {
-  emits('select-option', { type: 'time', value: newVal })
+const time = computed({
+  get () {
+    return props.currTime
+  },
+  set (val) {
+    emits('select-option', { type: 'time', value: val })
+  },
 })
+
 </script>
 
 <style lang="scss">

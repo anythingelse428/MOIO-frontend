@@ -4,11 +4,13 @@ export default {
   locale: 'ru',
   messages: {
     en: {
-      'devices.capabilities.range': 'Brightness',
+      'devices.capabilities.range-brightness': 'Brightness',
+      'devices.capabilities.range-threshold_temperature': 'Temperature',
       'devices.capabilities.color_setting': 'Color',
     },
     ru: {
-      'devices.capabilities.range': 'Яркость',
+      'devices.capabilities.range-brightness': 'Яркость',
+      'devices.capabilities.range-threshold_temperature': 'Температура',
       'devices.capabilities.color_setting': 'Цвет',
     },
   },

@@ -1,48 +1,84 @@
 <template>
-  <div class="automation">
-    <h1 class="automation-header">
+  <div class="scenarios">
+    <loader-screen :is-loading="isLoading" />
+    <h1 class="scenarios__header">
       Автоматизации
     </h1>
-    <h2 class="automation-subheader">
-      Настройте аксессуары, чтобы они реагировали на изменения в доме
-    </h2>
-    <div class="automation-items">
-      <automation-item
-        v-for="item in automations"
-        :id="item.id"
-        :key="item.id"
-        :automation-name="item.automationName"
-        :device-type="item.deviceType"
-        :activation-event="item.activationEvent"
-      />
+    <div class="scenarios-available">
+      <h2 class="scenarios-available__header">
+        Список доступных автоматизаций
+      </h2>
+      <div class="scenarios-available__list">
+        <div v-for="scenario in scenarios" :key="scenario.id" class="scenarios-available__list-item" @click.stop="redirect(`automation/${scenario.id}`)">
+          {{ scenario.name }}
+          <div class="scenarios-available__list-item-edit">
+            <span class="mdi mdi-pencil" @click.stop="redirect(`automation/${scenario.id}`)" />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 
-const automations = ref([
-  {
-    id: 0,
-    automationName: 'Ванная Свет',
-    deviceType: 'Свет',
-    activationEvent: 'Включать при движении',
-  },
-  {
-    id: 1,
-    automationName: 'Кухня Лампочка',
-    deviceType: 'Свет',
-    activationEvent: 'Включать вечером',
-  },
-  {
-    id: 2,
-    automationName: 'Прихожая Свет',
-    deviceType: 'Свет',
-    activationEvent: 'Включать ночью',
-  },
-])
+import router from "#app/plugins/router"
+import { useScenarioStore } from "~/store/scenario"
+import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
+import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import { useAutomationStore } from "~/store/autmation"
+const isLoading = ref(true)
+const scenarios = ref<IAllScenariosResponse[]>([])
+const scenarioStore = useAutomationStore()
+scenarios.value = await scenarioStore.getAll() as IAllScenariosResponse[]
+isLoading.value = false
+
+
+function redirect (to:string) {
+  useRouter().push(to)
+}
 </script>
 
 <style lang="scss">
-@import "assets/styles/page/automation";
+.scenarios {
+  &__header{
+    font-size: 40px;
+    font-weight: 600;
+    text-align: center;
+  }
+  .scenarios-available{
+    &__header {
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 32px;
+      text-align: center;
+    }
+    &__list{
+      padding-inline: min(200px, 20%);
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap:48px;
+      &-item{
+        display: block;
+        background: $settings-color;
+        padding: 20px;
+        position: relative;
+        font-size: 20px;
+        font-weight: 600;
+        height: 120px;
+        width: calc(50% - 40px);
+        border-radius: 12px;
+        cursor: pointer;
+        .mdi.mdi-pencil {
+          position: absolute;
+          color: $color-active;
+          right: 24px;
+          bottom: 20px;
+          font-size: 28px;
+        }
+      }
+    }
+  }
+}
 </style>
