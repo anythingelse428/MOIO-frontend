@@ -18,7 +18,7 @@ interface Props {
   color?:string
 }
 
-const props = withDefaults(defineProps<Props>(), { filled: false, size: 16, color: 'currentColor' })
+const props = withDefaults(defineProps<Props>(), { filled: false, size: 24, color: 'currentColor' })
 const { filled, size, color } = toRefs(props)
 
 const customStyle = computed(() => {

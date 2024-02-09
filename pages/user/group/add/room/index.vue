@@ -58,7 +58,13 @@
           <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
             <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
               {{item?.name}}
-            <span class="mdi mdi-delete" @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"></span>
+              <icon
+                  name="delete"
+                  color="#D15151"
+                  size="20"
+                  @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"
+              />
+
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
@@ -80,6 +86,7 @@ import { useGroupsStore } from "~/store/groups"
 import { useUserStore } from "~/store/user"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import Icon from "~/components/shared/Icon.vue"
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)

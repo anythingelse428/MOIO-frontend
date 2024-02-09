@@ -23,7 +23,7 @@
           Двери
         </div>
         <div class="profile-settings__item-chevron">
-          <span class="mdi mdi-chevron-right" />
+          <icon name="chevron-right" />
         </div>
       </div>
       <div class="profile-settings__item">
@@ -65,6 +65,7 @@
 
 <script setup lang="ts">
 
+import Icon from "~/components/shared/Icon.vue"
 </script>
 
 <style lang="scss">

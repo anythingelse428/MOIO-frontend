@@ -7,7 +7,7 @@
       </h1>
       <div v-if="groupData?.groups" class="subgroup-list">
         <div v-for="group in Object.keys(groupData.groups)" :key="group" class="subgroup-item">
-          <h2 class="subgroup-item__header">
+          <h2 v-if="groupData.groups[group]?.length" class="subgroup-item__header">
             {{ group }}
           </h2>
           <div v-if="groupData.groups[group]?.length" class="subgroup-item__service-list">
@@ -20,9 +20,6 @@
               :type="service.type"
               :capabilities="service?.capabilities"
             />
-          </div>
-          <div v-else class="subgroup-item__service-list --empty">
-            В этой группе нет устройств
           </div>
         </div>
       </div>

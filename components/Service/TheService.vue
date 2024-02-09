@@ -1,11 +1,16 @@
 <template>
   <div
     ref="service"
-    :class="`service ${isDeviceOn === true ||
+    :class="`service
+    ${isPending?' --pending ':' '}
+    ${isDead?' --dead ':' '}
+    ${isDeviceOn === true ||
       isDeviceOpen == 'true' ||
       String(isDeviceOpen)?.indexOf('open') > -1
-      ? '--active':''}`"
+    ? '--active':''}`"
     role="button"
+    :disabled="isPending&&!isDead"
+    :aria-disabled="isPending&&!isDead"
   >
     <div class="service-info" @mousedown.left="turnOnDevice()" @mousedown.right="isCapabilitiesShow = true">
       <div
@@ -34,12 +39,12 @@
       >
         <template #inner>
           <div ref="target" class="service-capabilities-modal" role="dialog">
-            <div class="mdi mdi-pencil" role="button" @click="isEdit=!isEdit" />
+            <icon name="pencil" class="edit-ico" @click="isEdit=!isEdit" />
             <div class="service-capabilities-modal__header">
               <form v-if="isEdit" class="service-capabilities-modal__header --edited" @submit.prevent="setNewDeviceName()">
                 <input v-model="newDeviceName" type="text">
                 <button type="submit" class="service-capabilities-modal__submit-name">
-                  <span class="mdi mdi-check" />
+                  <icon name="check" />
                 </button>
               </form>
               <span v-show="!isEdit">
@@ -146,11 +151,14 @@ const target = ref(null)
 const deleteModal = ref(null)
 const ico = useIcoByDeviceType(props.type)
 const isEdit = ref(false)
+const isPending = ref(false)
+const isDead = ref(false)
 const isDeleteModalShow = ref(false)
 const newDeviceName = ref(props.name)
 const deviceStore = useDevicesStore()
 const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
+const { $bus } = useNuxtApp()
 const stuff = ref<ICapability>({} as ICapability)
 const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v && useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100))
 onClickOutside(target, (event) => {
@@ -168,20 +176,27 @@ onClickOutside(deleteModal, () => {
 onLongPress(service, () => {
   isCapabilitiesShow.value = true
 }, { delay: 400 })
+
 async function turnOnDevice (isChangeRange?:any) {
-  if (!props.id.includes('_sen') && service.value && !isChangeRange) {
+  if (!props.id.includes('_sen') && !isChangeRange) {
+    isPending.value = true
+
     const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
     const newValue = oldValue === false || String(oldValue)?.includes('close')
-    service.value.classList.add('--pending')
-    service.value.setAttribute('disabled', 'true')
     const isOpenable = props?.capabilities?.find(el => el.instance?.includes('open'))
+
     if (isOpenable) {
       await deviceStore.changeOpenClose({ clientId: groupStore.clientId, deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), open: !(isOpenable.value === 'open' || isOpenable.value === 'true' || (isOpenable.value as unknown as boolean) === true) })
     } else {
       await deviceStore.changeOnOf({ clientId: groupStore.clientId, deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), onOffStatus: newValue })
     }
-    service.value.classList.remove('--pending')
-    service.value.setAttribute('disabled', 'false')
+    const timeout = setTimeout(() => {
+      if (isPending.value) {
+        isDead.value = true
+      } else {
+        clearTimeout(timeout)
+      }
+    }, 1 * 60 * 1000)
   }
 }
 async function deleteDevice () {
@@ -225,7 +240,11 @@ watch(props, (value) => {
   isDeviceOn.value = value.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value
   isDeviceOpen.value = value.capabilities?.find(el => el.instance === 'open' || el.type === 'devices.types.openable.garage')?.value
 }, { deep: true })
-
+const onStateUpdate = (data:Service) => {
+  if (data.id === props.id) {
+    isPending.value = false
+  }
+}
 onMounted(() => {
   setTimeout(() => {
     isMounted.value = true
@@ -234,8 +253,10 @@ onMounted(() => {
       e.preventDefault()
     })
   }, 100)
+  $bus.on('device-update-emit', onStateUpdate)
 })
 onUnmounted(() => {
+  $bus.off('device-update-emit', onStateUpdate)
   window.removeEventListener('contextmenu', () => {})
 })
 </script>

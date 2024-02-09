@@ -22,7 +22,7 @@
         />
       </div>
       <button class="profile-roommates-section__add-section" @click="isAddRoommatesModalShow = true">
-        <span class="mdi mdi-plus" />
+        <icon name="plus" />
       </button>
       <the-modal
         :is-shown="isAddRoommatesModalShow"
@@ -39,7 +39,7 @@
         </template>
       </the-modal>
     </div>
-    <profile-settings />
+    <!--    <profile-settings />-->
     <button class="profile__sync-device" @click="aliceSync()">
       Синхронизировать с Алисой
     </button>
@@ -52,6 +52,7 @@ import TheModal from "~/components/shared/TheModal.vue"
 import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { useDevicesStore } from "~/store/devices"
+import Icon from "~/components/shared/Icon.vue"
 
 const roommates = ref([
   {

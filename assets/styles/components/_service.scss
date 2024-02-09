@@ -10,6 +10,7 @@
   position: relative;
   border: 2px solid transparent;
   &.--active {
+    cursor: pointer;
     box-shadow: 0px 0px 30px 0px rgb($service-shadow-color / 1);
     border-color: rgb($service-shadow-color / 1);
     background: $settings-color;
@@ -23,11 +24,10 @@
   }
   &.--pending{
     cursor: progress;
-    pointer-events: none;
+    pointer-events: bounding-box;
     &::before{
       display: block;
       content: '';
-      inset: 0;
       background: #eee;
       background: linear-gradient(110deg, #ececec 20%, #f5f5f5 18%, #ececec 33%);
       background-size: 200% 100%;
@@ -36,6 +36,23 @@
       border-radius: 24px;
       opacity: .95;
       z-index: 5;
+      height: 102%;
+      top: -1%;
+      right: -1%;
+      width: 102%;
+    }
+  }
+  &.--pending.--dead{
+    cursor: pointer;
+    &::before{
+      background: rgba(238, 238, 238, 0.4);
+      text-align: center;
+      content: "Устройство не отвечает";
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: none;
+      backdrop-filter: blur(24px);
     }
   }
   @keyframes service-skeleton {

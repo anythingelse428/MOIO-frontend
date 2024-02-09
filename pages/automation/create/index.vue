@@ -130,6 +130,7 @@ sensors.value = selectOnlySensors(await groupStore.getGroupById(groupStore.curre
   return {
     id: el.id,
     name: el.name,
+    type: el.type,
   }
 })
 function selectScenarios (id:string) {

@@ -22,7 +22,7 @@
     .modal-close {
       cursor: pointer;
       font-size: 20px;
-      .mdi.mdi-close{
+      .ui-icon{
       color: $color-primary;
       }
     }
@@ -71,7 +71,9 @@
     color: $color-accent;
   }
   &__add-button{
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 36px;
     height: 36px;
     background: $color-active;
@@ -79,9 +81,9 @@
     border-radius: 100%;
     border: 0px;
     cursor: pointer;
-    .mdi-plus{
-      font-size: 32px;
-      color: $bg-primary;
+    .ui-icon{
+      font-size: 32px!important;
+      color: $bg-primary!important;
     }
   }
   &__users{
@@ -123,7 +125,7 @@
     background: $bg-primary;
     word-break: break-all;
     @include action-item;
-    .mdi-delete{
+    .ui-icon{
       color: #D15151;
       font-size: 20px;
       cursor: pointer;

@@ -26,9 +26,9 @@
     margin-inline:auto;
     margin-top: 16px;
     cursor: pointer;
-    .mdi{
-      color: $color-accent;
-      font-size: 28px;
+    .ui-icon{
+      color: $color-accent!important;
+      font-size: 28px!important;
     }
   }
 }

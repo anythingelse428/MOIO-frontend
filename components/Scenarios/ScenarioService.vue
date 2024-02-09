@@ -21,12 +21,12 @@
       >
         <template #inner>
           <div ref="target" class="service-capabilities-modal" role="dialog">
-            <div class="mdi mdi-pencil" role="button" @click="isEdit=!isEdit" />
+            <icon name="pencil" role="button" @click="isEdit=!isEdit" />
             <div class="service-capabilities-modal__header">
               <form v-if="isEdit" class="service-capabilities-modal__header --edited" @submit.prevent="setNewDeviceName()">
                 <input v-model="newDeviceName" type="text">
                 <button type="submit" class="service-capabilities-modal__submit-name">
-                  <span class="mdi mdi-check" />
+                  <icon name="check" />
                 </button>
               </form>
               <span v-show="!isEdit">
@@ -82,7 +82,13 @@
         </template>
       </the-modal>
     </div>
-    <span v-if="!isPreview" class="mdi mdi-delete" @click="emit('left-mouse-click',props)" />
+    <icon
+      v-if="!isPreview"
+      name="delete"
+      color="#D15151"
+      size="20"
+      @click="emit('left-mouse-click',props)"
+    />
   </div>
 </template>
 

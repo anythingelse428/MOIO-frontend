@@ -66,7 +66,12 @@
               <div v-if="previewData.devices?.length" class="add-group__preview-section-value">
                 <div v-for="item in previewData.devices" :key="item.id" class="add-group__preview-section-device">
                   {{ item?.name }}
-                  <span class="mdi mdi-delete" @click="(e)=>{setItem(devices,{id:item.id,name:item.name});setItem(existingDevices,{id:item.id,name:item.name});oldDevices.push(item.id);}" />
+                  <icon
+                    name="delete"
+                    color="#D15151"
+                    size="20"
+                    @click="(e)=>{setItem(devices,{id:item.id,name:item.name});setItem(existingDevices,{id:item.id,name:item.name});oldDevices.push(item.id);}"
+                  />
                 </div>
               </div>
               <div v-else class="add-group__preview-section-value">
@@ -80,7 +85,13 @@
               <div v-if="previewData.users?.length" class="add-group__preview-section-value">
                 <div v-for="user in previewData.users" :key="user.id" class="add-group__preview-section-device">
                   {{ user?.name }}
-                  <span v-if="user.id !== groupStore.currentGroup.groupCreatorId" class="mdi mdi-delete" @click="(e)=>{usersForRemove.push({id:user.id,name:user.name});users.splice(users.findIndex(el=>el.id === user.id),1)}" />
+                  <icon
+                    v-if="user.id !== groupStore.currentGroup.groupCreatorId"
+                    name="delete"
+                    color="#D15151"
+                    size="20"
+                    @click="(e)=>{usersForRemove.push({id:user.id,name:user.name});users.splice(users.findIndex(el=>el.id === user.id),1)}"
+                  />
                 </div>
               </div>
               <div v-else class="add-group__preview-section-value">
@@ -105,6 +116,7 @@
 import { useGroupsStore } from "~/store/groups"
 import type { IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import Icon from "~/components/shared/Icon.vue"
 
 let oldName = ''
 const isLoading = ref(false)
@@ -113,7 +125,7 @@ const oldDevices:string[] = []
 const name = ref('')
 const house = ref("")
 const devices = ref<{ id: string, name:string }[]>([])
-const users = ref<{id:string, name:string}[]>([])
+const users = ref<{id:string|number, name:string}[]>([])
 const usersForRemove = ref<{id:string, name:string}[]>([])
 const existingDevices = ref<{id:string, name:string}[]>([])
 // const existingUsers = ref<IUsersByGroupResponse[]>()

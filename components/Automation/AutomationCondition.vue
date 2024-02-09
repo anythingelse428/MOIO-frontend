@@ -18,10 +18,17 @@
           class="automation-condition__sensor"
           @click="emits('select-option',{type,value:sensor.id})"
         >
-          <span class="mdi mdi-leak" />
+          <icon :name="useIcoByDeviceType(sensor.type).name" size="28" />
           <input type="radio" :name="idx" :disabled="Number(editable) === 0">
           <span class="mask" />
           {{ sensor.name }}
+        </div>
+        <div v-if="currSensor?.id" class="automation-condition__sensor">
+          <icon :name="useIcoByDeviceType(currSensor.type).name" size="28" />
+
+          <input type="radio" :name="idx" :disabled="Number(editable) === 0">
+          <span class="mask" />
+          {{ currSensor.name }}
         </div>
       </div>
     </div>
@@ -29,14 +36,22 @@
 </template>
 
 <script setup lang="ts">
+import Icon from "~/components/shared/Icon.vue"
+
 export interface AutomationConditionProps {
   idx:number|string
   type:'sensor'|'time'
   sensors?:{
     id:string,
     name:string,
+    type:string
   }[],
   currTime?:string,
+  currSensor?:{
+    id:string
+    name:string
+    type:string
+  }
   editable?:boolean
 }
 const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`, editable: true })

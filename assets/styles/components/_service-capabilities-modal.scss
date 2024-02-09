@@ -22,13 +22,18 @@
     cursor: pointer;
   }
   &__submit-name{
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: $color-active;
     border-radius: 100%;
     width: 20px;
     height: 20px;
     border: 0px;
     cursor: pointer;
+    .ui-icon{
+      font-size: 16px!important;
+    }
   }
   &__header{
     @include capabilities-modal-header;
@@ -65,10 +70,10 @@
       }
     }
   }
-  .mdi.mdi-pencil{
+  .edit-ico{
     font-size: 24px;
     cursor: pointer;
-    display: inline-block;
+    bottom: 3px;
     position: relative;
     z-index: 2;
     width: fit-content;

@@ -6,7 +6,7 @@
         Добавить пользователя
       </div>
       <div class="modal-close" @click="emit('modal-close')">
-        <span class="mdi mdi-close" />
+        <icon name="close" />
       </div>
     </div>
     <form action="" method="post" class="add-roommate-modal__form">
@@ -23,7 +23,7 @@
           class="add-roommate-modal__input-group-input"
         >
         <button class="add-roommate-modal__add-button" @click.prevent="addToLoginsArray()">
-          <span class="mdi mdi-plus" />
+          <icon name="plus" />
         </button>
       </div>
       <div class="add-roommate-modal__users">
@@ -32,7 +32,13 @@
         </div>
         <div v-for="login in logins" :key="login" class="add-roommate-modal__users-user">
           {{ login }}
-          <button class="mdi mdi-delete" @click.prevent="removeFromLoginsArray(login)" />
+          <icon
+            name="delete"
+            color="#D15151"
+            size="20"
+            role="button"
+            @click.prevent="removeFromLoginsArray(login)"
+          />
         </div>
       </div>
       <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" :disabled="logins.length===0" @click.prevent="addRoommate()">
@@ -45,6 +51,7 @@
 import { useGroupsStore } from "~/store/groups"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import Icon from "~/components/shared/Icon.vue"
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)

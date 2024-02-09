@@ -12,7 +12,9 @@ id:string,
     }[]
     sensors:{
       automationTriggerId: string,
-      sensor: string
+      id: string
+      name: string
+      type: string
     }[]
   }
 }

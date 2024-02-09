@@ -7,7 +7,7 @@
       </h2>
     </NuxtLink>
     <div v-if="editable" class="aside-item__edit-btn" role="button" @click.prevent="router.push({path:'/user/group/edit/'+editPostfix+id})">
-      <span class="mdi mdi-pencil" />
+      <icon name="pencil" />
     </div>
   </div>
 </template>

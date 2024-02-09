@@ -258,11 +258,11 @@ async function deleteScenario () {
         }
       }
     }
-    .mdi.mdi-delete {
+    .ui-icon {
       position: absolute;
       bottom: 12px;
       right: 16px;
-      font-size: 16px;
+      font-size: 16px!important;
       color: #D15151;
     }
   }

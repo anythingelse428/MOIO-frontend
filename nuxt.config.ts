@@ -5,9 +5,7 @@ export default defineNuxtConfig({
   ssr: Boolean(process.env.NUXT_SSR),
   app: {
     head: {
-      link: [
-        { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@mdi/font@7.3.67/css/materialdesignicons.min.css' },
-      ],
+      link: [],
     },
   },
   modules: [

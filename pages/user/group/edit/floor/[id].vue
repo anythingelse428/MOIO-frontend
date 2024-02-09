@@ -87,7 +87,13 @@
           <div class="add-group__preview-section-value" v-if="previewData.users?.length">
             <div class="add-group__preview-section-device" v-for="user in previewData.users" :key="user.id">
               {{user?.name}}
-              <span class="mdi mdi-delete" @click="(e)=>{usersForRemove.push({id:user.id,name:user.name});setItem(e,users,{id:user.id,name:user.name});}" v-if="user.id !== groupStore.currentGroup.groupCreatorId"></span>
+              <icon v-if="user.id !== groupStore.currentGroup.groupCreatorId"
+                    name="delete"
+                    color="#D15151"
+                    @click="(e)=>{
+                      usersForRemove.push({id:user.id,name:user.name})
+                      setItem(e,users,{id:user.id,name:user.name})}"
+                    />
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
@@ -116,7 +122,11 @@
           <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
             <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
               {{item?.name}}
-            <span class="mdi mdi-delete" @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"></span>
+              <icon
+                  name="delete"
+                  color="#D15151"
+                  size="20"
+                  @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"/>
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
@@ -144,6 +154,7 @@ import { use } from "h3"
 import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
 import TheModal from "~/components/shared/TheModal.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import Icon from "~/components/shared/Icon.vue"
 
 let oldName = ''
 const isLoading = ref(false)

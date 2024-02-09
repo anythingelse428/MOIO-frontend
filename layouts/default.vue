@@ -30,6 +30,7 @@ const route = useRoute()
 await userStore.init()
 await groupStore.getHouses()
 // Сокеты
+const { $bus } = useNuxtApp()
 const socket = await useSocket("http://176.119.157.248:7033/chat")
 socket.connection.on("UpdateSensorState", (message:string) => {
   console.log("UpdateSensorState", message)
@@ -38,6 +39,7 @@ socket.connection.on("UpdateSensorState", (message:string) => {
 socket.connection.on("UpdateDeviceState", (message:Service) => {
   console.log("UpdateDeviceState", message)
   changeCapability(message)
+  $bus.emit('device-update-emit', message)
 })
 socket.connection.on("UpdateConfig", (message:string) => {
   console.log("UpdateConfig", message)

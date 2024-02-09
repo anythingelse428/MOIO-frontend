@@ -216,16 +216,18 @@ async function createScenario () {
         display: flex;
         align-items: center;
         margin: 0;
-        .mdi{
-          font-size: 28px;
+        .ui-icon{
+          font-size: 28px!important;
+          position: relative;
+          inset: 0;
         }
       }
     }
-    .mdi.mdi-delete {
+    .ui-icon {
       position: absolute;
       bottom: 12px;
       right: 16px;
-      font-size: 16px;
+      font-size: 16px!important;
       color: #D15151;
     }
   }

@@ -1,6 +1,12 @@
 <template>
   <div class="aside">
-    <div :class="`aside-trigger mdi mdi-menu ${isAsideCollapsed&& '--collapsed'}`" role="button" @click="isAsideCollapsed=!isAsideCollapsed" />
+    <icon
+      :class="`aside-trigger ${isAsideCollapsed? '--collapsed':' '}`"
+      :name="isAsideCollapsed? 'close':'aside/menu'"
+      size="40"
+      role="button"
+      @click="isAsideCollapsed=!isAsideCollapsed"
+    />
     <div :class="`aside-collapse ${isAsideCollapsed&& '--collapsed'}`">
       <div class="aside-main">
         <aside-category

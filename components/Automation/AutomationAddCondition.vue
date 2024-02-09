@@ -2,20 +2,20 @@
   <div class="automation-add-condition">
     <div class="automation-add-condition__header">
       Добавить условие
-      <span class="mdi mdi-close" @click="emit('hide-modal')" />
+      <icon name="close" role="button" @click="emit('hide-modal')" />
     </div>
     <form class="automation-add-condition__form" @submit.prevent="emit('add-condition',condition)">
       <div class="automation-add-condition__conditions">
         <div :class="`automation-add-condition__condition ${condition==='time'&&'--active'}`" @click="condition='time'">
           <input id="time" type="radio" name="new_condition">
-          <span class="mdi mdi-clock-time-three-outline" />
+          <icon name="service/clock-time-three-outline" size="100" />
           <div class="automation-add-condition__condition-name">
             Время
           </div>
         </div>
         <div :class="`automation-add-condition__condition ${condition==='sensor'&&'--active'}`" @click="condition='sensor'">
           <input id="sensor" type="radio" name="new_condition">
-          <span class="mdi mdi-leak" />
+          <icon name="service/leak" size="100" />
           <div class="automation-add-condition__condition-name">
             Датчик
           </div>
@@ -27,6 +27,8 @@
 </template>
 
 <script setup lang="ts">
+import Icon from "~/components/shared/Icon.vue"
+
 const emit = defineEmits(['add-condition', 'hide-modal'])
 const condition = ref<'sensor'|'time'>('time')
 </script>
@@ -53,10 +55,10 @@ const condition = ref<'sensor'|'time'>('time')
     display: flex;
     align-items: center;
     justify-content: center;
-    .mdi-close{
+    .ui-icon{
       position: absolute;
       right: 27px;
-      font-size: 20px;
+      font-size: 20px!important;
       cursor: pointer;
 
     }
@@ -92,14 +94,11 @@ const condition = ref<'sensor'|'time'>('time')
       inset: 0;
       opacity: 0;
     }
-    .mdi{
+    .ui-icon{
       display: flex;
       justify-content: center;
-      font-size: 128px;
-      color: $color-active;
-      &::before{
-        max-height: 126px;
-      }
+      font-size: 128px!important;
+      color: $color-active!important;
     }
   }
   &__submit{

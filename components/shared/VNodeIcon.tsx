@@ -1,3 +1,10 @@
-export const VNodeIcon = (name:string) => (
-    <span class={'mdi ' + name}/>
-)
+import { Suspense } from "vue"
+import Icon from "~/components/shared/Icon.vue"
+
+export default defineComponent({
+  setup (props) {
+    return () => (
+        <img style={'position:relative;inset:0'}/>
+    )
+  },
+})

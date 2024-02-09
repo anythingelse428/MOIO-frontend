@@ -46,7 +46,7 @@
           <button @click.prevent="deleteCondition(item.id)">
             Удалить нахуй условие ебаное {{ item.id }}
           </button>
-          <automation-condition :type="item.type" :curr-time="item.value" :sensors="sensors" :editable="false" :idx="i+1" @select-option="e=>addConditionInArr(item.id, e?.type, e.value)" />
+          <automation-condition :type="item.type" :curr-time="item.type==='time'?item.value as string:undefined" :curr-sensor="item.type==='sensor'?item.value:undefined" :editable="false" :idx="i+1" @select-option="e=>addConditionInArr(item.id, e?.type, e.value)" />
         </div>
         <div v-for="(item,i) in newConditions" :key="item.id" class="automation__conditions">
           <button @click.prevent="deleteCondition(item.id)">
@@ -82,12 +82,16 @@ import { useAutomationStore } from "~/store/autmation"
 
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import type { IAutomationUpdateProps } from "~/api/automations/update"
+import { useGroupsStore } from "~/store/groups"
+import { type IGroupResponseItem } from "~/api/group/getById"
+import type { Service } from "~/components/Service/TheService.vue"
 
 const route = useRoute()
 const id = route.params.id
 const isLoading = ref(true)
+const groupStore = useGroupsStore()
 
-const oldConditions = ref<{type:'sensor'|'time', id:any, value:string}[]>([])
+const oldConditions = ref<{type:'sensor'|'time', id:any, value:string|{ id: string, name: string, type:string }}[]>([])
 const newConditions = ref<{type:'sensor'|'time', id:any, value:string}[]>([])
 const removeCondition = ref<string[]>([])
 const scenarios = ref<string[]>([])
@@ -95,10 +99,24 @@ const removeScenarios = ref<string[]>([])
 
 const runByAllConditions = ref(true)
 const showConditionModal = ref(false)
-const sensors = ref<{id:string, name:string}[]>([])
+const sensors = ref<{id:string, name:string, type:string}[]>([])
 const name = ref('')
 const existingScenarios = await useScenarioStore().getAll()
 isLoading.value = false
+
+function selectOnlySensors (group:IGroupResponseItem, arr:Service[] = []) {
+  arr.push(...group.devices.filter(el => el.id.includes('_sen')))
+  group.inverseParent.forEach(el => selectOnlySensors(el, arr))
+  return arr
+}
+
+sensors.value = selectOnlySensors(await groupStore.getGroupById(groupStore.currentHome)).map((el) => {
+  return {
+    id: el.id,
+    name: el.name,
+    type: el.type,
+  }
+})
 
 function deleteCondition (id:any) {
   if (!Number.isSafeInteger(id)) {
@@ -172,12 +190,15 @@ async function getData () {
   const response = await automationStore.getById(id as string)
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
+  console.log(response.triggers)
   response.triggers.time.forEach((el) => {
     const time = new Date(`7/07/2077 ${el.time} UTC`)
-    oldConditions.value.push({ id: el.automationTriggerId, type: "time", value: `${time.getHours()}:${time.getMinutes()}` })
+    const hours = String(time.getHours()).length === 1 ? `0${time.getHours()}` : time.getHours()
+    const minutes = String(time.getMinutes()).length === 1 ? `0${time.getMinutes()}` : time.getMinutes()
+    oldConditions.value.push({ id: el.automationTriggerId, type: "time", value: `${hours}:${minutes}` })
   })
   response.triggers.sensors.forEach((el) => {
-    oldConditions.value.push({ id: el.automationTriggerId, type: 'sensor', value: el.sensor })
+    oldConditions.value.push({ id: el.automationTriggerId, type: 'sensor', value: { id: el.id, name: el.name, type: el.type } })
   })
   isLoading.value = false
 }

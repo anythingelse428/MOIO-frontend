@@ -12,7 +12,7 @@
         <div v-for="scenario in scenarios" :key="scenario.id" class="scenarios-available__list-item" @click="executeScenario(scenario.id)">
           {{ scenario.name }}
           <div class="scenarios-available__list-item-edit">
-            <span class="mdi mdi-pencil" @click.stop="redirect(`scenarios/edit/${scenario.id}`)" />
+            <icon name="pencil" role="link" @click.stop="redirect(`scenarios/edit/${scenario.id}`)" />
           </div>
         </div>
       </div>
@@ -26,6 +26,7 @@ import router from "#app/plugins/router"
 import { useScenarioStore } from "~/store/scenario"
 import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import Icon from "~/components/shared/Icon.vue"
 const isLoading = ref(true)
 const scenarios = ref<IAllScenariosResponse[]>([])
 const scenarioStore = useScenarioStore()
@@ -73,12 +74,12 @@ function redirect (to:string) {
         width: calc(50% - 40px);
         border-radius: 12px;
         cursor: pointer;
-        .mdi.mdi-pencil {
+        .ui-icon {
           position: absolute;
-          color: $color-active;
+          color: $color-active!important;
           right: 24px;
           bottom: 20px;
-          font-size: 28px;
+          font-size: 28px!important;
         }
       }
     }

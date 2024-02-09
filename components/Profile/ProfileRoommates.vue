@@ -12,11 +12,13 @@
         {{ role }}
       </div>
     </div>
-    <span class="mdi mdi-chevron-right roommates-card__chevron" />
+    <icon name="chevron-right" class="roommates-card__chevron" size="36" />
   </NuxtLink>
 </template>
 
 <script setup lang="ts">
+import Icon from "~/components/shared/Icon.vue"
+
 export type ProfileRoommates = {
   id:string|number
   avatarUrl:string

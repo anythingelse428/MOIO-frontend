@@ -1,14 +1,16 @@
 <template>
   <div class="header-content">
-    <button class="header-button" @click="isAddMenuShow = !isAddMenuShow">
-      <span class="mdi mdi-plus-circle-outline" />
+    <div class="header-content__menu-container">
+      <button ref="addMenuTrigger" class="header-button" @click="isAddMenuShow = !isAddMenuShow">
+        <icon name="header/plus-circle-outline" size="40" />
+      </button>
       <transition name="fade">
         <header-menu v-show="isAddMenuShow" ref="addMenu" :items="addMenuItems" @click="isAddMenuShow=false" />
       </transition>
-    </button>
+    </div>
     <div class="header-content__menu-container">
-      <button class="header-button" @click="isSettingsMenuShow = !isSettingsMenuShow">
-        <span class="mdi mdi-dots-horizontal" />
+      <button ref="settingsMenuTrigger" class="header-button" @click="isSettingsMenuShow = !isSettingsMenuShow">
+        <icon name="header/dots-horizontal" size="40" />
       </button>
       <transition name="fade">
         <header-menu v-show="isSettingsMenuShow" ref="settingsMenu" :items="[...settingsMenuItems,...houses]" @click="isSettingsMenuShow=false" />
@@ -19,16 +21,12 @@
 
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
+import Icon from "~/components/shared/Icon.vue"
 
 const groupsStore = useGroupsStore()
 const { houses } = storeToRefs(groupsStore)
 const route = useRoute()
 const addMenuItems = [
-  {
-    ico: "aside/automation",
-    title: "Добавить сценарий",
-    url: '/#',
-  },
   {
     icon: "aside/automation",
     name: "Добавить автоматизацию",
@@ -70,13 +68,18 @@ const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)
 const addMenu = ref(null)
 const settingsMenu = ref(null)
-
+const settingsMenuTrigger = ref(null)
+const addMenuTrigger = ref(null)
 onClickOutside(addMenu, (e) => {
-  isAddMenuShow.value = false
-})
+  if (isAddMenuShow.value) {
+    isAddMenuShow.value = false
+  }
+}, { ignore: [addMenuTrigger] })
 onClickOutside(settingsMenu, (e) => {
-  isSettingsMenuShow.value = false
-})
+  if (isSettingsMenuShow.value) {
+    isSettingsMenuShow.value = false
+  }
+}, { ignore: [settingsMenuTrigger] })
 
 watch(() => route.fullPath, () => {
   isSettingsMenuShow.value = false
