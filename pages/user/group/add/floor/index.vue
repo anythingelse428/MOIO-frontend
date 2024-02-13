@@ -28,8 +28,15 @@
             >
               <label for="device">{{ device?.name }}</label>
               <div class="add-group-available-devices__list-item-checkbox-wrapper">
-                <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e, devices, {id:device.id,name:device.name})" :checked="devices.findIndex(el=>el.id === device.id)>-1">
-                <span class="add-group-available-devices__list-item-checkbox-mask" />
+                <input
+                    id="device"
+                    type="checkbox"
+                    name="device"
+                    @change="(e)=>setItem(e, devices, {id:device.id,name:device.name})"
+                    :checked="devices.findIndex(el=>el.id === device.id)>-1">
+                <span class="add-group-available-devices__list-item-checkbox-mask">
+                   <icon name="check" size="24"/>
+                </span>
               </div>
             </div>
           </div>
@@ -50,7 +57,9 @@
           <label for="device">{{ room?.name }}</label>
           <div class="add-group-available-devices__list-item-checkbox-wrapper">
             <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e, rooms,{id:room.id,name:room.name})" :checked="rooms.findIndex(el=>el.id === room.id)>-1">
-            <span class="add-group-available-devices__list-item-checkbox-mask" />
+            <span class="add-group-available-devices__list-item-checkbox-mask">
+              <icon name="check" size="24"/>
+            </span>
           </div>
         </div>
       </div>
@@ -148,7 +157,7 @@ async function getRoomsByHomeId(){
 }
 getRoomsByHomeId()
 function setItem (e:Event, target:any, data:{ id: string, name:string }) {
-  const isChecked = (<HTMLInputElement>event.target)?.checked
+  const isChecked = (<HTMLInputElement>e.target)?.checked
   const isSelected = target?.find(el=>el?.id === data.id)
   if (isChecked && !isSelected){
     target?.push(data)

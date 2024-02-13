@@ -5,8 +5,7 @@ export interface IDeviceChangeStatusTemperature extends IChangeDeviceStatusPaylo
     temperature:boolean
 }
 export default async function apiDeviceChangeTemperature (props:IDeviceChangeStatusTemperature) {
-  const query = `?clientId=${props.clientId}&deviceId=${props.deviceId}&chanel=${props.chanel}&temperature=${Number(props.temperature)}`
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + '/device/ChangeStatusTemperature/' + query)
+    return await axios.post(path + '/device/ChangeStatusTemperature/', props)
   })
 }

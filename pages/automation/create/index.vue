@@ -43,10 +43,10 @@
           </template>
         </the-modal>
         <div v-for="item in conditions" :key="item.id" class="automation__conditions">
-          <button @click.prevent="deleteCondition(item.id)">
-            Удалить нахуй условие ебаное
-          </button>
           <automation-condition :type="item.type" :sensors="sensors" :idx="item.id" @select-option="e=>addConditionInArr(item.id, e?.type, e.value)" />
+          <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
+            Удалить
+          </button>
         </div>
       </div>
       <button class="automation__add-condition" @click.prevent="showConditionModal = true">
@@ -60,7 +60,9 @@
           {{ scenario.name }}
         </div>
       </div>
-      <input type="submit" value="Добавить">
+      <div class="automation__submit-container">
+        <input class="automation__submit" type="submit" value="Сохранить">
+      </div>
     </form>
   </div>
 </template>

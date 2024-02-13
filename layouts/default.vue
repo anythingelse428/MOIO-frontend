@@ -41,9 +41,9 @@ socket.connection.on("UpdateDeviceState", (message:Service) => {
   changeCapability(message)
   $bus.emit('device-update-emit', message)
 })
-socket.connection.on("UpdateConfig", (message:string) => {
+socket.connection.on("UpdateConfig", (message:Service) => {
   console.log("UpdateConfig", message)
-  useNotification("info", message)
+  useNotification("info", `Обновлено состояние устройства ${message.name}`)
 })
 function changeCapability (message:Service, group = groupStore.currentGroup) {
   const isCategory = route.path.includes('category/')

@@ -18,6 +18,7 @@
         :capabilities="device?.capabilities"
         :is-preview="true"
         :selected="device?.selected"
+        :device-icon="device.deviceIcon"
         @left-mouse-click="e=>emit('get-data',{...e,groupId:id})"
       />
     </div>
@@ -31,6 +32,7 @@
           :name="device.name"
           :type="device.type"
           :capabilities="device?.capabilities"
+          :device-icon="device.deviceIcon"
         />
       </div>
     </transition>
@@ -74,6 +76,7 @@ const emit = defineEmits(['get-data'])
 const isCollapsed = ref(true)
 const filteredDevices = () => {
   let temp: IAllDevicesResponse[] = []
+  if (!props.hideDevices && !props.hideSensors) return  props.devices
   if (props.hideDevices && typeof props.hideDevices !== 'undefined') {
     temp = props.devices?.filter(el => !el.id.includes('_ch')) as IAllDevicesResponse[]
   }

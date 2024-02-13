@@ -6,15 +6,39 @@
       </label>
       <div class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
       <div class="service-capability__color">
-        <input id="color" v-model="hue" step="1" type="range" :min="0" :max="360" name="" class="service-capability__hue" @input="capability.hsv.h=Number(hue);capability.hsv.s=Number(saturation);updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
+        <input
+          id="color"
+          v-model="hue"
+          step="1"
+          type="range"
+          :min="0"
+          :max="360"
+          name=""
+          class="service-capability__hue"
+          @input="capability.hsv.h=Number(hue);
+                  capability.hsv.s=Number(saturation);
+                  updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})"
+        >
       </div>
-      <input id="" v-model="saturation" step="1" type="range" :min="0" :max="100" name="" class="service-capability__saturation" @input="capability.hsv.h=Number(hue);capability.hsv.s=Number(saturation);updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
+      <input
+        id="saturation"
+        v-model="saturation"
+        step="1"
+        type="range"
+        :min="0"
+        :max="100"
+        name=""
+        class="service-capability__saturation"
+        @input="capability.hsv.h=Number(hue);
+                capability.hsv.s=Number(saturation);
+                updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})"
+      >
     </div>
     <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
       <toggle-switch
         role="button"
         :checked="capability.value"
-        :ico="toggleSwitchIco?.name"
+        :ico="icon"
         vertical-large
         @check="(e)=>{capability.value=e;updateDevice({type,value:capability.value})}"
       />
@@ -25,8 +49,9 @@
       :class="`service-capability__control --range --bright`"
     >
       <label for="range">
-        {{ $t(type) }}
+        {{ $t(`${type}-${instance}`) }}
       </label>
+      <icon name="service/devices/lightbulb-variant-outline" size="24" />
       <input
         id="range"
         v-model="capability.value"
@@ -53,31 +78,12 @@ import { useDevicesStore } from "~/store/devices"
 import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
 import { useUserStore } from "~/store/user"
-
-export type ServiceCapability = {
-    deviceType:string
-    deviceId:string
-    chanel:string
-    type: string
-    retrievable: boolean
-    reportable: boolean
-    instance: string|null
-    range: {
-      min: number
-      max: number
-      precision: number
-    },
-    hsv:{
-      h:number,
-      s:number,
-      v:number
-    },
-  value:any
-}
+import Icon from "~/components/shared/Icon.vue"
+import type {ServiceCapability} from "~/components/Service/ServiceCapability.vue";
 
 const props = defineProps<ServiceCapability>()
 const emit = defineEmits(['update-bool-val'])
-const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
+const toggleSwitchIco = props.icon
 const devicesStore = useDevicesStore()
 const capabilitySource = ref({ ...props })
 const capability = ref(capabilitySource)
@@ -95,19 +101,11 @@ if (capability.value && String(capability.value?.value)?.indexOf('open') > -1) {
 }
 
 async function actionFabric (fnName:'changeOnOf'|'changeTemperature'|'changeBrightness'|'changeRGB', args:any) {
-  // обращаемся к action из сторы, передаем аргументы
-  // вынесено для вызова в useThrottle, чтобы работали замыкания
-  // TODO аргументы привести к типам
   return await devicesStore[fnName](args)
 }
 const throttledAction = useThrottle(actionFabric, 1000)
 const userStore = useUserStore()
 function updateDevice (val:{type:string, value:any}) {
-  // const mainActionProps = {
-  //   clientId: userStore.clientId,
-  //   deviceId: props.deviceId,
-  //   chanel: props.chanel,
-  // }
   emit('update-bool-val', capability.value)
 }
 const hsvToRgb = (hue, saturation, value) => {

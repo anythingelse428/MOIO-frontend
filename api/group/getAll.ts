@@ -1,5 +1,5 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
-import type { Service } from "~/components/Service/TheService.vue"
+import type { IAllDevicesResponse } from "~/api/device/getAll"
 
 export interface IGroupResponseItem{
     id: string,
@@ -14,7 +14,7 @@ export interface IGroupResponseItem{
         name:string|null
     },
     name: string|null,
-    devices:Service[],
+    devices: IAllDevicesResponse[],
     groupCreatorId:number
 }
 

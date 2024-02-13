@@ -10,7 +10,6 @@
       </div>
     </div>
     <form action="" method="post" class="add-roommate-modal__form">
-      <custom-select v-if="groups" class="add-roommate-modal__input-group" :options="selectData" select-name="Выберите группу" :current-value="groupId" @custom-select="(e)=>groupId = e" />
       <div class="add-roommate-modal__input-group">
         <label for="email" class="add-roommate-modal__input-group-label">
           Email нового пользователя
@@ -41,6 +40,35 @@
           />
         </div>
       </div>
+      <div class="add-roommate-modal__input-group">
+        <label for="house" class="add-roommate-modal__input-group-label">
+          Выберите дом, доступный пользователю
+        </label>
+        <custom-select
+            v-if="uppperGroups"
+            style="width: 100%"
+            :options="selectDataHouses"
+            select-name="Дом не выбран"
+            :current-value="''"
+            @custom-select="(e)=>{ selectedHouse = e;getSubgroups() }"
+        />
+      </div>
+      <div class="add-roommate-modal__groups">
+        <label for="groups" class="add-roommate-modal__input-group-label">
+          Выберите группы, доступные пользователю
+        </label>
+        <div
+            class="add-roommate-modal__groups-item"
+            v-for="group in selectDataGroups"
+            :key="group.id"
+        >
+          <span>{{group.name}}</span>
+          <div class="add-roommate-modal__groups-item-checkbox">
+            <input type="checkbox" name="group-id" :id="group.id" @change="e=>selectGroups(e,group.id)">
+            <icon name="check" size="20"/>
+          </div>
+        </div>
+      </div>
       <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" :disabled="logins.length===0" @click.prevent="addRoommate()">
     </form>
   </div>
@@ -52,15 +80,28 @@ import { useGroupsStore } from "~/store/groups"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
+import {useUserStore} from "~/store/user";
+import type {ChangeEvent} from "rollup";
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)
 const login = ref('')
-const groupId = ref('')
+const groupIds = ref<string[]>([])
+const selectedHouse = ref('')
+const userId = useUserStore().id
 const logins = ref<string[]>([])
-const { groups } = storeToRefs(groupStore)
+const { groups, uppperGroups } = storeToRefs(groupStore)
 const emit = defineEmits(['modal-close'])
-const selectData = ref(groups.value.reduce((acc:{description:string, value:any}[], curr) => [...acc, { description: curr.name, value: curr.id }], []))
+const selectDataHouses = ref(uppperGroups.value.reduce((acc:{ description:string, value:any }[], curr) => {
+  if (!acc?.length) {
+    acc = []
+  }
+  if(curr.groupCreatorId === userId && curr.typeId === 1){
+    acc.push({description: curr.name as string, value: curr.id})
+  }
+  return acc
+}, []))
+const selectDataGroups = ref<{id:string,name:string}[]>([])
 await groupStore.getAll()
 function addToLoginsArray () {
   if (logins.value.length > 0 && logins.value.find(el => el?.toLowerCase() === login.value.toLowerCase())) {
@@ -83,26 +124,97 @@ function removeFromLoginsArray (login:string) {
     logins.value.splice(idx, 1)
   }
 }
+
+async function getSubgroups(){
+  selectDataGroups.value = await groupStore.getSubgroups(selectedHouse.value)
+}
+function selectGroups(e:Event,id:string){
+  if (e.target?.checked){
+    groupIds.value.push(id)
+  }else {
+    groupIds.value = groupIds.value.filter(el=>el !== id)
+  }
+}
 async function addRoommate () {
-  if (groupId.value.length === 0) {
+  if (groupIds.value.length === 0) {
     useNotification('error', 'Выберите группу')
     return
   }
   try {
     isLoading.value = true
-    await groupStore.addUserToGroup(logins.value, groupId.value)
+    const response = await groupStore.addUserToGroup(logins.value, groupIds.value)
     isLoading.value = false
-    useNotification('info', 'Пользователи успешно добавлены')
+    console.log(response)
+    if (response?.status === 200){
+      useNotification('info', 'Пользователи успешно добавлены')
+    } else {
+      useNotification('error', 'Произошла ошибка')
+    }
   } catch {
 
   }
 }
 watch(groups, (newValue) => {
-  selectData.value = newValue.reduce((acc:{description:string, value:any}[], curr) => [...acc, { description: curr.name, value: curr.id }], [])
+  selectDataHouses.value = newValue.reduce((acc:{ description:string, value:any }[], curr) => {
+    if (!acc?.length) {
+      acc = []
+    }
+    if(curr.groupCreatorId === userId && curr.typeId === 1){
+      acc.push({description: curr.name as string, value: curr.id})
+    }
+    return acc
+  }, [])
 }, { deep: true })
 </script>
 
 <style lang="scss">
 @import "assets/styles/components/profile-add-roommate-modal";
-
+.add-roommate-modal__groups{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  &-item {
+    @include action-item;
+    padding: 8px 22px ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: $settings-color;
+    border-radius: 12px;
+    &-checkbox{
+      position: relative;
+      color: $settings-color;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px;
+      height: 24px;
+      input[type="checkbox"]{
+        position: absolute;
+        opacity: 0;
+        right: 0;
+        inset: 0;
+        z-index: 5;
+        cursor: pointer;
+        &:checked ~ .ui-icon {
+          background: $color-active;
+          border-color: $color-active;
+          svg {
+            opacity: 1;
+          }
+        }
+      }
+      .ui-icon{
+        width: 24px;
+        height: 24px;
+        background: $bg-primary;
+        border-radius: 3px;
+        border: 2px solid $bg-primary;
+        svg {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
 </style>

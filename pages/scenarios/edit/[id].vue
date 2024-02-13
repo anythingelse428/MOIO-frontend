@@ -32,6 +32,7 @@
             :capabilities="service.capabilities"
             :type="service.type"
             :group-id="service.groupId"
+            :device-icon="service.deviceIcon?.name??useIcoByDeviceType(service.type).name"
             @left-mouse-click="e=>{selectDevice({...e,id:service.id});toggleSelected(service.id, data)}"
             @update-capability="e=>{setCapability(e)}"
           />
@@ -54,6 +55,7 @@
           :name="filterGroups(data, searchGroupInput)?.name"
           :hide-empty="true"
           :is-scenarios="true"
+          :hide-sensors="true"
           @get-data="e=>{selectDevice(e);toggleSelected(e.id, data)}"
         />
       </div>
@@ -74,7 +76,7 @@
 
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
-import type { Service } from "~/components/Service/TheService.vue"
+import type { ServiceProps } from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
 import type { IGroupResponseItem } from "~/api/group/getById"
 import type { GroupList } from "~/components/Group/GroupList.vue"
@@ -93,18 +95,22 @@ export interface ICapability {
   type: string
   value:any
 }
-const isLoading = ref(false)
+const isLoading = ref(true)
 const groupStore = useGroupsStore()
 const data = ref(await groupStore.getGroupById(groupStore.currentHome))
-isLoading.value = true
+isLoading.value = false
 // const selectedDevice = ref<{ [key:string]: Service[] }>({})
-const selectedDevice = ref<Service[]>([])
-const capabilities = ref<{ [key: string]: Service['capabilities'][] }>({})
+const selectedDevice = ref<ServiceProps[]>([])
+const capabilities = ref<{ [key: string]: ServiceProps['capabilities'][] }>({})
 const roomsName:{[key:string]:string} = {}
 const scenarioName = ref('')
 const searchGroupInput = ref('')
 const devicesForRemove = ref<string[]>([])
 function filterGroups (data:IGroupResponseItem, groupName:string) {
+  if (groupName.length === 0) {
+    console.log('ddddddd', data)
+    return data
+  }
   if (data.name?.toLowerCase()?.includes(groupName.toLowerCase())) {
     return data
   }
@@ -116,7 +122,7 @@ function filterGroups (data:IGroupResponseItem, groupName:string) {
   }
 }
 
-function selectDevice (service:Service) {
+function selectDevice (service:ServiceProps) {
   const isDeviceExist = selectedDevice.value?.findIndex(el => el.id === service.id)
   if (isDeviceExist > -1) {
     selectedDevice.value.splice(isDeviceExist, 1)
@@ -258,7 +264,7 @@ async function deleteScenario () {
         }
       }
     }
-    .ui-icon {
+    .ui-icon.--delete {
       position: absolute;
       bottom: 12px;
       right: 16px;

@@ -2,20 +2,20 @@
   <div class="automation-add-condition">
     <div class="automation-add-condition__header">
       Добавить условие
-      <icon name="close" role="button" @click="emit('hide-modal')" />
+      <icon name="close" role="button" color="#fff" @click="emit('hide-modal')" />
     </div>
     <form class="automation-add-condition__form" @submit.prevent="emit('add-condition',condition)">
       <div class="automation-add-condition__conditions">
         <div :class="`automation-add-condition__condition ${condition==='time'&&'--active'}`" @click="condition='time'">
           <input id="time" type="radio" name="new_condition">
-          <icon name="service/clock-time-three-outline" size="100" />
+          <icon name="service/devices/clock-time-three-outline" size="100" />
           <div class="automation-add-condition__condition-name">
             Время
           </div>
         </div>
         <div :class="`automation-add-condition__condition ${condition==='sensor'&&'--active'}`" @click="condition='sensor'">
           <input id="sensor" type="radio" name="new_condition">
-          <icon name="service/leak" size="100" />
+          <icon name="service/sensor/leak" size="100" />
           <div class="automation-add-condition__condition-name">
             Датчик
           </div>

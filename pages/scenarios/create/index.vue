@@ -32,6 +32,7 @@
             :capabilities="service.capabilities"
             :type="service.type"
             :group-id="service.groupId"
+            :device-icon="service.deviceIcon"
             @left-mouse-click="e=>{selectDevice(e);toggleSelected(service.id, data)}"
             @update-capability="e=>{setCapability(e);console.log(e)}"
           />
@@ -70,7 +71,7 @@
 
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
-import type { Service } from "~/components/Service/TheService.vue"
+import type { ServiceProps } from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
 import type { IGroupResponseItem } from "~/api/group/getById"
 import type { GroupList } from "~/components/Group/GroupList.vue"
@@ -92,8 +93,8 @@ const isLoading = ref(true)
 const groupStore = useGroupsStore()
 const data = ref(await groupStore.getGroupById(groupStore.currentHome))
 isLoading.value = false
-const selectedDevice = ref<{ [key:string]: Service[] }>({})
-const capabilities = ref<{ [key: string]: Service['capabilities'][] }>({})
+const selectedDevice = ref<{ [key:string]: ServiceProps[] }>({})
+const capabilities = ref<{ [key: string]: ServiceProps['capabilities'][] }>({})
 const roomsName:{[key:string]:string} = {}
 const roomName = ref()
 const searchGroupInput = ref('')
@@ -109,7 +110,7 @@ function filterGroups (data:IGroupResponseItem, groupName:string) {
   }
 }
 
-function selectDevice (service:Service) {
+function selectDevice (service:ServiceProps) {
   const isDeviceExist = selectedDevice.value[service.groupId]?.findIndex(el => el.id === service.id)
   if (isDeviceExist > -1) {
     selectedDevice.value[service.groupId].splice(isDeviceExist, 1)
@@ -143,7 +144,7 @@ function setCapability (data:ICapability) {
   const capabilityIdx = capabilities.value[data.deviceId + '_ch' + data.chanel].findIndex(el => el.type === data.type)
   capabilities.value[data.deviceId + '_ch' + data.chanel][capabilityIdx] =
       { ...capabilities.value[data.deviceId + '_ch' + data.chanel][capabilityIdx], value: data.value, hsv: data.hsv, range: data.range }
-  if (data.instance.includes('bright')) {
+  if (data.instance?.includes('bright')) {
     const colorCapabilityIdx = capabilities.value[data.deviceId + '_ch' + data.chanel]?.findIndex(el => el.type.includes('color'))
     if (colorCapabilityIdx > -1) {
       capabilities.value[data.deviceId + '_ch' + data.chanel][colorCapabilityIdx] = { ...capabilities.value[data.deviceId + '_ch' + data.chanel][colorCapabilityIdx], hsv: { ...capabilities.value[data.deviceId + '_ch' + data.chanel][colorCapabilityIdx].hsv, v: Number(data.value) } }
@@ -223,13 +224,7 @@ async function createScenario () {
         }
       }
     }
-    .ui-icon {
-      position: absolute;
-      bottom: 12px;
-      right: 16px;
-      font-size: 16px!important;
-      color: #D15151;
-    }
+
   }
   .scenarios-create__header {
     font-size: 40px;
@@ -294,6 +289,13 @@ async function createScenario () {
       flex-wrap: wrap;
       gap:28px 30px;
       padding-inline: 1em;
+      .ui-icon.--delete {
+        position: absolute;
+        bottom: 12px;
+        right: 16px;
+        font-size: 16px!important;
+        color: #D15151;
+      }
     }
   }
   &__available{

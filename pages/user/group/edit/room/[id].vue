@@ -8,7 +8,15 @@
       <form method="post" class="add-group__form" @submit.prevent="editGroup()">
         <div class="add-group__input-group">
           <label for="group" class="add-group__label">Введите название комнаты</label>
-          <input id="group" v-model="name" type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
+          <input
+            id="group"
+            v-model="name"
+            type="text"
+            name="group"
+            class="add-group__input"
+            placeholder="Название комнаты"
+            required
+          >
         </div>
         <div v-if="house?.length>1" class="add-group-available-devices">
           <h2 class="add-group-available-devices__header">
@@ -25,30 +33,20 @@
             >
               <label for="device">{{ device?.name }}</label>
               <div class="add-group-available-devices__list-item-checkbox-wrapper">
-                <input id="device" type="checkbox" name="device" :checked="devices.findIndex(el=>el.id == device.id)>-1" @change="(e)=>setItem(devices,{id:device.id,name:device.name})">
-                <span class="add-group-available-devices__list-item-checkbox-mask" />
+                <input
+                  id="device"
+                  type="checkbox"
+                  name="device"
+                  :checked="devices.findIndex(el=>el.id == device.id)>-1"
+                  @change="(e)=>setItem(devices,{id:device.id,name:device.name})"
+                >
+                <span class="add-group-available-devices__list-item-checkbox-mask">
+                  <Icon name="check" size="24" />
+                </span>
               </div>
             </div>
           </div>
         </div>
-        <!--      <div v-if="house?.length>1 && existingUsers?.length" class="add-group-available-devices">-->
-        <!--        <h2 class="add-group-available-devices__header">-->
-        <!--          Добавьте гостей-->
-        <!--        </h2>-->
-        <!--        <div class="add-group-available-devices__list" v-if="existingUsers?.length>0">-->
-        <!--          <div-->
-        <!--              v-for="user in existingUsers"-->
-        <!--              :key="user.id"-->
-        <!--              class="add-group-available-devices__list-item"-->
-        <!--          >-->
-        <!--            <label for="device">{{ user?.name }}</label>-->
-        <!--            <div class="add-group-available-devices__list-item-checkbox-wrapper" v-if="user.id !== groupStore.currentGroup.groupCreatorId">-->
-        <!--              <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,users,{id:user.id,name:user.name})" :checked="users?.findIndex(el=>el.id === user.id)>-1">-->
-        <!--              <span class="add-group-available-devices__list-item-checkbox-mask" />-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </div>-->
-        <!--      </div>-->
         <div class="add-group__preview-wrapper">
           <div v-if="previewData.name.length" class="add-group__preview">
             <div class="add-group__preview-section">
@@ -63,15 +61,22 @@
               <div class="add-group__preview-section-title">
                 Устройства комнаты
               </div>
-              <div v-if="previewData.devices?.length" class="add-group__preview-section-value">
-                <div v-for="item in previewData.devices" :key="item.id" class="add-group__preview-section-device">
+              <div v-if="devices?.length" class="add-group__preview-section-value">
+                <div v-for="item in devices" :key="item.id" class="add-group__preview-section-device">
                   {{ item?.name }}
-                  <icon
-                    name="delete"
-                    color="#D15151"
-                    size="20"
-                    @click="(e)=>{setItem(devices,{id:item.id,name:item.name});setItem(existingDevices,{id:item.id,name:item.name});oldDevices.push(item.id);}"
-                  />
+                  <button
+                    class="blank"
+                    @click="(e)=>{
+                      setItem(devices,{id:item.id,name:item.name});
+                      setItem(existingDevices,{id:item.id,name:item.name});
+                    }"
+                  >
+                    <Icon
+                      name="delete"
+                      color="#D15151"
+                      size="20"
+                    />
+                  </button>
                 </div>
               </div>
               <div v-else class="add-group__preview-section-value">
@@ -85,13 +90,20 @@
               <div v-if="previewData.users?.length" class="add-group__preview-section-value">
                 <div v-for="user in previewData.users" :key="user.id" class="add-group__preview-section-device">
                   {{ user?.name }}
-                  <icon
-                    v-if="user.id !== groupStore.currentGroup.groupCreatorId"
-                    name="delete"
-                    color="#D15151"
-                    size="20"
-                    @click="(e)=>{usersForRemove.push({id:user.id,name:user.name});users.splice(users.findIndex(el=>el.id === user.id),1)}"
-                  />
+                  <button
+                    class="blank"
+                    @click="(e)=>{
+                      usersForRemove.push({id:user.id,name:user.name});
+                      users.splice(users.findIndex(el=>el.id === user.id),1)
+                    }"
+                  >
+                    <Icon
+                      v-if="user.id !== groupStore.currentGroup.groupCreatorId"
+                      name="delete"
+                      color="#D15151"
+                      size="20"
+                    />
+                  </button>
                 </div>
               </div>
               <div v-else class="add-group__preview-section-value">
@@ -121,7 +133,6 @@ import Icon from "~/components/shared/Icon.vue"
 let oldName = ''
 const isLoading = ref(false)
 const id = useRoute().params.id as string
-const oldDevices:string[] = []
 const name = ref('')
 const house = ref("")
 const devices = ref<{ id: string, name:string }[]>([])
@@ -144,6 +155,9 @@ function setItem (target:any, data:{ id: string, name:string }) {
   }
   if (isSelected > -1 && devices.value.findIndex(el => el.id === data.id) > -1) {
     target?.splice(isSelected, 1)
+    if (existingDevices.value.findIndex(el => el.id === data.id) === -1) {
+      existingDevices.value.push(data)
+    }
   }
 }
 
@@ -160,7 +174,7 @@ async function getGroupData () {
   } else {
     house.value = data.parentId
   }
-  name.value = data.name
+  name.value = data.name as string
   oldName = unref(name.value)
   // existingUsers.value = allUsers.filter((value, index, self) =>
   //         index === self.findIndex((t) => t.id === value.id)
@@ -174,7 +188,9 @@ async function getDevicesByGroupId (id:string, deviceRef:globalThis.Ref<any>) {
   deviceRef.value = []
   const devices = await groupStore.getDevicesByGroupId(id)
   for (const [key, val] of Object.entries(devices)) {
-    deviceRef.value.push(...val)
+    deviceRef.value.push(...val.map((el) => {
+      return { id: el.id, name: el.name }
+    }))
   }
 }
 async function editGroup () {

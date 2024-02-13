@@ -5,7 +5,7 @@ import type { IDeviceChangeBrightness } from "~/api/device/changeBrightness"
 import apiDeviceChangeBrightness from "~/api/device/changeBrightness"
 import type { IDeviceChangeRGBPayload } from "~/api/device/changeRGB"
 import apiDeviceChangeRGB from "~/api/device/changeRGB"
-import type { IDeviceChangeStatusOnOf } from "~/api/device/changeStatusOnOff"
+import type { IDeviceChangeStatusOnOff } from "~/api/device/changeStatusOnOff"
 import apiDeviceChangeOnOf from "~/api/device/changeStatusOnOff"
 import type { IDeviceChangeStatusOpenClose } from "~/api/device/changeStatusOpenClose"
 import apiDeviceChangeOpenClose from "~/api/device/changeStatusOpenClose"
@@ -14,6 +14,7 @@ import apiDeviceChangeTemperature from "~/api/device/changeStatusTemperature"
 import apiDeviceChangeName from "~/api/device/changeName"
 import apiDeviceDelete from "~/api/device/delete"
 import apiDeviceGetConfig from "~/api/device/getConfig"
+import apiDeviceChangeIcon from "~/api/device/changeIcon"
 export const useDevicesStore = defineStore('devices', {
   state: () => ({
     devices: [] as IAllDevicesResponse[],
@@ -23,18 +24,6 @@ export const useDevicesStore = defineStore('devices', {
     capabilityById: state => (id:string, capability:string) => state.devices.find(el => el.id === id)?.capabilities.find(el => el.type.includes(capability)),
   },
   actions: {
-    setDeviceCapability (deviceId:string, chanel:string, type:string, newValue:any) {
-      const oldDeviceIdx = this.devices.findIndex(el => el.id === deviceId + '_ch' + chanel)
-      const capabilityIdx = this.devices[oldDeviceIdx].capabilities.findIndex(el => el.type === type)
-      if (capabilityIdx > -1 && oldDeviceIdx > -1) {
-        if (type.includes('on_off') || type.includes('range') || type.includes('temperature')) {
-          this.devices[oldDeviceIdx].capabilities[capabilityIdx].value = newValue
-        }
-        if (type.includes('color')) {
-          this.devices[oldDeviceIdx].capabilities[capabilityIdx].hsv.v = Number(newValue)
-        }
-      }
-    },
     async getAllDevices () {
       console.warn('using deprecated method from devices store')
       const data = await apiDeviceGetAll()
@@ -57,7 +46,7 @@ export const useDevicesStore = defineStore('devices', {
         useNotification('error', "Произошла ошибка при изменении цвета")
       }
     },
-    async changeOnOf (props:IDeviceChangeStatusOnOf) {
+    async changeOnOf (props:IDeviceChangeStatusOnOff) {
       try {
         await apiDeviceChangeOnOf(props)
       } catch (e) {
@@ -89,15 +78,13 @@ export const useDevicesStore = defineStore('devices', {
       }
     },
     async deleteDevice (id:string) {
-      try {
-        await apiDeviceDelete(id)
-        useNotification('info', 'Устройство успешно удалено')
-      } catch {
-        useNotification('error', "Произошла непредвиденная ошибка")
-      }
+      return await apiDeviceDelete(id)
     },
     async getConfig () {
       return await apiDeviceGetConfig()
+    },
+    async changeIcon (deviceIdChanel:string, iconName:string) {
+      return await apiDeviceChangeIcon(deviceIdChanel, iconName)
     },
   },
 })

@@ -21,7 +21,7 @@
 		}
 	}
 	&__param {
-		width: 45%;
+		width: min(95%,432px);
 		&-label{
 			color: $color-primary;
 			font-size: 15px;
@@ -105,6 +105,27 @@
 		outline: 0;
 		cursor: pointer;
 	}
+	&__conditions{
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		&-delete{
+			font-size: 24px;
+			font-weight: 600;
+			color: #D15151;
+			border: 2px solid #D15151;
+			padding: 8px 24px;
+			background: transparent;
+			border-radius: 12px;
+			margin-top: 32px;
+			cursor: pointer;
+			transition: color, background .2s;
+			&:hover{
+				background: #D15151;
+				color: $color-primary;
+			}
+		}
+	}
 	.scenarios {
 		display: flex;
 		flex-direction: column;
@@ -125,5 +146,30 @@
 				color: $settings-color;
 			}
 		}
+	}
+	&__submit{
+		font-size: 24px;
+		font-weight: 600;
+		color: $bg-accent;
+		background: $color-active;
+		border: 0;
+		padding: 8px 12px ;
+		border-radius: 16px;
+	}
+	&__delete{
+		font-size: 24px;
+		font-weight: 600;
+		border: 0;
+		background: $device-action;
+		color: #D15151;
+		border-radius: 16px;
+		padding: 12px 8px;
+		cursor: pointer;
+	}
+	&__submit-container {
+		margin-top: 32px;
+		display: flex;
+		justify-content: center;
+		gap: 40px;
 	}
 }

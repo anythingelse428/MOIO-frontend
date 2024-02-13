@@ -8,6 +8,28 @@
   color: $color-primary;
   border-radius: 36px;
   width: clamp(200px, 535px,95vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    border-radius: 2px;
+    width: 8px;
+    margin-inline-start: 10px;
+    left: 10px;
+    position: absolute;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    width: 4px;
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $color-active;
+    width: 8px;
+    height: 32px;
+    border-radius: 12px;
+  }
+  
   &__header {
     min-width: 100%;
     display: flex;

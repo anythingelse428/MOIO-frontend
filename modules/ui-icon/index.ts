@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { defineNuxtModule, createResolver, addTypeTemplate } from 'nuxt/kit'
+import { defineNuxtModule, addTemplate, createResolver, addTypeTemplate } from 'nuxt/kit'
 import { consola } from 'consola'
+import { TUiIconNames } from "../../.nuxt/types/ui-icon"
 
 export default defineNuxtModule({
   meta: {
@@ -45,7 +46,28 @@ export default defineNuxtModule({
         return /* ts */`export type TUiIconNames = ${iconKeys.map(i => `'${i}'`).join('|')}`
       },
     })
-
+    const iconNames = iconKeys.reduce((acc:{[key:string]:string[]}, curr) => {
+      const matcher = curr.match(/\w*[/]/gm)
+      if (!acc) {
+        acc = {}
+      }
+      if (matcher?.length) {
+        matcher.forEach((el) => {
+          if (acc[el.slice(0, -1)]?.length) {
+            acc[el.slice(0, -1)] = [...acc[el.slice(0, -1)], curr]
+          } else {
+            acc[el.slice(0, -1)] = [curr]
+          }
+        })
+      } else if (acc.other?.length) {
+        acc.other = [...acc.other, curr]
+      } else {
+        acc.other = [curr]
+      }
+      return acc
+    }, {})
+    const writeableStream = fs.createWriteStream('utils/ui-icon.ts')
+    writeableStream.write(`\nimport type { TUiIconNames } from "#build/types/ui-icon";\nexport const uiIconNames:{ [key:string]: TUiIconNames[] } = ${JSON.stringify(iconNames, null, 2)}`)
     consola.info('[$uiIcon] icon types successful generated!')
   },
 })

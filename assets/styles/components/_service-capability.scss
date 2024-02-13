@@ -1,3 +1,15 @@
+.--scenario {
+  .service-capability{
+    &__control {
+      &.--color,
+      &.--range,
+      &.--thermostat,
+      &.--temperature{
+        filter: brightness(1);
+      }
+    }
+  }
+}
 .service-capability{
   display: block;
   position: relative;
@@ -10,12 +22,12 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    &.--color,
-    &.--range,
-    &.--thermostat,
-    &.--temperature{
-      filter: brightness(0.4);
-    }
+      &.--color,
+      &.--range,
+      &.--thermostat,
+      &.--temperature{
+        filter: brightness(0.4);
+      }
     &.--toggle{
       display: block;
       width: 32px;
@@ -26,33 +38,6 @@
         position: absolute;
         inset: 0;
         opacity: 0;
-      }
-      &::before{
-        transition: all .3s;
-        will-change: color, box-shadow;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        content: "\F0425";
-        color: #1A424B;
-        font: normal normal normal 24px/1 "Material Design Icons";
-        font-size: inherit;
-        text-rendering: auto;
-        line-height: inherit;
-        -webkit-font-smoothing: antialiased;
-        width: 32px;
-        height: 32px;
-        border-radius: 100%;
-        background: $color-inactive;
-        font-size: 24px;
-      }
-      &.--checked{
-        &::before{
-          filter:drop-shadow(0px 0px 12px $service-shadow-color);
-          background: $bg-primary;
-          color: $color-active;
-          box-shadow: none;
-        }
       }
     }
     &.--color{
@@ -142,18 +127,16 @@
       }
       &.--bright{
         margin-top: 40px;
-        &::before{
-          display: block;
+          color: $settings-color;
+        .ui-icon{
           position: absolute;
           z-index: 5;
           top: calc(50% + 1px);
           left: 8px;
-          color: $settings-color;
-          font: normal normal normal 24px/1 "Material Design Icons";
-          content: '\F06E9';
           width: 24px;
           height: 24px;
           font-size: 24px;
+          pointer-events: none;
         }
       }
     }

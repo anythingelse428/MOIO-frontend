@@ -1,10 +1,7 @@
 import type { TUiIconNames } from "#build/types/ui-icon"
 
 export default function useIcoByGroupName (name:string):{name:TUiIconNames, code?:string} {
-  if (!name) { return { name: 'help', code: '\\F02D6' } }
-  if (name.includes('devices.types.sensor')) {
-    return { name: 'access-point', code: "\\F0003" }
-  }
+  if (!name) { return { name: 'service/other/help', code: '\\F02D6' } }
   switch (name.toLowerCase()) {
     case 'безопасность':
       return { name: 'aside/secure', code: '\\' }
@@ -19,9 +16,9 @@ export default function useIcoByGroupName (name:string):{name:TUiIconNames, code
     case 'аудио':
       return { name: 'aside/electronic', code: '\\' }
     case 'выключатели':
-      return { name: 'aside/water', code: '\\' }
+      return { name: 'service/other/help', code: '\\' }
     case 'розетки':
-      return { name: 'aside/water', code: '\\' }
+      return { name: 'service/devices/power-socket-eu', code: '\\' }
     case 'комната':
       return { name: 'aside/room', code: '\\' }
     case 'этаж':
@@ -29,7 +26,7 @@ export default function useIcoByGroupName (name:string):{name:TUiIconNames, code
     case 'дом':
       return { name: 'aside/home', code: '\\' }
     default:
-      return { name: 'aside/water', code: '\\F02D6' }
+      return { name: 'service/other/help', code: '\\F02D6' }
   }
 }
 

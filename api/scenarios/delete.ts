@@ -4,7 +4,7 @@ export default async function apiScenariosDelete (id:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
     try {
       const response =
-      await axios.post(path + '/Scenarios/DeleteScenarios', { scenariosIds: [id] })
+      await axios.delete(path + '/v1/scenarios/remove', { data: { scenariosIdList: [id] } })
       if (response.status === 200) {
         useNotification('info', "Сценарий успешно удален")
         setTimeout(() => useRouter().back(), 1000)

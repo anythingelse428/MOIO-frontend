@@ -17,7 +17,7 @@
         :style="isDeviceOn&&`color:rgb(${Math.round(color?.red*255)},${Math.round(color?.green*255)},${Math.round(color?.blue*255)})`"
         class="service-ico-wrapper"
       >
-        <icon :name="ico.name" size="36" />
+        <icon :name="currentIcon" size="36" />
         <div v-if="stuff?.value" class="service-stuff">
           {{ stuff.value }}{{ stuff.instance.includes('temp')?'°C':'' }}
         </div>
@@ -59,7 +59,7 @@
                   #[item.type]
                 >
                   <service-capability
-                    :device-id="id.replace(/_ch[0-9]*/gm,'')"
+                    :device-id="id"
                     :chanel="id.replace(/^[a-zA-Z0-9_.-]*_ch/gm,'')"
                     :instance="item.instance"
                     :range="item.range"
@@ -69,6 +69,7 @@
                     :device-type="type"
                     :hsv="item.hsv"
                     :value="item.value"
+                    :icon="deviceIcon?.name"
                     @update-bool-val="e=>turnOnDevice(e)"
                   />
                 </template>
@@ -94,6 +95,50 @@
                     </div>
                   </template>
                 </the-modal>
+                <button class="service-capabilities-modal__action" @click="isIconModalShow = true">
+                  Изменить иконку
+                </button>
+                <the-modal :is-shown="isIconModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
+                  <template #inner>
+                    <div ref="iconModal" class="change-icon-modal" role="dialog">
+                      <div class="change-icon-modal__header">
+                        Выберите иконку устройства
+                        <button class="blank" @click="isIconModalShow = false">
+                          <icon name="close" size="16"/>
+                        </button>
+                      </div>
+                      <div class="change-icon-modal__icons">
+                      <h2 class="change-icon-modal__subheader">Устройства</h2>
+                        <span
+                            class="change-icon-modal__icon"
+                            v-for="icon in existingIcons?.devices"
+                            :key="icon"
+                            @click="selectedIcon = icon"
+                        >
+                          <icon
+                              :name="icon"
+                              size="52"
+                              :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"/>
+                        </span>
+                      </div>
+                      <div class="change-icon-modal__icons">
+                      <h2 class="change-icon-modal__subheader">Датчики</h2>
+                        <span
+                            class="change-icon-modal__icon"
+                            v-for="icon in existingIcons?.sensor"
+                            :key="icon"
+                            @click="selectedIcon = icon"
+                        >
+                          <icon
+                              :name="icon"
+                              size="52"
+                              :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"/>
+                        </span>
+                      </div>
+                      <button class="change-icon-modal__submit" @click="setNewIcon()">Сохранить</button>
+                    </div>
+                  </template>
+                </the-modal>
               </div>
             </div>
           </div>
@@ -106,7 +151,6 @@
 <script setup lang="ts">
 import { onLongPress } from '@vueuse/core'
 
-import type { ArrayEntry } from "type-fest/source/entry"
 import TheModal from "~/components/shared/TheModal.vue"
 import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useDevicesStore } from "~/store/devices"
@@ -116,6 +160,8 @@ import { useUserStore } from "~/store/user"
 import Icon from "~/components/shared/Icon.vue"
 import useHSVToRGB from "~/composables/useHSVToRGB"
 import useThrottle from "~/composables/useThrottle"
+import type {TUiIconNames} from "#build/types/ui-icon";
+import type {Service} from "~/components/Scenarios/ScenarioService.vue";
 export interface ICapability {
   type: string
   retrievable: boolean
@@ -133,15 +179,17 @@ export interface ICapability {
     v: number
   }
 }
-export type Service = {
+export type ServiceProps = {
   id:string
-  groupId:string|number
   name: string
   type:string
   capabilities?:ICapability[]
+  categoryId?:number
+  deviceIcon: { name:TUiIconNames } | null
+  groupId:string|number
 }
 
-const props = defineProps<Service>()
+const props = defineProps<ServiceProps>()
 const isMounted = ref(false)
 const service = ref<HTMLDivElement | null>(null)
 const isCapabilitiesShow = ref(false)
@@ -149,11 +197,16 @@ const isDeviceOn = ref(props.capabilities?.find(el => el.type === 'devices.capab
 const isDeviceOpen = ref(props.capabilities?.find(el => el.instance === 'open' || el.type === 'devices.types.openable.garage')?.value)
 const target = ref(null)
 const deleteModal = ref(null)
+const iconModal = ref(null)
 const ico = useIcoByDeviceType(props.type)
 const isEdit = ref(false)
 const isPending = ref(false)
 const isDead = ref(false)
 const isDeleteModalShow = ref(false)
+const isIconModalShow = ref(false)
+const currentIcon:TUiIconNames = props.deviceIcon?.name ?? ico.name
+const selectedIcon = ref<TUiIconNames>('' as TUiIconNames)
+const existingIcons = uiIconNames
 const newDeviceName = ref(props.name)
 const deviceStore = useDevicesStore()
 const groupStore = useGroupsStore()
@@ -165,6 +218,7 @@ onClickOutside(target, (event) => {
   if (isCapabilitiesShow.value && event.target?.className) {
     isCapabilitiesShow.value = false
     isDeleteModalShow.value = false
+    isIconModalShow.value = false
     // после закрытия модалки обновляю данные
     setDisplayedStuff()
   }
@@ -172,7 +226,9 @@ onClickOutside(target, (event) => {
 onClickOutside(deleteModal, () => {
   isDeleteModalShow.value = false
 })
-
+onClickOutside(iconModal, () => {
+  isIconModalShow.value = false
+})
 onLongPress(service, () => {
   isCapabilitiesShow.value = true
 }, { delay: 400 })
@@ -186,9 +242,9 @@ async function turnOnDevice (isChangeRange?:any) {
     const isOpenable = props?.capabilities?.find(el => el.instance?.includes('open'))
 
     if (isOpenable) {
-      await deviceStore.changeOpenClose({ clientId: groupStore.clientId, deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), open: !(isOpenable.value === 'open' || isOpenable.value === 'true' || (isOpenable.value as unknown as boolean) === true) })
+      await deviceStore.changeOpenClose({ clientId: groupStore.clientId, deviceId: props.id, open: !(isOpenable.value === 'open' || isOpenable.value === 'true' || (isOpenable.value as unknown as boolean) === true) })
     } else {
-      await deviceStore.changeOnOf({ clientId: groupStore.clientId, deviceId: props.id.replace(/_ch[0-9]*/gm, ''), chanel: props.id.replace(/^[a-zA-Z0-9_.-]*_ch/gm, ''), onOffStatus: newValue })
+      await deviceStore.changeOnOf({ clientId: groupStore.clientId, deviceId: props.id, onOffStatus: newValue })
     }
     const timeout = setTimeout(() => {
       if (isPending.value) {
@@ -204,7 +260,7 @@ async function deleteDevice () {
     const res = await deviceStore.deleteDevice(props.id)
     isDeleteModalShow.value = false
     isCapabilitiesShow.value = false
-    if (service.value) {
+    if (service.value && res?.includes('Девайс с Id')) {
       service.value.style.display = 'none'
     }
   } catch {
@@ -220,6 +276,10 @@ async function setNewDeviceName () {
   } else {
     await groupStore.getGroupById(groupStore.currentGroup.id)
   }
+}
+
+async function setNewIcon() {
+  await deviceStore.changeIcon(props.id, selectedIcon.value)
 }
 
 function setDisplayedStuff () {
@@ -265,5 +325,68 @@ onUnmounted(() => {
 @import "assets/styles/components/service";
 @import "assets/styles/components/service-capabilities-modal";
 @import "assets/styles/components/service-delete-modal";
+.change-icon-modal{
+  max-height: 85vh;
+  overflow-y: auto;
+  width: min(528px,95%);
+  background: $bg-primary;
+  padding: 24px;
+  border-radius: 32px;
+  &::-webkit-scrollbar{
+    width: 8px;
+    background: $bg-accent;
+  }
+  &::-webkit-scrollbar-track{
+    background: $bg-accent;
 
+  }
+  &::-webkit-scrollbar-thumb{
+    background: $color-active;
+    border-radius: 12px;
+  }
+  &__header{
+    position: relative;
+    text-align: center;
+    color: $color-active;
+    @include capabilities-modal-header;
+    .blank{
+      position: absolute;
+      right: 0;
+      top: 8px;
+      cursor: pointer;
+    }
+  }
+  &__subheader{
+    width: 100%;
+  }
+  &__icons{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 48px;
+    .ui-icon {
+      padding: 8px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      &.--selected{
+        border-color: $color-active;
+        box-shadow: 0 0 4px 0 $color-active;
+      }
+    }
+  }
+  &__submit{
+    font-size: 24px;
+    font-weight: 600;
+    color: $bg-accent;
+    background: $color-active;
+    border: 0;
+    padding: 8px 12px ;
+    border-radius: 16px;
+    display: block;
+    margin-inline: auto;
+    margin-top: 32px;
+  }
+}
 </style>

@@ -1,11 +1,10 @@
 export interface IAutomationUpdateProps {
   id: string,
   name: string,
-  addScenarios: {
+  scenarios: {
      scenarioId: string,
      orderId: number
    }[]
-  removeScenariosIdList: string[]
   newTrigger: string[]
   removeTriggersIdList: string[]
   allConditions: boolean

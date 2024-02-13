@@ -19,6 +19,7 @@
               :name="service.name"
               :type="service.type"
               :capabilities="service?.capabilities"
+              :device-icon="service.deviceIcon"
             />
           </div>
         </div>

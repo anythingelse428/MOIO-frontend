@@ -54,10 +54,13 @@ export interface AutomationConditionProps {
   }
   editable?:boolean
 }
-const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`, editable: true })
+const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`,currSensor:{id:'',name:'',type:''}, editable: true })
 const emits = defineEmits(['select-option'])
 const time = computed({
   get () {
+    if (props.currTime.includes('2077-01-24T')) {
+      return props.currTime.replace('2077-01-24T', '').replace(/.\d\d:\d\d/, '')
+    }
     return props.currTime
   },
   set (val) {

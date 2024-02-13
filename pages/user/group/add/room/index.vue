@@ -36,7 +36,9 @@
             <label for="device">{{ device?.name }}</label>
             <div class="add-group-available-devices__list-item-checkbox-wrapper">
               <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e,devices,{id:device.id,name:device.name})" :checked="devices.findIndex(el=>el.id === device.id)>-1">
-              <span class="add-group-available-devices__list-item-checkbox-mask" />
+              <span class="add-group-available-devices__list-item-checkbox-mask">
+              <icon name="check" size="24"/>
+            </span>
             </div>
           </div>
         </div>

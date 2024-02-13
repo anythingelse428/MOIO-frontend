@@ -1,9 +1,11 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import type { TUiIconNames } from "#build/types/ui-icon"
 
 export interface IAllDevicesResponse {
     id: string
     name: string
     type: string
+    deviceIcon: { name:TUiIconNames }|null
     capabilities: {
         type: string
         retrievable: boolean

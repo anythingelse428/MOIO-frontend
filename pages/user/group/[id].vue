@@ -34,11 +34,11 @@ async function fetchGroups () {
   isLoading.value = true
   groupData.value = { name: '', devices: [], inverseParent: [] }
   await groupStore.getGroupById(groupId)
-  groupData.value = currentGroup.value
   isLoading.value = false
+  groupData.value = currentGroup.value
 }
 
-if (groupStore.currentHome !== groupId && groupStore.uppperGroups.find(el => el.id === groupId)?.typeId === 1) {
+if (groupStore.currentHome !== groupId && groupStore.uppperGroups?.find(el => el.id === groupId)?.typeId === 1) {
   groupStore.setCurrentHome(groupId)
   useNotification('info', 'Просматриваемый дом изменен')
 }
@@ -47,7 +47,7 @@ watch(route, () => {
   fetchGroups()
 }, { deep: true, immediate: true })
 watch(currentGroup, (newVal, oldValue) => {
-  if (oldValue && !newVal.id.includes(groupId)) {
+  if (oldValue && !newVal?.id?.includes(groupId)) {
     const idx = groupData.value.inverseParent.findIndex(el => el.id === newVal.id)
     groupData.value.inverseParent[idx] = newVal
   } else {

@@ -1,10 +1,10 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
-export default async function apiGroupAddUser (usersLogins:string[], groupId:string) {
+export default async function apiGroupAddUser (usersLogins:string[], groupsIds:string[]) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + '/Group/addUsersToGroup', {
+    return await axios.post(path + '/v1/groups/addUsersToGroup', {
       usersLogins,
-      groupId,
+      groupsIds,
     })
   })
 }

@@ -1,5 +1,5 @@
 export interface IAutomationByIdResponse {
-id:string,
+  id:string,
   name:string
   scenarios:{
     orderId:number,
@@ -17,6 +17,7 @@ id:string,
       type: string
     }[]
   }
+  allConditions:boolean
 }
 export default async function apiAutomationsGetById (id:string):Promise<IAutomationByIdResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {

@@ -18,7 +18,7 @@
       <toggle-switch
         role="button"
         :checked="capability.value"
-        :ico="toggleSwitchIco?.name"
+        :ico="icon??toggleSwitchIco?.name"
         vertical-large
         @check="(e)=>{capability.value=e;updateDevice({type,value:capability.value})}"
       />
@@ -31,6 +31,7 @@
       <label for="range">
         {{ $t(`${type}-${instance}`) }}
       </label>
+      <icon name="service/devices/lightbulb-variant-outline" size="24" />
       <input
         id="range"
         v-model="capability.value"
@@ -46,7 +47,7 @@
       <thermostat-input :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
-      <toggle-switch :checked="String(capability.value).includes('open')||String(capability.value).includes('true')" vertical-large :ico="toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
+      <toggle-switch :checked="String(capability.value).includes('open')||String(capability.value).includes('true')" vertical-large :ico="icon??toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
     </div>
   </div>
 </template>
@@ -59,6 +60,8 @@ import ThermostatInput from "~/components/Service/ThermostatInput.vue"
 import { useUserStore } from "~/store/user"
 import { useGroupsStore } from "~/store/groups"
 import useHSVToRGB from "~/composables/useHSVToRGB"
+import Icon from "~/components/shared/Icon.vue"
+import type {TUiIconNames} from "#build/types/ui-icon";
 
 export type ServiceCapability = {
     deviceType:string
@@ -79,6 +82,7 @@ export type ServiceCapability = {
       v:number
     },
   value:any
+  icon?:TUiIconNames
 }
 
 const props = defineProps<ServiceCapability>()
@@ -109,7 +113,6 @@ function updateDevice (val:{type:string, value:any}) {
   const mainActionProps = {
     clientId: groupStore.clientId,
     deviceId: props.deviceId,
-    chanel: props.chanel,
   }
 
   switch (val.type) {

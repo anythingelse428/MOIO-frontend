@@ -15,6 +15,7 @@ import { useUserStore } from "~/store/user"
 import apiGroupAddUser from "~/api/group/addUser"
 import apiGroupGetUserByGroupId from "~/api/group/getUsersByGroupId"
 import apiGroupRemoveUsers from "~/api/group/removeUsers"
+import apiGroupsGetSubgroups from "~/api/group/getSubgroups"
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
     groups: [] as IGroupResponseItem[],
@@ -119,6 +120,9 @@ export const useGroupsStore = defineStore('groups', {
       this.currentGroup = data
       return data
     },
+    async getSubgroups (id:string) {
+      return await apiGroupsGetSubgroups(id)
+    },
     async changeName (id:string, name:string) {
       try {
         await apiGroupChangeName(id, name)
@@ -149,7 +153,7 @@ export const useGroupsStore = defineStore('groups', {
         useNotification('error', "Произошла ошибка при удалении")
       }
     },
-    async addUserToGroup (logins:string[], groupId:string) {
+    async addUserToGroup (logins:string[], groupId:string[]) {
       await apiGroupAddUser(logins, groupId)
     },
     async removeUsersFromGroup (ids:number[], groupId:string) {

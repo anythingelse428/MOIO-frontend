@@ -39,20 +39,34 @@
 
         <the-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
-            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{newConditions.push({type:e,id:oldConditions.length+1});showConditionModal = false}" />
+            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{newConditions.push({type:e,id:oldConditions.length+newConditions.length+1});showConditionModal = false}" />
           </template>
         </the-modal>
         <div v-for="(item,i) in oldConditions" :key="item.id" class="automation__conditions">
-          <button @click.prevent="deleteCondition(item.id)">
-            Удалить нахуй условие ебаное {{ item.id }}
+          <automation-condition
+            :type="item.type"
+            :curr-time="item.type==='time'?item.value as string:undefined"
+            :curr-sensor="item.type==='sensor'?item.value:undefined"
+            :editable="false"
+            :idx="i+1"
+            @select-option="e=>addConditionInArr(item.id, e?.type, e.value)"
+          />
+          <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
+            Удалить
           </button>
-          <automation-condition :type="item.type" :curr-time="item.type==='time'?item.value as string:undefined" :curr-sensor="item.type==='sensor'?item.value:undefined" :editable="false" :idx="i+1" @select-option="e=>addConditionInArr(item.id, e?.type, e.value)" />
         </div>
-        <div v-for="(item,i) in newConditions" :key="item.id" class="automation__conditions">
-          <button @click.prevent="deleteCondition(item.id)">
-            Удалить нахуй условие ебаное {{ item.id }}
+        <div v-for="(item,i) in newConditions" :key="item.id+i" class="automation__conditions">
+          <automation-condition
+            :type="item.type"
+            :curr-time="item.value"
+            :sensors="sensors"
+            :editable="true"
+            :idx="i+oldConditions.length+1"
+            @select-option="e=>addConditionInArr(item.id, e?.type, e.value)"
+          />
+          <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
+            Удалить
           </button>
-          <automation-condition :type="item.type" :curr-time="item.value" :sensors="sensors" :editable="true" :idx="i+oldConditions.length+1" @select-option="e=>addConditionInArr(item.id, e?.type, e.value)" />
         </div>
       </div>
 
@@ -67,10 +81,12 @@
           {{ scenario.name }}
         </div>
       </div>
-      <input type="submit" value="Добавить">
-      <button class="delete" @click.prevent="deleteAutomation()">
-        DELETE
-      </button>
+      <div class="automation__submit-container">
+        <button class="automation__delete" @click.prevent="deleteAutomation()">
+          Удалить
+        </button>
+        <input type="submit" value="Сохранить" class="automation__submit">
+      </div>
     </form>
   </div>
 </template>
@@ -87,21 +103,24 @@ import { type IGroupResponseItem } from "~/api/group/getById"
 import type { Service } from "~/components/Service/TheService.vue"
 
 const route = useRoute()
-const id = route.params.id
 const isLoading = ref(true)
 const groupStore = useGroupsStore()
+
+const id = route.params.id
+const name = ref('')
 
 const oldConditions = ref<{type:'sensor'|'time', id:any, value:string|{ id: string, name: string, type:string }}[]>([])
 const newConditions = ref<{type:'sensor'|'time', id:any, value:string}[]>([])
 const removeCondition = ref<string[]>([])
+
 const scenarios = ref<string[]>([])
-const removeScenarios = ref<string[]>([])
+const existingScenarios = await useScenarioStore().getAll()
 
 const runByAllConditions = ref(true)
+
 const showConditionModal = ref(false)
 const sensors = ref<{id:string, name:string, type:string}[]>([])
-const name = ref('')
-const existingScenarios = await useScenarioStore().getAll()
+
 isLoading.value = false
 
 function selectOnlySensors (group:IGroupResponseItem, arr:Service[] = []) {
@@ -132,22 +151,16 @@ function deleteCondition (id:any) {
 }
 function addConditionInArr (id:string, type:'sensor'|'time', value:string) {
   const isConditionExist = newConditions.value.findIndex(el => el.id === id)
-  const timeOffset = Date()?.match(/GMT.\d\d:\d\d/gm) as string[]
   if (isConditionExist > -1 && type === 'time') {
-    newConditions.value[isConditionExist].value = `2077-01-24T${value}:00${timeOffset[0].replace('GMT', '')}`
+    newConditions.value[isConditionExist].value = value
     return
   }
   if (isConditionExist > -1 && type === 'sensor') {
-    const elInValueExist = oldConditions.value[isConditionExist].value?.includes(value)
-    if (elInValueExist) {
-      newConditions.value[isConditionExist].value = ''
-      return
-    }
     newConditions.value[isConditionExist].value = value
     return
   }
   if (isConditionExist === -1 && type === "time") {
-    newConditions.value.push({ id, type, value: `2077-01-24T${value}:00${timeOffset[0].replace('GMT', '')}` })
+    newConditions.value.push({ id, type, value })
   }
   if (isConditionExist === -1 && type === "sensor") {
     newConditions.value.push({ id, type, value })
@@ -157,7 +170,6 @@ function addConditionInArr (id:string, type:'sensor'|'time', value:string) {
 function selectScenarios (id:string) {
   const isScenarioExist = scenarios.value.findIndex(el => el === id)
   if (isScenarioExist > -1) {
-    removeScenarios.value.push(scenarios.value[isScenarioExist])
     scenarios.value.splice(isScenarioExist, 1)
     return
   }
@@ -166,17 +178,23 @@ function selectScenarios (id:string) {
 const automationStore = useAutomationStore()
 async function create () {
   isLoading.value = true
+  const timeOffset = Date()?.match(/GMT.\d\d:\d\d/gm) as string[]
+
   const automationData:IAutomationUpdateProps = {
     id: id as string,
     name: name.value,
-    addScenarios: scenarios.value.map((el, id) => {
+    scenarios: scenarios.value.map((el, id) => {
       return {
         scenarioId: el,
         orderId: id,
       }
     }),
-    newTrigger: newConditions.value.map(el => el.value),
-    removeScenariosIdList: removeScenarios.value,
+    newTrigger: newConditions.value.map((el) => {
+      if (el.value.match(/\d\d:\d\d/)) {
+        return `2077-01-24T${el.value}:00${timeOffset[0].replace('GMT', '')}`
+      }
+      return el.value
+    }),
     removeTriggersIdList: removeCondition.value,
     allConditions: runByAllConditions.value,
   }
@@ -190,6 +208,7 @@ async function getData () {
   const response = await automationStore.getById(id as string)
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
+  runByAllConditions.value = response.allConditions
   console.log(response.triggers)
   response.triggers.time.forEach((el) => {
     const time = new Date(`7/07/2077 ${el.time} UTC`)
