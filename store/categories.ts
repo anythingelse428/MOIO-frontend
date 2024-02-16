@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import type { IGetAllResponseItem } from "~/api/category/getAll"
 import apiCategoryGetAll from "~/api/category/getAll"
-import { type IAllDevicesResponse } from "~/api/device/getAll"
 import apiCategoryGetDevicesById, { type IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 import useIcoByGroupName from "~/composables/useIcoByGroupName"
 
@@ -45,7 +44,7 @@ export const useCategoriesStore = defineStore('categories', {
         this.devicesInCategory = {}
         const data = await apiCategoryGetDevicesById(id, homeId)
         console.log('dataFrom GetDevicesByCategoryAndGroup', data)
-        this.devicesInCategory = (data?.item1 || {}) as unknown as IDevicesInCategory
+        this.devicesInCategory = data
       } catch (e) {
         useNotification('error', 'Что-то пошло не так с получением категории')
       }

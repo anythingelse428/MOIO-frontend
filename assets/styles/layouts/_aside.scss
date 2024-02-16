@@ -12,6 +12,7 @@
     overflow-y: auto;
     background: $bg-primary;
     gap:60px;
+    
     &::-webkit-scrollbar {
       width: 4px;
     }
@@ -42,6 +43,9 @@
       right: -24px;
       width: fit-content;
       cursor: pointer;
+      @media screen and (max-width:768px) {
+        font-size: 36px;
+      }
       &.--collapsed{
         margin-inline-start: calc(100% - 48px - 30px);
       }

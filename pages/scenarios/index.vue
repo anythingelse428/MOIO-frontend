@@ -22,11 +22,11 @@
 
 <script setup lang="ts">
 
-import router from "#app/plugins/router"
 import { useScenarioStore } from "~/store/scenario"
 import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
+
 const isLoading = ref(true)
 const scenarios = ref<IAllScenariosResponse[]>([])
 const scenarioStore = useScenarioStore()
@@ -72,6 +72,8 @@ function redirect (to:string) {
         font-weight: 600;
         height: 120px;
         width: calc(50% - 40px);
+        min-width: min(300px, 100%);
+        margin-inline: auto;
         border-radius: 12px;
         cursor: pointer;
         .ui-icon {

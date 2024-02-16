@@ -16,6 +16,8 @@ import apiGroupAddUser from "~/api/group/addUser"
 import apiGroupGetUserByGroupId from "~/api/group/getUsersByGroupId"
 import apiGroupRemoveUsers from "~/api/group/removeUsers"
 import apiGroupsGetSubgroups from "~/api/group/getSubgroups"
+import apiGroupCheckCode from "~/api/group/checkCode"
+
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
     groups: [] as IGroupResponseItem[],
@@ -29,20 +31,27 @@ export const useGroupsStore = defineStore('groups', {
     allGroups: state => state.groups,
     groupById: state => (id:string) => state.groups.find(el => el.id === id),
     group: state => state.currentGroup,
-    floors: (state) => {
-      const categoriesStore = useCategoriesStore()
-      // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 2), 'group', 'этаж', true)
+    isEditable: (state) => {
+      const { id } = useUserStore()
+      return Boolean(state.uppperGroups?.find(el => el.id === state.currentHome && el.groupCreatorId === id)?.id === state.currentHome)
     },
-    rooms: (state) => {
+    floors (state) {
       const categoriesStore = useCategoriesStore()
+      const isEditable = this.isEditable
       // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 3), 'group', 'комната', true)
+      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 2), 'group', 'этаж', isEditable)
     },
-    houses: (state) => {
+    rooms (state) {
       const categoriesStore = useCategoriesStore()
+      const isEditable = this.isEditable
       // @ts-ignore
-      return categoriesStore.allCategories(state.uppperGroups, 'group', 'дом', false, state.currentHome)
+      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 3), 'group', 'комната', isEditable)
+    },
+    houses (state) {
+      const categoriesStore = useCategoriesStore()
+      const isEditable = this.isEditable
+      // @ts-ignore
+      return categoriesStore.allCategories(state.uppperGroups, 'group', 'дом', isEditable, state.currentHome)
     },
   },
   actions: {
@@ -50,7 +59,6 @@ export const useGroupsStore = defineStore('groups', {
       if (this.currentHome.length > 1 || (groupId && groupId?.length > 1)) {
         try {
           const data = await apiGroupGetAll(this.currentHome.length > 1 ? this.currentHome : groupId)
-          console.log(data)
           if (data.length) {
             this.groups = data
           }
@@ -156,11 +164,14 @@ export const useGroupsStore = defineStore('groups', {
     async addUserToGroup (logins:string[], groupId:string[]) {
       await apiGroupAddUser(logins, groupId)
     },
-    async removeUsersFromGroup (ids:number[], groupId:string) {
-      await apiGroupRemoveUsers(ids, groupId)
+    async removeUsersFromGroup (groupIds:string[], logins:string[], ids:number[]) {
+      await apiGroupRemoveUsers(groupIds, logins, ids)
     },
     async getUsersByGroupId (id:string) {
       return await apiGroupGetUserByGroupId(id)
+    },
+    async checkCode (code:string) {
+      return await apiGroupCheckCode(code)
     },
   },
 })

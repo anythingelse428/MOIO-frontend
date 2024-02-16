@@ -1,10 +1,11 @@
 .profile{
-  padding-inline: 175px;
+  width: min(792px, 95%);
+  margin-inline: auto;
   @media screen and (max-width: 1200px) {
     padding-inline: min(9%, 75px);
   }
   &__divider{
-    margin-top: 64px;
+    margin-top: 28px;
   }
 }
 .profile-roommates-section{
@@ -12,6 +13,10 @@
     font-size: 25px;
     font-weight: 600;
     margin-top: 20px;
+    text-align: center;
+    @media screen and (max-width:768px) {
+      font-size: 20px;
+    }
   }
   &__add-section{
     border: none;
@@ -29,20 +34,15 @@
     .ui-icon{
       color: $color-accent!important;
       font-size: 28px!important;
+      @media screen and (max-width:768px) {
+        font-size: 24px;
+      }
     }
   }
-}
-.profile-roommates-section__list{
-  margin-top: 20px;
-  .roommates-card{
-    &:first-child{
-      border-top-right-radius:23px;
-      border-top-left-radius:23px;
-    }
-    &:last-child{
-      border-bottom-right-radius: 23px ;
-      border-bottom-left-radius: 23px ;
-      border-bottom: 0;
-    }
+  &__list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 }

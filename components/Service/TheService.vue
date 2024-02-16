@@ -70,6 +70,7 @@
                     :hsv="item.hsv"
                     :value="item.value"
                     :icon="deviceIcon?.name"
+                    :float="floatValue?.value"
                     @update-bool-val="e=>turnOnDevice(e)"
                   />
                 </template>
@@ -104,38 +105,46 @@
                       <div class="change-icon-modal__header">
                         Выберите иконку устройства
                         <button class="blank" @click="isIconModalShow = false">
-                          <icon name="close" size="16"/>
+                          <icon name="close" size="16" />
                         </button>
                       </div>
                       <div class="change-icon-modal__icons">
-                      <h2 class="change-icon-modal__subheader">Устройства</h2>
+                        <h2 class="change-icon-modal__subheader">
+                          Устройства
+                        </h2>
                         <span
-                            class="change-icon-modal__icon"
-                            v-for="icon in existingIcons?.devices"
-                            :key="icon"
-                            @click="selectedIcon = icon"
+                          v-for="icon in existingIcons?.devices"
+                          :key="icon"
+                          class="change-icon-modal__icon"
+                          @click="selectedIcon = icon"
                         >
                           <icon
-                              :name="icon"
-                              size="52"
-                              :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"/>
+                            :name="icon"
+                            size="52"
+                            :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
+                          />
                         </span>
                       </div>
                       <div class="change-icon-modal__icons">
-                      <h2 class="change-icon-modal__subheader">Датчики</h2>
+                        <h2 class="change-icon-modal__subheader">
+                          Датчики
+                        </h2>
                         <span
-                            class="change-icon-modal__icon"
-                            v-for="icon in existingIcons?.sensor"
-                            :key="icon"
-                            @click="selectedIcon = icon"
+                          v-for="icon in existingIcons?.sensor"
+                          :key="icon"
+                          class="change-icon-modal__icon"
+                          @click="selectedIcon = icon"
                         >
                           <icon
-                              :name="icon"
-                              size="52"
-                              :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"/>
+                            :name="icon"
+                            size="52"
+                            :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
+                          />
                         </span>
                       </div>
-                      <button class="change-icon-modal__submit" @click="setNewIcon()">Сохранить</button>
+                      <button class="change-icon-modal__submit" @click="setNewIcon()">
+                        Сохранить
+                      </button>
                     </div>
                   </template>
                 </the-modal>
@@ -156,12 +165,10 @@ import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useDevicesStore } from "~/store/devices"
 import { useGroupsStore } from "~/store/groups"
 import { useCategoriesStore } from "~/store/categories"
-import { useUserStore } from "~/store/user"
 import Icon from "~/components/shared/Icon.vue"
 import useHSVToRGB from "~/composables/useHSVToRGB"
-import useThrottle from "~/composables/useThrottle"
-import type {TUiIconNames} from "#build/types/ui-icon";
-import type {Service} from "~/components/Scenarios/ScenarioService.vue";
+import type { TUiIconNames } from "#build/types/ui-icon"
+
 export interface ICapability {
   type: string
   retrievable: boolean
@@ -211,6 +218,7 @@ const newDeviceName = ref(props.name)
 const deviceStore = useDevicesStore()
 const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
+const floatValue = ref(props.capabilities?.find(el => el.type.includes('float')))
 const { $bus } = useNuxtApp()
 const stuff = ref<ICapability>({} as ICapability)
 const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v && useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100))
@@ -278,15 +286,20 @@ async function setNewDeviceName () {
   }
 }
 
-async function setNewIcon() {
+async function setNewIcon () {
   await deviceStore.changeIcon(props.id, selectedIcon.value)
 }
 
 function setDisplayedStuff () {
   if ((props?.capabilities?.length && props?.capabilities?.length <= 1) || props.type.includes('_sen')) { return }
+  const capabilityWithFloatValueIdx = props.capabilities?.findIndex(el => Number.parseFloat(el.value) && el.type.includes('properties.float')) as number
   const capabilityWithNumValueIdx = props.capabilities?.findIndex(el => Number.isInteger(el.value)) as number
   const hsvIdx = props.capabilities?.findIndex(el => el?.hsv?.h || el?.hsv?.s || el?.hsv?.v) as number
-  if (props?.capabilities && props?.capabilities[capabilityWithNumValueIdx]) {
+  if (props?.capabilities && props?.capabilities[capabilityWithFloatValueIdx]) {
+    stuff.value = reactive(props?.capabilities[capabilityWithFloatValueIdx])
+    floatValue.value = props?.capabilities[capabilityWithFloatValueIdx]
+  }
+  if (props?.capabilities && !props?.capabilities[capabilityWithFloatValueIdx] && props?.capabilities[capabilityWithNumValueIdx]) {
     stuff.value = reactive(props?.capabilities[capabilityWithNumValueIdx])
   }
   if (props?.capabilities && props?.capabilities[hsvIdx] && isDeviceOn.value) {

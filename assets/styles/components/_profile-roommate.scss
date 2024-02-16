@@ -2,28 +2,44 @@
   display: flex;
   align-items: center;
   background: $bg-primary;
-  padding: 8px 28px;
-  border-bottom: 2px solid $divider-border-color;
+  padding: 18px;
+  padding-inline-end: 30px;
+  border-radius: 16px;
+  cursor: pointer;
   &__avatar{
+    width: 48px;
+    height: 48px;
+    border-radius: 100%;
+    display: block;
     &.--blank{
-      width: 45px;
-      height: 45px;
-      border-radius: 100%;
-      display: block;
       background: linear-gradient(180deg, $avatar-bg-gradient-start 0%, $avatar-bg-gradient-end 100%);
     }
   }
   &__chevron{
     margin-left: auto;
     font-size: 36px;
+    @media screen and (max-width:768px) {
+      font-size: 32px;
+    }
   }
   .roommates-card-info{
-    margin-left: 24px;
+    margin-left: 18px;
     &__name{
       @include action-item
     }
     &__role {
-      @include carousel-category-item
+      margin-top: 8px;
+      @include carousel-category-item;
+      span {
+        &::after {
+          content: attr(data-end);
+        }
+        &:last-child {
+          &::after {
+            content: "";
+          }
+        }
+      }
     }
   }
 }

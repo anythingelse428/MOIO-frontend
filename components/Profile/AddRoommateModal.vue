@@ -45,12 +45,12 @@
           Выберите дом, доступный пользователю
         </label>
         <custom-select
-            v-if="uppperGroups"
-            style="width: 100%"
-            :options="selectDataHouses"
-            select-name="Дом не выбран"
-            :current-value="''"
-            @custom-select="(e)=>{ selectedHouse = e;getSubgroups() }"
+          v-if="uppperGroups"
+          style="width: 100%"
+          :options="selectDataHouses"
+          select-name="Дом не выбран"
+          :current-value="selectedHouse"
+          @custom-select="(e)=>{ selectedHouse = e;getSubgroups() }"
         />
       </div>
       <div class="add-roommate-modal__groups">
@@ -58,14 +58,14 @@
           Выберите группы, доступные пользователю
         </label>
         <div
-            class="add-roommate-modal__groups-item"
-            v-for="group in selectDataGroups"
-            :key="group.id"
+          v-for="group in selectDataGroups"
+          :key="group.id"
+          class="add-roommate-modal__groups-item"
         >
-          <span>{{group.name}}</span>
+          <span>{{ group.name }}</span>
           <div class="add-roommate-modal__groups-item-checkbox">
-            <input type="checkbox" name="group-id" :id="group.id" @change="e=>selectGroups(e,group.id)">
-            <icon name="check" size="20"/>
+            <input :id="group.id" type="checkbox" name="group-id" @change="e=>selectGroups(e,group.id)">
+            <icon name="check" size="20" />
           </div>
         </div>
       </div>
@@ -80,8 +80,7 @@ import { useGroupsStore } from "~/store/groups"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
-import {useUserStore} from "~/store/user";
-import type {ChangeEvent} from "rollup";
+import { useUserStore } from "~/store/user"
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)
@@ -96,12 +95,12 @@ const selectDataHouses = ref(uppperGroups.value.reduce((acc:{ description:string
   if (!acc?.length) {
     acc = []
   }
-  if(curr.groupCreatorId === userId && curr.typeId === 1){
-    acc.push({description: curr.name as string, value: curr.id})
+  if (curr.groupCreatorId === userId && curr.typeId === 1) {
+    acc.push({ description: curr.name as string, value: curr.id })
   }
   return acc
 }, []))
-const selectDataGroups = ref<{id:string,name:string}[]>([])
+const selectDataGroups = ref<{id:string, name:string}[]>([])
 await groupStore.getAll()
 function addToLoginsArray () {
   if (logins.value.length > 0 && logins.value.find(el => el?.toLowerCase() === login.value.toLowerCase())) {
@@ -125,31 +124,25 @@ function removeFromLoginsArray (login:string) {
   }
 }
 
-async function getSubgroups(){
+async function getSubgroups () {
   selectDataGroups.value = await groupStore.getSubgroups(selectedHouse.value)
 }
-function selectGroups(e:Event,id:string){
-  if (e.target?.checked){
+function selectGroups (e:Event, id:string) {
+  if (e.target?.checked) {
     groupIds.value.push(id)
-  }else {
-    groupIds.value = groupIds.value.filter(el=>el !== id)
+  } else {
+    groupIds.value = groupIds.value.filter(el => el !== id)
   }
 }
 async function addRoommate () {
-  if (groupIds.value.length === 0) {
+  if (groupIds.value.length === 0 && selectedHouse.value.length === 0) {
     useNotification('error', 'Выберите группу')
     return
   }
   try {
     isLoading.value = true
-    const response = await groupStore.addUserToGroup(logins.value, groupIds.value)
+    await groupStore.addUserToGroup(logins.value, [selectedHouse.value, ...groupIds.value])
     isLoading.value = false
-    console.log(response)
-    if (response?.status === 200){
-      useNotification('info', 'Пользователи успешно добавлены')
-    } else {
-      useNotification('error', 'Произошла ошибка')
-    }
   } catch {
 
   }
@@ -159,8 +152,8 @@ watch(groups, (newValue) => {
     if (!acc?.length) {
       acc = []
     }
-    if(curr.groupCreatorId === userId && curr.typeId === 1){
-      acc.push({description: curr.name as string, value: curr.id})
+    if (curr.groupCreatorId === userId && curr.typeId === 1) {
+      acc.push({ description: curr.name as string, value: curr.id })
     }
     return acc
   }, [])

@@ -1,10 +1,20 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
-export default async function apiGroupRemoveUsers (usersIds:number[], groupId:string) {
+export default async function apiGroupRemoveUsers (groupsIds:string[], usersLogins:string[] = [], usersIds:number[] = []) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + '/Group/RemoveUserFromGroup', {
-      usersIds,
-      groupId,
-    })
+    try {
+      const response = await axios.delete(path + '/v1/groups/remove/users', {
+        data: {
+          usersLogins,
+          usersIds,
+          groupsIds,
+        },
+      })
+      if (response.status === 200) {
+        return response
+      }
+    } catch {
+      useNotification('error', "Произошла ошибка")
+    }
   })
 }

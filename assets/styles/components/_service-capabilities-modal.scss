@@ -29,7 +29,7 @@
     border-radius: 100%;
     width: 20px;
     height: 20px;
-    border: 0px;
+    border: 0;
     cursor: pointer;
     .ui-icon{
       font-size: 16px!important;
@@ -38,20 +38,25 @@
   &__header{
     @include capabilities-modal-header;
     text-align: center;
-    display: inline-block;
     position: relative;
     top: calc(-24px - 6px);
     right: 0;
     left: 0;
     padding-inline: 20px;
+	  display: -webkit-box;
+	  -webkit-line-clamp: 3;
+	  line-clamp: 3;
+	  -webkit-box-orient: vertical;
+	  overflow: hidden;
     &.--edited{
       display: flex;
       width: 100%;
+      top: 0;
+      padding-inline: 8px;
       justify-content: space-between;
       margin-inline: auto;
       align-items: center;
-      top: 4px;
-      padding-inline: 8px;
+      
       input{
         background: $bg-primary;
         outline: none;
@@ -60,6 +65,9 @@
         margin-left: 12px;
         border-bottom: 1px solid;
         width: calc(100% - 50px);
+        @media screen and (max-width:768px) {
+          font-size: 16px;
+        }
         &[type="submit"]{
           background: $color-active;
           padding-inline: 12px;
@@ -77,6 +85,9 @@
     position: relative;
     z-index: 2;
     width: fit-content;
+    @media screen and (max-width:768px) {
+      font-size: 20px;
+    }
   }
   &__body{
     display: flex;

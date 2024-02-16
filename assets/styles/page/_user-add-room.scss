@@ -49,6 +49,9 @@
         box-shadow: 0px 0px 6px 0px $color-active;
         background-color: $settings-color;
         inset: 0;
+        @media screen and (max-width:768px) {
+          font-size: 20px;
+        }
       }
     }
     &[type="radio"]{
@@ -84,6 +87,9 @@
     color: $bg-primary;
     border-radius: 15px;
     cursor: pointer;
+    @media screen and (max-width:768px) {
+      font-size: 21px;
+    }
   }
   .add-group-available-devices{
     width: 100%;
@@ -178,10 +184,14 @@
       width: 100%;
       border-radius: 16px;
       margin-top: 12px;
+      text-align: start;
       .ui-icon {
         color: #D15151;
         font-size: 20px;
         cursor: pointer;
+        @media screen and (max-width:768px) {
+          font-size: 16px;
+        }
       }
     }
   }

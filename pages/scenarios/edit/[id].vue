@@ -2,7 +2,7 @@
   <div class="scenarios-create">
     <loader-screen :is-loading="isLoading" />
     <h1 class="scenarios-create__header">
-      Создание сценария
+      Редактирование сценария
     </h1>
     <div class="scenarios-create__search">
       <label for="scenario-name">
@@ -83,6 +83,7 @@ import type { GroupList } from "~/components/Group/GroupList.vue"
 import { useScenarioStore } from "~/store/scenario"
 import type { IScenarioUpdateProps } from "~/api/scenarios/update"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+
 export interface ICapability {
   chanel:string
   id:string
@@ -177,9 +178,9 @@ const scenarioStore = useScenarioStore()
 async function getData () {
   isLoading.value = true
   const response = await scenarioStore.getById(router.params.id as string)
+  isLoading.value = false
   selectedDevice.value = response?.devicesScenarios
   scenarioName.value = response?.name
-  isLoading.value = false
   selectedDevice.value?.forEach((el) => {
     toggleSelected(el.id, data.value)
     if (capabilities.value[el.id]) {
@@ -191,6 +192,7 @@ async function getData () {
 }
 getData()
 async function updateScenario () {
+  isLoading.value = true
   const updateData:IScenarioUpdateProps = {
     id: router.params.id as string,
     name: scenarioName.value,
@@ -198,6 +200,7 @@ async function updateScenario () {
     removeDevicesId: devicesForRemove.value,
   }
   await scenarioStore.updateScenario(updateData)
+  isLoading.value = false
 }
 
 async function deleteScenario () {

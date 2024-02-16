@@ -28,9 +28,6 @@
     background: transparent;
     outline: none;
     border: none;
-    .mdi{
-      font-size: 40px;
-    }
   }
 }
 .header-menu{
@@ -55,6 +52,8 @@
     background: $bg-primary;
     padding: 2px 24px;
     cursor: pointer;
+    width: 98%;
+    margin-inline: auto;
     &.--active,
     &:hover{
       .header-menu__item-title{

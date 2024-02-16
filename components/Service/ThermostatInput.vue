@@ -2,31 +2,68 @@
   <div ref="thermostat" class="thermostat-input">
     <input id="range" ref="range" v-model="p" type="range" :min="0" :max="100" :step="props.step||1" hidden>
     <div class="thermostat-input__range-border --min">
-      {{ props.min }}C
+      {{ min }}C
     </div>
     <label id="output" for="range" class="thermostat-input__value">
       {{ value }}C
     </label>
     <div class="thermostat-input__range-border --max">
-      {{ props.max }}C
+      {{ max }}C
     </div>
     <svg ref="svg" class="thermostat-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" fill="none">
-      <path id="track" ref="track" d="M 240 240 A 1 1 0 0 0 0 240" fill="none" stroke="#212433" stroke-width="12" stroke-linecap="round" />
-      <path id="progress" ref="progress" class="thermostat-svg__progress" d="M 240 240 A 1 1 0 0 0 0 240" fill="none" stroke-width="12" stroke-linecap="round" />
-      <circle id="thumb" ref="thumb" r="14" cx="120.379" cy="120.379" fill="#B2D0F3" />
+      <path
+        id="track"
+        ref="track"
+        d="M 240 240 A 1 1 0 0 0 0 240"
+        fill="none"
+        stroke="#212433" stroke-width="12"
+        stroke-linecap="round"
+      />
+      <path
+        id="progress"
+        ref="progress"
+        class="thermostat-svg__progress"
+        d="M 240 240 A 1 1 0 0 0 0 240"
+        fill="none"
+        stroke-width="12" stroke-linecap="round"
+      />
+      <circle
+        id="current"
+        ref="currentMark"
+        class="thermostat-svg__current"
+        r="4"
+        cx="120.379"
+        cy="120.379"
+        fill="#32be55"
+      />
+      <circle
+        id="thumb"
+        ref="thumb"
+        r="14"
+        cx="120.379"
+        cy="120.379"
+        fill="#B2D0F3"
+      />
     </svg>
+    <div class="thermostat-input__controls">
+      <button class="thermostat-input__controls-action blank" :disabled="p>=100" @click="p=getSliderValue(value + step);thermostatAction()">
+        +
+      </button>
+      <button class="thermostat-input__controls-action blank" :disabled="p<=0" @click="p=getSliderValue(value - step);thermostatAction()">
+        -
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Ref } from "vue"
-import useThrottle from "~/composables/useThrottle"
 
 export interface IThermostatProps {
   value: number
   min:number
   max:number
   step:number
+  current?:number
 }
 const props = defineProps<IThermostatProps>()
 
@@ -41,6 +78,7 @@ const range = ref<SVGElement>(null)
 const svg = ref<SVGElement>(null)
 const progress = ref<SVGElement>(null)
 const track = ref<SVGElement>(null)
+const currentMark = ref<SVGElement>(null)
 const thumb = ref<SVGElement>(null)
 const thermostat = ref<HTMLDivElement>(null)
 const stepped = (val:number, divider:number) => {
@@ -49,19 +87,15 @@ const stepped = (val:number, divider:number) => {
 
 watch(p, (newP) => {
   const unStepped = (props.max - props.min) * (newP / 100) + props.min
-
   emit('t-input', Number((stepped(unStepped, (props.step || 1)) + 1 - props.step).toFixed(2)))
 })
-
-onMounted(() => {
-  if (thermostat.value) {
-    const max = parseFloat(range.value.getAttribute('max')) || 100
-    const min = parseFloat(range.value.getAttribute('min')) || 1
-    const stepAttr = props.step || 1
-
-    const steps = ((max - min) / stepAttr)
+function thermostatAction () {
+  if (thermostat?.value) {
     let isMoving = false
-    const cache:{[key:string]:{[key:string]:any}} = {}
+    const stepAttr = props.step || 1
+    const maxOfRange = parseFloat(range.value.getAttribute('max')) || 100
+    const minOfRange = parseFloat(range.value.getAttribute('min')) || 1
+    const steps = ((maxOfRange - minOfRange) / stepAttr)
     function memoize (fn:Function, key:string, args:string) {
       if (cache[key] && cache[key][args.toString()]) {
         return cache[key][args.toString()]
@@ -71,10 +105,9 @@ onMounted(() => {
       cache[key][args.toString()] = data
       return data
     }
+    const cache:{[key:string]:{[key:string]:any}} = {}
     const getPoints = (trackLength:number) => {
-      // TODO облегчить функцию
       const points = []
-      // const trackLength = track.value.getTotalLength()
       const step = trackLength / steps
       let progressLength = 0
       while (progressLength <= trackLength + 1) {
@@ -86,7 +119,7 @@ onMounted(() => {
     }
 
     const setPath = (value) => {
-      const percentage = (value / max)
+      const percentage = (value / maxOfRange)
       progress.value.style.strokeDasharray = `${track.value.getTotalLength() * percentage} 1000`
     }
     const setThumb = () => {
@@ -94,8 +127,19 @@ onMounted(() => {
       const newVal = Number(p.value)
       const index = Math.max(1, newVal) / stepAttr
       const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points.length - 1]
+      setCurrentSvg()
       thumb.value.setAttribute('cx', point.x)
       thumb.value.setAttribute('cy', point.y)
+    }
+    const setCurrentSvg = () => {
+      if (props.current) {
+        const points = memoize(getPoints, 'points', [track.value.getTotalLength()])
+        const newVal = Number(getSliderValue(props.current))
+        const index = Math.max(1, newVal) / stepAttr
+        const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points.length - 1]
+        currentMark.value.setAttribute('cx', point.x)
+        currentMark.value.setAttribute('cy', point.y)
+      }
     }
     const getClosestPoint = (x, y) => {
       // TODO облегчить функцию
@@ -120,7 +164,7 @@ onMounted(() => {
           y: Number((e.clientY - rect.top).toFixed(3)),
         }
         const target = getClosestPoint(pos.x, pos.y)
-        const covered = Math.round(target.d * max / trackLength)
+        const covered = Math.round(target.d * maxOfRange / trackLength)
 
         thumb.value.setAttribute('cx', target.x)
         thumb.value.setAttribute('cy', target.y)
@@ -190,6 +234,9 @@ onMounted(() => {
     setThumb()
     setPath(p.value)
   }
+}
+onMounted(() => {
+  thermostatAction()
 })
 
 onUnmounted(() => {

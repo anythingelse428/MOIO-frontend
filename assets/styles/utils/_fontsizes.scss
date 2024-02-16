@@ -1,10 +1,16 @@
 @mixin section-header {
   font-size: 40px;
   font-weight: 700;
+  @media screen and (max-width:768px) {
+    font-size: 36px;
+  }
 }
 @mixin aside-header {
   font-size: 20px;
   font-weight: 600;
+  @media screen and (max-width:768px) {
+    font-size: 16px;
+  }
 }
 @mixin aside-item {
   font-size: 20px;
@@ -12,25 +18,43 @@
   &::first-letter{
     text-transform: uppercase;
   }
+  @media screen and (max-width:768px) {
+    font-size: 16px;
+  }
 }
 @mixin action-item {
   font-size: 20px;
   font-weight: 600;
+  @media screen and (max-width:768px) {
+    font-size: 16px;
+  }
 }
 @mixin tool-item {
   font-size: 24px;
   font-weight: 400;
+  @media screen and (max-width:768px) {
+    font-size: 20px;
+  }
 }
 
 @mixin carousel-category-item {
   font-size: 16px;
   font-weight: 300;
+  @media screen and (max-width:768px) {
+    font-size: 14px;
+  }
 }
 @mixin header-submenu-item {
   font-size: 30px;
   font-weight: 400;
+  @media screen and (max-width:768px) {
+    font-size: 26px;
+  }
 }
 @mixin capabilities-modal-header {
   font-size: 24px;
   font-weight: 600;
+  @media screen and (max-width:768px) {
+    font-size: 20px;
+  }
 }

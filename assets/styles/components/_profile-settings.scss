@@ -8,9 +8,7 @@
     display: flex;
     align-items: center;
     padding: 8px 16px;
-    .mdi{
-      font-size: 40px;
-    }
+
     &-name{
       margin-left: 38px;
       @include action-item

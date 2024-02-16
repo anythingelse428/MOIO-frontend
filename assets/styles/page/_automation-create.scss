@@ -6,6 +6,9 @@
 		font-size: 40px;
 		font-weight: 600;
 		color: $color-primary;
+		@media screen and (max-width:768px) {
+			font-size: 36px;
+		}
 	}
 	&__subheader {
 		font-size: 25px;
@@ -13,6 +16,9 @@
 		width: 100%;
 		text-align: center;
 		margin-top: 32px;
+		@media screen and (max-width:768px) {
+			font-size: 21px;
+		}
 	}
 	&__params {
 		&-main{
@@ -24,8 +30,11 @@
 		width: min(95%,432px);
 		&-label{
 			color: $color-primary;
-			font-size: 15px;
+			font-size: 16px;
 			font-weight: 400;
+			@media screen and (max-width:768px) {
+				font-size: 14px;
+			}
 		}
 		&-input {
 			display: flex;
@@ -39,6 +48,9 @@
 			outline: 0;
 			font-size: 20px;
 			margin-top: 12px;
+			@media screen and (max-width:768px) {
+				font-size: 16px;
+			}
 			.toggle-switch{
 				width: 40px;
 				height: 24px;
@@ -63,6 +75,9 @@
 	&__description{
 		width: 100%;
 		font-size: 20px;
+		@media screen and (max-width:768px) {
+			font-size: 16px;
+		}
 	}
 	&__run-conditions{
 		display: flex;
@@ -79,6 +94,9 @@
 		border-radius: 12px;
 		position: relative;
 		border: 1px solid transparent;
+		@media screen and (max-width:768px) {
+			font-size: 16px;
+		}
 		input[type="radio"]{
 			position: absolute;
 			cursor: pointer;
@@ -104,11 +122,17 @@
 		border: 0;
 		outline: 0;
 		cursor: pointer;
+		@media screen and (max-width:768px) {
+			font-size: 20px;
+		}
 	}
 	&__conditions{
 		display: flex;
 		align-items: flex-start;
 		justify-content: space-between;
+		@media screen and (max-width: 768px) {
+			flex-direction: column;
+		}
 		&-delete{
 			font-size: 24px;
 			font-weight: 600;
@@ -120,6 +144,9 @@
 			margin-top: 32px;
 			cursor: pointer;
 			transition: color, background .2s;
+			@media screen and (max-width:768px) {
+				font-size: 20px;
+			}
 			&:hover{
 				background: #D15151;
 				color: $color-primary;
@@ -141,6 +168,9 @@
 			font-weight: 400;
 			background: $settings-color;
 			color: $color-primary;
+			@media screen and (max-width:768px) {
+				font-size: 16px;
+			}
 			&.--active {
 				background: $color-active;
 				color: $settings-color;
@@ -155,6 +185,9 @@
 		border: 0;
 		padding: 8px 12px ;
 		border-radius: 16px;
+		@media screen and (max-width:768px) {
+			font-size: 20px;
+		}
 	}
 	&__delete{
 		font-size: 24px;
@@ -165,6 +198,9 @@
 		border-radius: 16px;
 		padding: 12px 8px;
 		cursor: pointer;
+		@media screen and (max-width:768px) {
+			font-size: 20px;
+		}
 	}
 	&__submit-container {
 		margin-top: 32px;

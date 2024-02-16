@@ -126,7 +126,6 @@
 
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
-import type { IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
 
@@ -164,24 +163,20 @@ function setItem (target:any, data:{ id: string, name:string }) {
 async function getGroupData () {
   isLoading.value = true
   const data = await groupStore.getGroupById(id)
-  const parentData = await groupStore.getGroupById(data.parentId)
+  const parentData = data?.parentId && await groupStore.getGroupById(data?.parentId)
   users.value = await groupStore.getUsersByGroupId(id)
-  users.value = users.value?.filter(el => el.id !== groupStore.currentGroup.groupCreatorId)
-  const allUsers = [...await groupStore.getUsersByGroupId(data.parentId), ...users.value]
-  if (parentData.typeId === 2) {
+  if (parentData && parentData?.typeId === 2) {
     // если этаж, то ставим дому ид родителя этажа
-    house.value = parentData.parentId
+    house.value = parentData.parentId ?? groupStore.currentHome
   } else {
-    house.value = data.parentId
+    house.value = data?.parentId ?? groupStore.currentHome
   }
-  name.value = data.name as string
-  oldName = unref(name.value)
-  // existingUsers.value = allUsers.filter((value, index, self) =>
-  //         index === self.findIndex((t) => t.id === value.id)
-  // )
   await getDevicesByGroupId(id, devices)
   await getDevicesByGroupId(house.value, existingDevices)
   isLoading.value = false
+  users.value = users.value?.filter(el => el.id !== groupStore.currentGroup.groupCreatorId)
+  name.value = data.name as string
+  oldName = unref(name.value)
 }
 getGroupData()
 async function getDevicesByGroupId (id:string, deviceRef:globalThis.Ref<any>) {
@@ -205,7 +200,7 @@ async function editGroup () {
     await groupStore.changeDevices(id, devices.value.map(el => el.id))
   }
   if (usersForRemove.value?.length > 0) {
-    await groupStore.removeUsersFromGroup(usersForRemove.value?.map(el => el.id), id)
+    await groupStore.removeUsersFromGroup([id], [], usersForRemove.value?.map(el => el.id))
   }
   isLoading.value = false
   setTimeout(() => {

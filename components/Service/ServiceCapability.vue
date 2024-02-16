@@ -44,7 +44,7 @@
       >
     </div>
     <div v-if="instance?.includes('temperature')" class="service-capability__control --thermostat">
-      <thermostat-input :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
+      <thermostat-input :current="float" :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
       <toggle-switch :checked="String(capability.value).includes('open')||String(capability.value).includes('true')" vertical-large :ico="icon??toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
@@ -57,11 +57,10 @@ import useThrottle from "~/composables/useThrottle"
 import { useDevicesStore } from "~/store/devices"
 import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
-import { useUserStore } from "~/store/user"
 import { useGroupsStore } from "~/store/groups"
 import useHSVToRGB from "~/composables/useHSVToRGB"
 import Icon from "~/components/shared/Icon.vue"
-import type {TUiIconNames} from "#build/types/ui-icon";
+import type { TUiIconNames } from "#build/types/ui-icon"
 
 export type ServiceCapability = {
     deviceType:string
@@ -82,6 +81,7 @@ export type ServiceCapability = {
       v:number
     },
   value:any
+  float?:number
   icon?:TUiIconNames
 }
 

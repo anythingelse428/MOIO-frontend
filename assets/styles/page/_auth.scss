@@ -4,6 +4,9 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  @media screen and (max-height: 700px) {
+    margin-top: 88px;
+  }
   &__header{
     color: $color-primary;
     @include section-header
@@ -26,11 +29,19 @@
       cursor: pointer;
       border: 0;
       outline: 0;
+      @media screen and (max-width:768px) {
+        font-size: 16px;
+      }
       &.--outline{
         background: transparent;
         border: 2px solid $color-active;
         color: $color-active;
       }
     }
+  }
+  &__verification-description{
+    width: min(100%, 360px);
+    @include carousel-category-item;
+    text-align: center;
   }
 }

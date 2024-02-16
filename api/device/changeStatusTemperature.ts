@@ -6,6 +6,6 @@ export interface IDeviceChangeStatusTemperature extends IChangeDeviceStatusPaylo
 }
 export default async function apiDeviceChangeTemperature (props:IDeviceChangeStatusTemperature) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + '/device/ChangeStatusTemperature/', props)
+    return await axios.put(path + '/v1/devices/update/state/temperature', { ...props })
   })
 }

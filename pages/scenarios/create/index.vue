@@ -77,6 +77,7 @@ import type { IGroupResponseItem } from "~/api/group/getById"
 import type { GroupList } from "~/components/Group/GroupList.vue"
 import { useScenarioStore } from "~/store/scenario"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+
 export interface ICapability {
   chanel:string
   deviceId:string
@@ -170,6 +171,9 @@ async function createScenario () {
 <style lang="scss">
 .scenarios-create {
   padding: 0 96px 100px;
+  @media screen and (max-width: 700px) {
+    padding: 0 20px 100px;
+  }
   .group__header{
     font-size: 25px;
     font-weight: 400;

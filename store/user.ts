@@ -7,6 +7,14 @@ import getUserInfo from "~/api/user/getUserInfo"
 import apiUserRefreshToken from "~/api/user/refreshToken"
 import useSetCookie from "~/composables/useSetCookie"
 import apiUserLogout from "~/api/user/logout"
+import apiUserChangeName from "~/api/user/changeName"
+import apiUserChangeClientId from "~/api/user/changeClientId"
+import type { IChangePasswordPayload } from "~/api/user/changePassword"
+import apiUserChangePassword from "~/api/user/changePassword"
+import type { IChangeLoginPayload } from "~/api/user/changeLogin"
+import apiUserChangeLogin from "~/api/user/changeLogin"
+import apiUserGetById from "~/api/user/getUserById"
+
 export interface IDecodedJwt{
   Id:string
   aud:string
@@ -21,12 +29,13 @@ const cookieOptions = {
 export const useUserStore = defineStore('user', {
   state: () => (
     {
-      id: null,
+      id: 0,
       displayedName: '',
       role: '',
       avatarUrl: '',
       accessToken: '',
       clientId: "",
+      login: "",
     }),
   getters: {
     userInfo: (state) => {
@@ -37,6 +46,7 @@ export const useUserStore = defineStore('user', {
         avatarUrl: state.avatarUrl,
         accessToken: state.accessToken,
         clientId: state.clientId,
+        login: state.login,
       }
     },
   },
@@ -107,9 +117,11 @@ export const useUserStore = defineStore('user', {
       const refreshToken = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME)
       try {
         const accessToken = await this.refresh()
-        if (typeof accessToken === 'string') {
+        if (accessToken) {
           this.accessToken = accessToken
           const userData = await getUserInfo()
+          console.log(userData)
+          this.login = userData.login
           this.role = userData.role
           this.displayedName = userData.name
           this.id = userData.id
@@ -119,6 +131,21 @@ export const useUserStore = defineStore('user', {
         refreshToken.value = ''
         window.location.pathname = '/login'
       }
+    },
+    async changeName (name:string) {
+      return await apiUserChangeName(name)
+    },
+    async changeClientId (clientId:string) {
+      return await apiUserChangeClientId(clientId)
+    },
+    async changePassword (props:IChangePasswordPayload) {
+      return await apiUserChangePassword(props)
+    },
+    async changeLogin (props:IChangeLoginPayload) {
+      return await apiUserChangeLogin(props)
+    },
+    async getUserById (id:number) {
+      return await apiUserGetById(id)
     },
   },
 })

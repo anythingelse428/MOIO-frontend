@@ -6,6 +6,6 @@ export interface IDeviceChangeStatusOnOff extends IChangeDeviceStatusPayload{
 }
 export default async function apiDeviceChangeOnOff (props:IDeviceChangeStatusOnOff) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + '/device/ChangeStatusOnOff/', props)
+    return await axios.put(path + '/v1/devices/update/state/on', { ...props })
   })
 }

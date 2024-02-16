@@ -112,11 +112,7 @@
 
 
 <script setup lang="ts">
-import { use } from "h3"
 import { useGroupsStore } from "~/store/groups"
-import { type IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
-import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
-import TheModal from "~/components/shared/TheModal.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
 
@@ -130,7 +126,7 @@ const house = ref(currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
 const existingDevices = ref()
 const users = ref<{id:number, name:string}[]>()
-const id = useRoute().params.id
+const id = useRoute().params.id as string
 const usersForRemove = ref<{id:number, name:string}[]>([])
 const router = useRouter()
 const rooms = ref<{ id: string, name:string }[]>([])
@@ -157,9 +153,9 @@ function setItem (target:any, data:{ id: string, name:string }) {
 async function getGroupData () {
   isLoading.value = true
   const data = await groupStore.getGroupById(id)
-  house.value = data.parentId
-  name.value = data.name
   users.value = await groupStore.getUsersByGroupId(id)
+  house.value = data.parentId ?? groupStore.currentHome
+  name.value = data.name ?? ''
   users.value = users.value?.filter(el => el.id !== groupStore.currentGroup.groupCreatorId)
 
   oldName = unref(name.value)
@@ -189,7 +185,7 @@ async function editGroup () {
   if (rooms.value.length > 0) {
   }
   if (usersForRemove.value?.length > 0) {
-    await groupStore.removeUsersFromGroup(usersForRemove.value?.map(el => el.id), id)
+    await groupStore.removeUsersFromGroup([id], [], usersForRemove.value?.map(el => el.id))
   }
   isLoading.value = false
   setTimeout(() => {

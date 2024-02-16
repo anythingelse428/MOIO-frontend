@@ -76,7 +76,7 @@ const emit = defineEmits(['get-data'])
 const isCollapsed = ref(true)
 const filteredDevices = () => {
   let temp: IAllDevicesResponse[] = []
-  if (!props.hideDevices && !props.hideSensors) return  props.devices
+  if (!props.hideDevices && !props.hideSensors) { return props.devices }
   if (props.hideDevices && typeof props.hideDevices !== 'undefined') {
     temp = props.devices?.filter(el => !el.id.includes('_ch')) as IAllDevicesResponse[]
   }
@@ -93,9 +93,7 @@ const filteredDevices = () => {
 
 <style lang="scss">
 @import 'assets/styles/utils/transitions';
-.--child{
-  margin-left: calc(32px);
-}
+
 .group__header,
 .subgroup-item__service-list{
   margin-top: 1em;

@@ -1,12 +1,11 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
-// TODO перенести этот запрос в группы на бэке
-// TODO перенести этот запрос в группы на фронте
-export default async function apiDevicesChangeDevices (id:string, devices:string[]) {
+
+export default async function apiDevicesChangeDevices (groupId:string, devicesIds:string[]) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.put(path + `/Device/changeDevicesGroup`,
+    return await axios.put(path + `/v1/devices/update/group`,
       {
-        groupId: id,
-        devicesIds: devices,
+        groupId,
+        devicesIds,
       },
     )
   })

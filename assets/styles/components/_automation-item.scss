@@ -13,6 +13,9 @@
     .type{
       font-weight: 300;
       font-size: 15px;
+      @media screen and (max-width:768px) {
+        font-size: 12px;
+      }
     }
   }
   &__activation-event{

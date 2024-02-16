@@ -13,6 +13,14 @@ export interface IScenarioUpdateProps {
 }
 export default async function apiScenariosUpdate (props:IScenarioUpdateProps) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.put(path + '/v1/scenarios/update', props)
+    try {
+      const response = await axios.put(path + '/v1/scenarios/update', props)
+      if (response.status === 200) {
+        useNotification('info', 'Сценарий успешно обновлен')
+        return response
+      }
+    } catch {
+      useNotification('error', 'Произошла ошибка при изменении сценария')
+    }
   })
 }

@@ -14,14 +14,12 @@
   </keep-alive>
 </template>
 <script setup lang="ts">
-import { consola } from "consola"
 import TheAside from '~/components/Aside/TheAside.vue'
 import TheHeader from '~/components/Header/TheHeader.vue'
 import { useUserStore } from "~/store/user"
 import { useGroupsStore } from "~/store/groups"
-import type { Service } from "~/components/Service/TheService.vue"
+import type { ServiceProps } from "~/components/Service/TheService.vue"
 import { useCategoriesStore } from "~/store/categories"
-import type { IGroupResponseItem } from "~/api/group/getAll"
 
 const userStore = useUserStore()
 const groupStore = useGroupsStore()
@@ -31,21 +29,22 @@ await userStore.init()
 await groupStore.getHouses()
 // Сокеты
 const { $bus } = useNuxtApp()
-const socket = await useSocket("http://176.119.157.248:7033/chat")
+const restBaseUrl = useRuntimeConfig().public.REST_BASE_TARGET
+const socket = await useSocket(restBaseUrl + "/chat")
 socket.connection.on("UpdateSensorState", (message:string) => {
   console.log("UpdateSensorState", message)
   useNotification("info", message)
 })
-socket.connection.on("UpdateDeviceState", (message:Service) => {
+socket.connection.on("UpdateDeviceState", (message:ServiceProps) => {
   console.log("UpdateDeviceState", message)
   changeCapability(message)
   $bus.emit('device-update-emit', message)
 })
-socket.connection.on("UpdateConfig", (message:Service) => {
+socket.connection.on("UpdateConfig", (message:ServiceProps) => {
   console.log("UpdateConfig", message)
   useNotification("info", `Обновлено состояние устройства ${message.name}`)
 })
-function changeCapability (message:Service, group = groupStore.currentGroup) {
+function changeCapability (message:ServiceProps, group = groupStore.currentGroup) {
   const isCategory = route.path.includes('category/')
   if (isCategory) {
     for (const category of Object.keys(categoriesStore.devicesInCategory)) {

@@ -8,6 +8,6 @@ export interface IDeviceChangeRGBPayload extends IChangeDeviceStatusPayload{
 }
 export default async function apiDeviceChangeRGB (props:IDeviceChangeRGBPayload) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + '/device/ChangeStatusHSV/', props)
+    return await axios.put(path + '/v1/devices/update/state/hsv', { ...props })
   })
 }

@@ -1,7 +1,7 @@
 <template>
-  <NuxtLink :to="`profile/${id}`" class="roommates-card">
+  <div class="roommates-card" @click="isSettingsModalShow = true">
     <div class="roommates-card__avatar">
-      <img v-if="avatarUrl.length" :src="avatarUrl" alt="" width="76" height="76">
+      <img v-if="avatarUrl?.length" :src="avatarUrl" alt="" width="76" height="76">
       <div v-else class="roommates-card__avatar --blank" />
     </div>
     <div class="roommates-card-info">
@@ -9,24 +9,44 @@
         {{ name }}
       </div>
       <div class="roommates-card-info__role">
-        {{ role }}
+        <span v-for="group in groups" :key="group.id" data-end=", ">{{ group.name }}</span>
       </div>
     </div>
     <icon name="chevron-right" class="roommates-card__chevron" size="36" />
-  </NuxtLink>
+    <the-modal :is-shown="isSettingsModalShow" backdrop-filter="blur(3px)" transition-content-name="translate">
+      <template #inner>
+        <roommate-settings
+          :avatar-url="avatarUrl"
+          :groups="groups"
+          :email="login"
+          @modal-close="closeModal"
+        />
+      </template>
+    </the-modal>
+  </div>
 </template>
 
 <script setup lang="ts">
 import Icon from "~/components/shared/Icon.vue"
+import TheModal from "~/components/shared/TheModal.vue"
+import RoommateSettings from "~/components/Profile/RoommateSettings.vue"
+import { useGroupsStore } from "~/store/groups"
 
 export type ProfileRoommates = {
   id:string|number
-  avatarUrl:string
+  avatarUrl?:string
   name:string
   role:string
+  login:string,
+  groups:{id:string, name:string}[]
 }
 
 const props = defineProps<ProfileRoommates>()
+const groupStore = useGroupsStore()
+const isSettingsModalShow = ref(false)
+function closeModal () {
+  isSettingsModalShow.value = false
+}
 </script>
 
 <style lang="scss">
