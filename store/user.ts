@@ -120,7 +120,7 @@ export const useUserStore = defineStore('user', {
         if (accessToken) {
           this.accessToken = accessToken
           const userData = await getUserInfo()
-          console.log(userData)
+          // console.log(userData)
           this.login = userData.login
           this.role = userData.role
           this.displayedName = userData.name

@@ -34,17 +34,17 @@ const socket = await useSocket(restBaseUrl + "/chat")
 let isChanged = false
 
 socket.connection.on("UpdateSensorState", (message:string) => {
-  console.log("UpdateSensorState", message)
+  // console.log("UpdateSensorState", message)
   useNotification("info", message)
 })
 socket.connection.on("UpdateDeviceState", (message:ServiceProps) => {
-  console.log("UpdateDeviceState", message)
+  // console.log("UpdateDeviceState", message)
   isChanged = false
   changeCapability(message)
   $bus.emit('device-update-emit', message)
 })
 socket.connection.on("UpdateConfig", (message:ServiceProps) => {
-  console.log("UpdateConfig", message)
+  // console.log("UpdateConfig", message)
   useNotification("info", `Обновлено состояние устройства ${message.name}`)
 })
 function changeCapability (message:ServiceProps, group = groupStore.currentGroup) {
@@ -77,7 +77,7 @@ function changeCapability (message:ServiceProps, group = groupStore.currentGroup
     }
     changeCapability(message, group.inverseParent[i + 1])
   }
-  console.log(isChanged)
+  // console.log(isChanged)
 }
 
 </script>

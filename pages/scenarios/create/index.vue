@@ -34,7 +34,7 @@
             :group-id="service.groupId"
             :device-icon="service.deviceIcon"
             @left-mouse-click="e=>{selectDevice(e);toggleSelected(service.id, data)}"
-            @update-capability="e=>{setCapability(e);console.log(e)}"
+            @update-capability="e=>{setCapability(e);}"
           />
         </div>
       </div>

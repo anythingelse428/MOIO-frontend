@@ -1,12 +1,4 @@
 import { defineStore } from 'pinia'
-import type { IRegisterUserProps } from '~/api/user/register'
-import apiUserRegister from '~/api/user/register'
-import type { IAuthUserProps } from "~/api/user/auth"
-import apiUserAuth from "~/api/user/auth"
-import getUserInfo from "~/api/user/getUserInfo"
-import apiUserRefreshToken from "~/api/user/refreshToken"
-import useSetCookie from "~/composables/useSetCookie"
-import apiUserLogout from "~/api/user/logout"
 import type { IAddScenario } from "~/api/scenarios/add"
 import apiScenariosAdd from "~/api/scenarios/add"
 import apiScenariosGetAll from "~/api/scenarios/getAll"
@@ -27,7 +19,7 @@ export const useScenarioStore = defineStore('scenario', {
     async createScenario (props:IAddScenario) {
       try {
         const data = await apiScenariosAdd(props)
-        console.log(data)
+        // console.log(data)
       } catch (e) {
 
       }
@@ -35,7 +27,7 @@ export const useScenarioStore = defineStore('scenario', {
     async getAll () {
       try {
         const data = await apiScenariosGetAll()
-        console.log(data)
+        // console.log(data)
         return data
       } catch (e) {
         console.log(e)
@@ -57,7 +49,7 @@ export const useScenarioStore = defineStore('scenario', {
     async updateScenario (data:IScenarioUpdateProps) {
       try {
         const response = await apiScenariosUpdate(data)
-        console.log(response)
+        // console.log(response)
         if (response) {
           return response
         }

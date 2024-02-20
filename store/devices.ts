@@ -15,6 +15,7 @@ import apiDeviceChangeName from "~/api/device/changeName"
 import apiDeviceDelete from "~/api/device/delete"
 import apiDeviceGetConfig from "~/api/device/getConfig"
 import apiDeviceChangeIcon from "~/api/device/changeIcon"
+
 export const useDevicesStore = defineStore('devices', {
   state: () => ({
     devices: [] as IAllDevicesResponse[],
@@ -40,7 +41,7 @@ export const useDevicesStore = defineStore('devices', {
     },
     async changeRGB (props: IDeviceChangeRGBPayload) {
       try {
-        console.log(props)
+        // console.log(props)
         await apiDeviceChangeRGB(props)
       } catch (e) {
         useNotification('error', "Произошла ошибка при изменении цвета")

@@ -199,7 +199,7 @@ async function create () {
     allConditions: runByAllConditions.value,
   }
   const response = await automationStore.update(automationData)
-  console.log(automationData, response)
+  // console.log(automationData, response)
   isLoading.value = false
 }
 
@@ -209,7 +209,7 @@ async function getData () {
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
   runByAllConditions.value = response.allConditions
-  console.log(response.triggers)
+  // console.log(response.triggers)
   response.triggers.time.forEach((el) => {
     const time = new Date(`7/07/2077 ${el.time} UTC`)
     const hours = String(time.getHours()).length === 1 ? `0${time.getHours()}` : time.getHours()

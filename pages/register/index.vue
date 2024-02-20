@@ -98,7 +98,7 @@ async function register () {
   try {
     const refreshToken = await userStore.register(registrationData)
     isLoading.value = false
-    console.log(refreshToken)
+    // console.log(refreshToken)
     if (step.value === 1) {
       step.value = 2
       return

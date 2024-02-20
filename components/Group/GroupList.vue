@@ -2,7 +2,7 @@
   <div v-if="name" :class="`group-list  ${isCollapsed?'--collapsed':''}`">
     <h1 v-if="!hideEmpty" class="group__header" @click="isCollapsed = !isCollapsed">
       {{ name }}
-      <icon v-show="!isCollapsed&&devices?.length>0" name="chevron-right" size="40" />
+      <icon v-show="!isCollapsed&&devices?.length>0" name="chevron-right" style="font-size: inherit" />
     </h1>
     <h1 v-if="hideEmpty && devices?.length>0" class="group__header">
       {{ name }}

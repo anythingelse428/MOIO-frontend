@@ -109,7 +109,7 @@ const searchGroupInput = ref('')
 const devicesForRemove = ref<string[]>([])
 function filterGroups (data:IGroupResponseItem, groupName:string) {
   if (groupName.length === 0) {
-    console.log('ddddddd', data)
+    // console.log('ddddddd', data)
     return data
   }
   if (data.name?.toLowerCase()?.includes(groupName.toLowerCase())) {
