@@ -2,11 +2,11 @@
   <div class="group">
     <loader-screen :is-loading="isLoading" />
     <group-list
-      v-if="groupData?.name"
+      v-if="currentGroup?.name"
       :id="groupId"
-      :name="groupData?.name"
-      :devices="groupData?.devices"
-      :inverse-parent="groupData?.inverseParent"
+      :name="currentGroup?.name"
+      :devices="currentGroup?.devices"
+      :inverse-parent="currentGroup?.inverseParent"
     />
   </div>
 </template>
@@ -33,10 +33,8 @@ const isLoading = ref(true)
 
 async function fetchGroups () {
   isLoading.value = true
-  groupData.value = { name: '', devices: [], inverseParent: [] }
   await groupStore.getGroupById(groupId)
   isLoading.value = false
-  groupData.value = currentGroup.value
 }
 
 if (groupStore.currentHome !== groupId && groupStore.uppperGroups?.find(el => el.id === groupId)?.typeId === 1) {
@@ -47,14 +45,7 @@ if (groupStore.currentHome !== groupId && groupStore.uppperGroups?.find(el => el
 watch(route, () => {
   fetchGroups()
 }, { deep: true, immediate: true })
-watch(currentGroup, (newVal, oldValue) => {
-  if (newVal && oldValue && !newVal?.id?.includes(groupId)) {
-    const idx = groupData.value.inverseParent?.findIndex(el => el?.id === newVal?.id)
-    groupData.value.inverseParent[idx] = newVal
-  } else {
-    groupData.value = newVal
-  }
-}, { deep: true, immediate: true })
+
 
 // onMounted(async () => {
 //   try {

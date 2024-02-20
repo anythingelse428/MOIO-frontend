@@ -3,11 +3,11 @@
     <div class="group">
       <loader-screen :is-loading="isLoading" />
       <group-list
-        v-if="groupData?.name"
+        v-if="currentGroup?.name"
         :id="groupStore.currentHome"
-        :name="groupData?.name"
-        :devices="groupData.devices"
-        :inverse-parent="groupData?.inverseParent"
+        :name="currentGroup?.name"
+        :devices="currentGroup.devices"
+        :inverse-parent="currentGroup?.inverseParent"
       />
     </div>
   </div>
@@ -19,6 +19,7 @@ import { storeToRefs } from "pinia"
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import type { IGroupResponseItem } from "~/api/group/getAll"
+import type { ServiceProps } from "~/components/Service/TheService.vue"
 
 export interface IGroupData {
  name: string
@@ -27,19 +28,8 @@ export interface IGroupData {
 }
 
 const isLoading = ref(true)
-const groupData = ref<IGroupData>({ name: '', devices: [], inverseParent: [] })
 const groupStore = useGroupsStore()
 const { currentGroup } = storeToRefs(groupStore)
-
-
-watch(currentGroup, (newVal, oldValue) => {
-  const idx = groupData.value.inverseParent?.findIndex(el => el.id === newVal.id)
-  if (oldValue && !newVal?.id?.includes(groupStore.currentHome) && idx > -1) {
-    groupData.value.inverseParent[idx] = newVal
-  } else {
-    groupData.value = newVal
-  }
-}, { deep: true, immediate: true })
 
 onMounted(async () => {
   try {

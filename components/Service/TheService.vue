@@ -310,10 +310,11 @@ function setDisplayedStuff () {
   }
 }
 watch(props, (value) => {
+  isPending.value = false
   isDeviceOn.value = value.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value
   isDeviceOpen.value = value.capabilities?.find(el => el.instance === 'open' || el.type === 'devices.types.openable.garage')?.value
 }, { deep: true })
-const onStateUpdate = (data:Service) => {
+const onStateUpdate = (data:ServiceProps) => {
   if (data.id === props.id) {
     isPending.value = false
   }
@@ -322,14 +323,15 @@ onMounted(() => {
   setTimeout(() => {
     isMounted.value = true
     setDisplayedStuff()
+    $bus.on('device-update-emit', onStateUpdate)
+
     window.addEventListener('contextmenu', (e) => {
       e.preventDefault()
     })
   }, 100)
-  $bus.on('device-update-emit', onStateUpdate)
 })
 onUnmounted(() => {
-  $bus.off('device-update-emit', onStateUpdate)
+  $bus.off('device-update-emit', setDisplayedStuff)
   window.removeEventListener('contextmenu', () => {})
 })
 </script>

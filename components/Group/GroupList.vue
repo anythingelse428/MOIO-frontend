@@ -23,7 +23,7 @@
       />
     </div>
     <transition v-show="isCollapsed" name="fade">
-      <div v-if="devices?.length&&!isScenarios" class="subgroup-item__service-list">
+      <div v-if="devices?.length && !isScenarios" class="subgroup-item__service-list">
         <the-service
           v-for="device in devices"
           :id="device.id"

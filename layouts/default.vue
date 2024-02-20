@@ -31,12 +31,15 @@ await groupStore.getHouses()
 const { $bus } = useNuxtApp()
 const restBaseUrl = useRuntimeConfig().public.REST_BASE_TARGET
 const socket = await useSocket(restBaseUrl + "/chat")
+let isChanged = false
+
 socket.connection.on("UpdateSensorState", (message:string) => {
   console.log("UpdateSensorState", message)
   useNotification("info", message)
 })
 socket.connection.on("UpdateDeviceState", (message:ServiceProps) => {
   console.log("UpdateDeviceState", message)
+  isChanged = false
   changeCapability(message)
   $bus.emit('device-update-emit', message)
 })
@@ -46,24 +49,35 @@ socket.connection.on("UpdateConfig", (message:ServiceProps) => {
 })
 function changeCapability (message:ServiceProps, group = groupStore.currentGroup) {
   const isCategory = route.path.includes('category/')
-  if (isCategory) {
+  if (isCategory && !isChanged) {
     for (const category of Object.keys(categoriesStore.devicesInCategory)) {
       const deviceIdx = categoriesStore.devicesInCategory[category].findIndex(el => el.id === message.id)
       if (deviceIdx > -1) {
         categoriesStore.devicesInCategory[category][deviceIdx].capabilities = message.capabilities
+        isChanged = true
         break
       }
     }
     return
   }
-  if (group.id === message.groupId) {
+  if (group.id === message.groupId && !isChanged) {
     const deviceIdx = group.devices.findIndex(el => el.id === message.id)
     group.devices[deviceIdx].capabilities = message.capabilities
+    isChanged = true
     return
   }
-  group.inverseParent.forEach((el) => {
-    changeCapability(message, el)
-  })
+  for (let i = 0; i < group.inverseParent.length; i++) {
+    if (group.inverseParent[i].id === message.groupId) {
+      const deviceIdx = group.inverseParent[i].devices.findIndex(el => el.id === message.id)
+      if (deviceIdx > -1) {
+        group.inverseParent[i].devices[deviceIdx].capabilities = message.capabilities
+        isChanged = true
+        return
+      }
+    }
+    changeCapability(message, group.inverseParent[i + 1])
+  }
+  console.log(isChanged)
 }
 
 </script>
