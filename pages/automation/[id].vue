@@ -125,7 +125,7 @@ isLoading.value = false
 
 function selectOnlySensors (group:IGroupResponseItem, arr:Service[] = []) {
   arr.push(...group.devices.filter(el => el.id.includes('_sen')))
-  group.inverseParent.forEach(el => selectOnlySensors(el, arr))
+  group.inverseParent?.forEach(el => selectOnlySensors(el, arr))
   return arr
 }
 
