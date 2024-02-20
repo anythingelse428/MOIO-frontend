@@ -1,8 +1,3 @@
-
-
-
-import VNodeIcon from "~/components/shared/VNodeIcon"
-
 export default function useNotification (type:'info'|'warning'|'error', message:string) {
   let iconName = ''
   switch (type) {
@@ -18,7 +13,6 @@ export default function useNotification (type:'info'|'warning'|'error', message:
   nextTick(() => {
     if (process.client) {
       useNuxtApp().$toast[type](message, {
-        icon: () => h(h(VNodeIcon), { src: '/_nuxt/assets/icons/' + iconName + '.svg' }),
         autoClose: 10 * 1000,
         position: 'top-center',
       })
