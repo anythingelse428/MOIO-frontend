@@ -2,9 +2,10 @@
   <div class="group">
     <loader-screen :is-loading="isLoading" />
     <group-list
+      v-if="groupData?.name"
       :id="groupId"
-      :name="groupData.name"
-      :devices="groupData.devices"
+      :name="groupData?.name"
+      :devices="groupData?.devices"
       :inverse-parent="groupData?.inverseParent"
     />
   </div>
@@ -47,8 +48,8 @@ watch(route, () => {
   fetchGroups()
 }, { deep: true, immediate: true })
 watch(currentGroup, (newVal, oldValue) => {
-  if (oldValue && !newVal?.id?.includes(groupId)) {
-    const idx = groupData.value.inverseParent.findIndex(el => el.id === newVal.id)
+  if (newVal && oldValue && !newVal?.id?.includes(groupId)) {
+    const idx = groupData.value.inverseParent?.findIndex(el => el?.id === newVal?.id)
     groupData.value.inverseParent[idx] = newVal
   } else {
     groupData.value = newVal

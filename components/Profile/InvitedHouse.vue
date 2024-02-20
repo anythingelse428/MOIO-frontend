@@ -5,7 +5,7 @@
         {{ name }}
       </div>
       <div class="invited-house__info-owner-name">
-        {{ ownerName ?? groupCreatorId }}
+        {{ ownerName?.name ?? groupCreatorId }}
       </div>
     </div>
     <button class="invited-house__leave-from-house-button" @click="leaveFromHouse">

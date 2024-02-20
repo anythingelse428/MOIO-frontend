@@ -15,7 +15,7 @@ export interface IRegisterUserResponse {
 }
 export default async function apiUserRegister (props:IRegisterUserProps):Promise<IRegisterUserResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {
-    const response = await axios.post(path + '/user/register', props)
+    const response = await axios.post(path + '/v1/users/Register', props)
     try {
       if (response.status === 200) {
         return response

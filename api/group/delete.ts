@@ -1,8 +1,8 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
-export default async function apiGroupDelete (id:string) {
+export default async function apiGroupDelete (groupId:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + `/Group/deleteGroup?id=${id}`)
+    return await axios.delete(path + `/v1/groups/remove`, { data: { groupId } })
   })
 }
 

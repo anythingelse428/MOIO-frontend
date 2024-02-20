@@ -18,6 +18,6 @@ export interface IGroupResponseItem{
 }
 export default async function apiGroupGetById (id:string):Promise<IGroupResponseItem> {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.get(path + '/Group/GetGroupById?id=' + id)
+    return await axios.get(path + '/v1/groups/GetGroupById?id=' + id)
   })
 }

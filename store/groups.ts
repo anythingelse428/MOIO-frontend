@@ -78,7 +78,7 @@ export const useGroupsStore = defineStore('groups', {
         if (localStorage.getItem('moio-current-home')?.length) {
           this.currentHome = localStorage.getItem('moio-current-home') as string
         } else {
-          this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id as string
+          this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id ?? this.uppperGroups[0]?.id
           localStorage.setItem('moio-current-home', this.currentHome)
         }
         this.clientId = this.uppperGroups.find(el => el.id === this.currentHome)?.clientId ?? ''

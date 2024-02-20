@@ -13,6 +13,6 @@ export interface IAuthUserResponse {
 }
 export default async function apiUserAuth (props:IAuthUserProps):Promise<IAuthUserResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + `/user/login`, props)
+    return await axios.post(path + `/v1/users/Login`, props)
   })
 }

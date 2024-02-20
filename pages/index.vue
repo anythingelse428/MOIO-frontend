@@ -3,8 +3,9 @@
     <div class="group">
       <loader-screen :is-loading="isLoading" />
       <group-list
+        v-if="groupData?.name"
         :id="groupStore.currentHome"
-        :name="groupData.name"
+        :name="groupData?.name"
         :devices="groupData.devices"
         :inverse-parent="groupData?.inverseParent"
       />
@@ -32,8 +33,8 @@ const { currentGroup } = storeToRefs(groupStore)
 
 
 watch(currentGroup, (newVal, oldValue) => {
-  if (oldValue && !newVal.id.includes(groupStore.currentHome)) {
-    const idx = groupData.value.inverseParent.findIndex(el => el.id === newVal.id)
+  const idx = groupData.value.inverseParent?.findIndex(el => el.id === newVal.id)
+  if (oldValue && !newVal?.id?.includes(groupStore.currentHome) && idx > -1) {
     groupData.value.inverseParent[idx] = newVal
   } else {
     groupData.value = newVal

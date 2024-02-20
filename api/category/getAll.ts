@@ -8,6 +8,6 @@ export interface IGetAllResponseItem {
 
 export default async function apiCategoryGetAll ():Promise<IGetAllResponseItem[]> {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.get(path + '/category/getCategories')
+    return await axios.get(path + '/v1/categories')
   })
 }

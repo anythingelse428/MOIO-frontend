@@ -88,6 +88,7 @@ onMounted(() => {
   nextTick(async () => {
     console.log(await groupStore.getUsersByGroupId(groupStore.currentHome))
     roommates.value = await groupStore.getUsersByGroupId(groupStore.currentHome)
+    roommates.value = roommates.value.filter(el => el.id !== groupStore.uppperGroups.find(el => el.id === groupStore.currentHome).groupCreatorId)
     if (userInfo.value.name?.length < 1) {
       await userStore.init()
     }

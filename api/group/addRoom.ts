@@ -9,7 +9,7 @@ export interface IAddGroupPayload {
 }
 export default async function apiGroupAddRoom ({ name, typeId, parentId, devicesIds, groupIds }:IAddGroupPayload) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + '/Group/addGroup', {
+    return await axios.post(path + '/v1/groups/AddGroup', {
       name,
       typeId,
       parentId,

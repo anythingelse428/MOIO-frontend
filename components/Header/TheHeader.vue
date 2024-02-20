@@ -53,16 +53,6 @@ const addMenuItems = [
     url: '/user/group/add/house',
   },
 ]
-// {
-//   icon: "information",
-//       name: "Обогреватель (офис) нет связи",
-//     url: '/',
-// },
-// {
-//   icon: "cog",
-//       name: "Настройки дома",
-//     url: '/',
-// },
 const settingsMenuItems = []
 const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)

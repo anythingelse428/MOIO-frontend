@@ -1,4 +1,3 @@
-import { consola } from "consola"
 import useAsyncQuery from "~/composables/useAsyncQuery"
 
 export interface UserRefreshTokenResponse{
@@ -9,7 +8,7 @@ export interface UserRefreshTokenResponse{
 export default async function apiUserRefreshToken (refresh_token :string):Promise<UserRefreshTokenResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {
     try {
-      return await axios.post(path + '/user/RefreshToken', {
+      return await axios.post(path + '/v1/users/RefreshToken', {
         tokenHash: refresh_token,
       })
     } catch (e) {

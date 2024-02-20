@@ -20,6 +20,6 @@ export interface IGroupResponseItem{
 
 export default async function apiGroupGetAll (homeId:string):Promise<IGroupResponseItem[]> {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.get(path + '/Group/GetUserGroups?groupId=' + homeId)
+    return await axios.get(path + '/v1/groups/GetUserGroups?groupId=' + homeId)
   })
 }

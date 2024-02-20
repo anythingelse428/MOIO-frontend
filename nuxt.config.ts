@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     'nuxt-icons',
   ],
+
   devServer: {
     host: process.env.NITRO_HOST,
     port: Number(process.env.NITRO_PORT) || 3000,
@@ -40,6 +41,10 @@ export default defineNuxtConfig({
     },
   },
   routeRules: {
+    '/assets/**': { cache: { maxAge: 60 * 60 * 24 * 30, staleMaxAge: 60 * 60 * 24 * 30 } },
+    '/_nuxt/assets/**': {
+      cache: { maxAge: 60 * 60 * 24 * 30, staleMaxAge: 60 * 60 * 24 * 30 },
+    },
     '/proxy/api/**': { proxy: { to: `${process.env.REST_BASE_TARGET}${process.env.REST_BASE_PATH}/**` } },
     '/ws/v3/**': { proxy: { to: `${process.env.WS_BASE_TARGET}${process.env.WS_BASE_PATH}/**` } },
   },
@@ -52,13 +57,15 @@ export default defineNuxtConfig({
       },
     },
     server: {
-      watch: {
-        usePolling: true,
+      headers: {
+        'Cache-Control': 'max-age=31536000',
       },
-      hmr: {
-        protocol: 'ws',
-        host: process.env.NITRO_HOST,
-      },
+    },
+  },
+  nitro: {
+    routeRules: {
+      "/assets/**": { headers: { 'cache-control': `public,max-age=${365 * 24 * 60 * 60},s-maxage=${365 * 24 * 60 * 60}` } },
+      "/_nuxt/**": { headers: { 'cache-control': `public,max-age=${365 * 24 * 60 * 60},s-maxage=${365 * 24 * 60 * 60}` } },
     },
   },
   styleResources: {

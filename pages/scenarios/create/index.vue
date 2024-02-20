@@ -47,12 +47,14 @@
         <label for="search-group">Поиск комнаты</label>
         <input id="search-group" v-model="searchGroupInput" type="search" placeholder="Комната">
       </div>
-      <div v-if="filterGroups(data, searchGroupInput)?.id" class="scenarios-create__available-list">
+      <div v-if="filteredGroups.length" class="scenarios-create__available-list">
         <group-list
-          :id="filterGroups(data, searchGroupInput).id"
-          :devices="filterGroups(data, searchGroupInput)?.devices"
-          :inverse-parent="filterGroups(data, searchGroupInput).inverseParent"
-          :name="filterGroups(data, searchGroupInput)?.name"
+          v-for="groups in filteredGroups"
+          :id="groups.id"
+          :key="groups.id"
+          :devices="groups?.devices"
+          :inverse-parent="groups.inverseParent"
+          :name="groups?.name"
           :hide-empty="true"
           :hide-sensors="true"
           :is-scenarios="true"
@@ -99,17 +101,20 @@ const capabilities = ref<{ [key: string]: ServiceProps['capabilities'][] }>({})
 const roomsName:{[key:string]:string} = {}
 const roomName = ref()
 const searchGroupInput = ref('')
-function filterGroups (data:IGroupResponseItem, groupName:string) {
-  if (data.name?.toLowerCase()?.includes(groupName.toLowerCase())) {
-    return data
+const flatGroupsArray = ref<IGroupResponseItem[]>([])
+const filteredGroups = computed(() => flatGroupsArray.value.filter(el => el.name?.toLowerCase().includes(searchGroupInput.value.toLowerCase())))
+function expandGroups (groups:IGroupResponseItem):IGroupResponseItem[] {
+  if (groups.devices.length) {
+    flatGroupsArray.value.push({ ...groups, inverseParent: [] })
   }
-  for (let i = 0; i < data?.inverseParent?.length; i++) {
-    if (data.inverseParent[i].name?.toLowerCase()?.includes(groupName.toLowerCase())) {
-      return data.inverseParent[i]
+  for (const group of groups?.inverseParent) {
+    if (group?.id) {
+      expandGroups(group)
     }
-    filterGroups(data.inverseParent[i], groupName)
   }
+  return flatGroupsArray.value
 }
+expandGroups(data.value)
 
 function selectDevice (service:ServiceProps) {
   const isDeviceExist = selectedDevice.value[service.groupId]?.findIndex(el => el.id === service.id)
