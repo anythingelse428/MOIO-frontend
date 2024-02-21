@@ -8,6 +8,10 @@
 svg{
   transition: unset;
 }
+body{
+  height: 100%;
+  overflow: hidden;
+}
 .layout {
   *{
   font-family: Jura, sans-serif;
