@@ -30,9 +30,9 @@
             >
           </div>
           <div :class="`automation__run-condition ${runByAllConditions ? ' --active' : ''}`">
-            <label for="run_condition-1" class="automation__run-condition-description">Если срабатывают все условия</label>
+            <label for="run_condition" class="automation__run-condition-description">Если срабатывают все условия</label>
             <input
-              id="run_condition-1" type="radio" name="run_condition" :checked="runByAllConditions" @input="runByAllConditions=true"
+              id="run_condition" type="radio" name="run_condition" :checked="runByAllConditions" @input="runByAllConditions=true"
             >
           </div>
         </div>

@@ -19,13 +19,12 @@
           @click="emits('select-option',{type,value:sensor.id})"
         >
           <icon :name="useIcoByDeviceType(sensor.type).name" size="28" />
-          <input :id="'sensor-select-' + sensor.id" type="radio" :name="'sensor-select-'+ idx" :disabled="Number(editable) === 0">
+          <input type="radio" :value="sensor.id === currSensor.id" :name="'sensor-select-' + idx" :disabled="Number(editable) === 0">
           <span class="mask" />
           {{ sensor.name }}
         </div>
         <div v-if="currSensor?.id" class="automation-condition__sensor">
           <icon :name="useIcoByDeviceType(currSensor.type).name" size="28" />
-
           <input type="radio" name="sensor-curr" :disabled="Number(editable) === 0">
           <span class="mask" />
           {{ currSensor.name }}

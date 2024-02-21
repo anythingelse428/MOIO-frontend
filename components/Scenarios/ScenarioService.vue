@@ -1,6 +1,6 @@
 <template>
-  <div ref="service" :class="`service --scenario ${selected&&'--active'}`" role="button">
-    <div class="service-info" @mousedown.left="handleLeftMouse()">
+  <div ref="service" :class="`service --scenario ${selected&&'--active'}`" role="button" @mousedown.left="handleLeftMouse()">
+    <div class="service-info">
       <div class="service-ico-wrapper">
         <icon :name="ico" size="30" />
       </div>
@@ -10,7 +10,7 @@
         </span>
       </div>
     </div>
-    <div v-if="isMounted && capabilities && capabilities?.length >= 1 && !isPreview" v-show="isCapabilitiesShow" class="service-capabilities-list-wrapper">
+    <div v-if="isMounted && capabilities?.length >= 1 && !isPreview" class="service-capabilities-list-wrapper">
       <the-modal
         v-if="isMounted"
         :is-shown="isCapabilitiesShow"
