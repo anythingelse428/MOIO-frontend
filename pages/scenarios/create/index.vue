@@ -104,12 +104,15 @@ const searchGroupInput = ref('')
 const flatGroupsArray = ref<IGroupResponseItem[]>([])
 const filteredGroups = computed(() => flatGroupsArray.value.filter(el => el.name?.toLowerCase().includes(searchGroupInput.value.toLowerCase())))
 function expandGroups (groups:IGroupResponseItem):IGroupResponseItem[] {
-  if (groups.devices.length) {
+  console.log(groups)
+  if (groups?.devices?.length) {
     flatGroupsArray.value.push({ ...groups, inverseParent: [] })
   }
-  for (const group of groups?.inverseParent) {
-    if (group?.id) {
-      expandGroups(group)
+  if (groups?.inverseParent?.length) {
+    for (const group of groups?.inverseParent) {
+      if (group?.id) {
+        expandGroups(group)
+      }
     }
   }
   return flatGroupsArray.value

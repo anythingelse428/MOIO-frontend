@@ -74,7 +74,6 @@ import { useAutomationStore } from "~/store/autmation"
 import type { IAutomationCreateProps } from "~/api/automations/create"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { useGroupsStore } from "~/store/groups"
-import type { IAllDevicesResponse } from "~/api/device/getAll"
 import type { IGroupResponseItem } from "~/api/group/getById"
 import type { Service } from "~/components/Service/TheService.vue"
 
@@ -124,7 +123,7 @@ function addConditionInArr (id:number, type:'sensor'|'time', value:string) {
 
 function selectOnlySensors (group:IGroupResponseItem, arr:Service[] = []) {
   arr.push(...group.devices.filter(el => el.id.includes('_sen')))
-  group.inverseParent.forEach(el => selectOnlySensors(el, arr))
+  group.inverseParent?.forEach(el => selectOnlySensors(el, arr))
   return arr
 }
 

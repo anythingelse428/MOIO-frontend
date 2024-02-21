@@ -1,6 +1,6 @@
 <template>
   <transition :name="transitionFadeName??'no-transition'" mode="out-in">
-    <div v-show="isShown" class="modal" :style="backdropFilter?`backdrop-filter:${backdropFilter};`:''">
+    <div v-show="isShown" class="modal" :style="backdropFilter?`-webkit-backdrop-filter:${backdropFilter};backdrop-filter:${backdropFilter};`:''">
       <transition :name="transitionContentName??'no-transition'">
         <div v-show="isShown" class="modal__content">
           <slot name="inner" />
@@ -25,6 +25,17 @@ const isMounted = ref(false)
 onMounted(() => {
   isMounted.value = true
 })
+
+const $main = document.querySelector('main')
+watch(props, (n, o) => {
+  if ($main) {
+    if (props.isShown) {
+      $main.style.overflowY = 'hidden'
+    } else {
+      $main.style.overflowY = 'auto'
+    }
+  }
+}, { deep: true })
 </script>
 
 <style lang="scss">
