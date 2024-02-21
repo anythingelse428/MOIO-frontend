@@ -146,7 +146,7 @@ function toggleSelected (id:string, data:IGroupResponseItem) {
     data.devices[idx].selected = !data.devices[idx].selected
     return idx
   }
-  if (data.inverseParent.length > 0) {
+  if (data.inverseParent?.length > 0) {
     for (let i = 0; i < data.inverseParent.length; i++) {
       if (idx > -1) { break }
       idx = toggleSelected(id, data.inverseParent[i])
@@ -155,7 +155,7 @@ function toggleSelected (id:string, data:IGroupResponseItem) {
   return idx
 }
 function setCapability (data:ICapability) {
-  const id = data.id ?? data.deviceId
+  const id = data.id ?? data?.deviceId
   const capabilityIdx = capabilities.value[id + '_ch' + data.chanel]?.findIndex(el => el.type === data.type)
   if (data.instance.includes('bright')) {
     const colorCapabilityIdx = capabilities.value[id + '_ch' + data.chanel]?.findIndex(el => el.type.includes('color'))
