@@ -12,6 +12,7 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0px 0px 16px #D2F1FD;
+    -webkit-box-shadow: 0px 0px 16px #D2F1FD;
     top: calc((216px / 4) - 4px);
     color: $bg-primary;
     @include header-submenu-item;

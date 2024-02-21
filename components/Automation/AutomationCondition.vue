@@ -19,7 +19,7 @@
           @click="emits('select-option',{type,value:sensor.id})"
         >
           <icon :name="useIcoByDeviceType(sensor.type).name" size="28" />
-          <input type="radio" :name="'sensor-select-'+ idx" :disabled="Number(editable) === 0">
+          <input :id="'sensor-select-'+ idx" type="radio" :name="'sensor-select-'+ idx" :disabled="Number(editable) === 0">
           <span class="mask" />
           {{ sensor.name }}
         </div>
@@ -125,6 +125,7 @@ const time = computed({
     input:checked + .mask{
       border: 1px solid $color-active;
       box-shadow: 0px 0px 16px 0px $color-active;
+      -webkit-box-shadow: 0px 0px 16px 0px $color-active;
     }
     .mdi {
       margin: auto 0;

@@ -40,6 +40,7 @@
   padding: 24px 0;
   border-radius: 32px;
   box-shadow: 0px 0px 10px 0px $service-shadow-color;
+  -webkit-box-shadow: 0px 0px 10px 0px $service-shadow-color;
   @media screen and (max-width: 768px){
     right: 9px;
     position: fixed;

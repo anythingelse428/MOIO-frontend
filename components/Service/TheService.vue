@@ -388,6 +388,7 @@ onUnmounted(() => {
       &.--selected{
         border-color: $color-active;
         box-shadow: 0 0 4px 0 $color-active;
+        -webkit-box-shadow: 0 0 4px 0 $color-active;
       }
     }
   }

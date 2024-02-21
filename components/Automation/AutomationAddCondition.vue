@@ -87,6 +87,7 @@ const condition = ref<'sensor'|'time'>('time')
     &.--active{
       border: 1px solid $color-active;
       box-shadow: 0px 0px 16px 0px $color-active;
+      -webkit-box-shadow: 0px 0px 16px 0px $color-active;
     }
     input[type="radio"]{
       cursor: pointer;

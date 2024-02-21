@@ -243,10 +243,12 @@ async function deleteScenario () {
     border: 1px solid transparent;
     &.--active {
       box-shadow: 0px 0px 16px 0px $color-active;
+      -webkit-box-shadow: 0px 0px 16px 0px $color-active;
       border: 1px solid $color-active;
     }
     &:not(.--active){
       box-shadow: none;
+      -webkit-box-shadow: none;
     }
     .service-info{
       display: flex;

@@ -6,6 +6,7 @@
 	border-radius: 16px;
 	background-color: $settings-color;
 	box-shadow: 0px 0px 4.7px 0px $color-active;
+	-webkit-box-shadow: 0px 0px 4.7px 0px $color-active;
 	width: clamp(30%, 304px, 95%);
 	cursor: pointer;
 	&__current-value{
@@ -30,6 +31,7 @@
 		padding:  12px 8px;
 		position: relative;
 		box-shadow: 0px 0px 4.7px 0px $color-active;
+		-webkit-box-shadow: 0px 0px 4.7px 0px $color-active;
 		border-radius: 16px;
 		&.--active,
 		&:hover{

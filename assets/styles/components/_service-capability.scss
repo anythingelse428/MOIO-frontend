@@ -118,11 +118,13 @@
           -webkit-appearance: none;
           width: 0;
           box-shadow: -20rem 0 0 20rem $color-active;
+          -webkit-box-shadow: -20rem 0 0 20rem $color-active;
         }
         &::-moz-range-thumb {
           border: none;
           width: 0;
           box-shadow: -20rem 0 0 20rem $color-active;
+          -webkit-box-shadow: -20rem 0 0 20rem $color-active;
         }
       }
       &.--bright{
