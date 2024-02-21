@@ -6,7 +6,7 @@
   background: v-bind(bgColor);
   position: fixed;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   z-index: 135;
   top: 0;
   inset: 0;
@@ -20,6 +20,6 @@
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   pointer-events: all;
 }

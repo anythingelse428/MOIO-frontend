@@ -1,4 +1,4 @@
-<template>
+фывфыв<template>
   <div class="scenarios-create">
     <loader-screen :is-loading="isLoading" />
     <h1 class="scenarios-create__header">
@@ -31,8 +31,8 @@
             :name="service.name"
             :capabilities="service.capabilities"
             :type="service.type"
-            :group-id="service.groupId"
-            :device-icon="service.deviceIcon?.name??useIcoByDeviceType(service.type).name"
+            :group-id="''"
+            :device-icon="service.deviceIcon??useIcoByDeviceType(service.type)"
             @left-mouse-click="e=>{selectDevice({...e,id:service.id});toggleSelected(service.id, data)}"
             @update-capability="e=>{setCapability(e)}"
           />

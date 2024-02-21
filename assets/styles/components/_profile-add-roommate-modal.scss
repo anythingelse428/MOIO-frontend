@@ -8,7 +8,7 @@
   color: $color-primary;
   border-radius: 36px;
   width: clamp(200px, 535px,95vw);
-  max-height: 85vh;
+  max-height: 85dvh;
   overflow-y: auto;
   @media screen and (max-width:768px) {
     padding-inline: 20px;

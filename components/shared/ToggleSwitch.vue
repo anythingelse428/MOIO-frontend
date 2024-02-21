@@ -1,6 +1,6 @@
 <template>
   <div :class="`toggle-switch-wrapper${verticalLarge?'--vertical-large':''}`">
-    <label v-if="verticalLarge" for="toggle-switch">Вкл.</label>
+    <label v-if="verticalLarge" for="toggle-switch">{{ openable ? "Открыть" : 'Вкл.' }}</label>
     <div :class="`toggle-switch ${verticalLarge?'--vertical-large':''}`">
       <input id="toggle-switch" v-model="currentValue" type="checkbox" class="toggle-switch__checkbox">
       <div class="toggle-switch__button">
@@ -10,17 +10,19 @@
       </div>
       <div class="toggle-switch__layer" />
     </div>
-    <label v-if="verticalLarge" for="toggle-switch">Выкл.</label>
+    <label v-if="verticalLarge" for="toggle-switch">{{ openable ? "Закрыть" : 'Выкл.' }}</label>
   </div>
 </template>
 
 <script setup lang="ts">
 import Icon from "~/components/shared/Icon.vue"
 import type { TUiIconNames } from "#build/types/ui-icon"
+
 export interface IToggleSwitchProps {
   checked:boolean
   verticalLarge:boolean
   ico?:TUiIconNames
+  openable?:boolean
 }
 const props = withDefaults(defineProps<IToggleSwitchProps>(), { ico: 'service/help' })
 const emit = defineEmits(['check'])

@@ -78,7 +78,7 @@ async function removeUserFromGroups () {
   background: $bg-primary;
   border-radius: 16px;
   width: min(532px, 95%);
-  max-height: 85vh;
+  max-height: 85dvh;
   padding: 28px;
   overflow-y: auto;
   &::-webkit-scrollbar {

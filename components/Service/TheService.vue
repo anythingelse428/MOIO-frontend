@@ -205,7 +205,7 @@ const isDeviceOpen = ref(props.capabilities?.find(el => el.instance === 'open' |
 const target = ref(null)
 const deleteModal = ref(null)
 const iconModal = ref(null)
-const ico = useIcoByDeviceType(props.type)
+const ico = props.deviceIcon?.name ?? useIcoByDeviceType(props.type)
 const isEdit = ref(false)
 const isPending = ref(false)
 const isDead = ref(false)
@@ -341,7 +341,7 @@ onUnmounted(() => {
 @import "assets/styles/components/service-capabilities-modal";
 @import "assets/styles/components/service-delete-modal";
 .change-icon-modal{
-  max-height: 85vh;
+  max-height: 85dvh;
   overflow-y: auto;
   width: min(528px,95%);
   background: $bg-primary;

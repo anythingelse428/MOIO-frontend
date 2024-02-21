@@ -70,13 +70,11 @@ import { onLongPress } from '@vueuse/core'
 import ScenarioServiceCapability from './ScenarioServiceCapability.vue'
 import TheModal from "~/components/shared/TheModal.vue"
 import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
-import { useDevicesStore } from "~/store/devices"
 import { useGroupsStore } from "~/store/groups"
-import { useCategoriesStore } from "~/store/categories"
 import Icon from "~/components/shared/Icon.vue"
-import type {ServiceProps} from "~/components/Service/TheService.vue";
+import type { ServiceProps } from "~/components/Service/TheService.vue"
 
-export type ScenarioService  = {
+export type ScenarioService = {
   isPreview?:boolean
   selected?:boolean
 }

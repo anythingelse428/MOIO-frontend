@@ -47,7 +47,7 @@
       <thermostat-input :current="float" :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
-      <toggle-switch :checked="String(capability.value).includes('open')||String(capability.value).includes('true')" vertical-large :ico="icon??toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
+      <toggle-switch :checked="String(capability.value).includes('open')||String(capability.value).includes('true')" vertical-large openable :ico="icon??toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
     </div>
   </div>
 </template>

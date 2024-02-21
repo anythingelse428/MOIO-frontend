@@ -30,9 +30,9 @@ const $main = document.querySelector('main')
 watch(props, (n, o) => {
   if ($main) {
     if (props.isShown) {
-      $main.style.overflowY = 'hidden'
+      $main.setAttribute('style', 'touch-action: none;-ms-touch-action: none;')
     } else {
-      $main.style.overflowY = 'auto'
+      $main.setAttribute('style', '')
     }
   }
 }, { deep: true })

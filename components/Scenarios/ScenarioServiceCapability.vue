@@ -4,9 +4,10 @@
       <label for="color">
         {{ $t(type) }}
       </label>
-      <div class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
+      <div v-if="Number.isInteger(capability.hsv.h)" class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
       <div class="service-capability__color">
         <input
+          v-if="Number.isInteger(capability.hsv.h)"
           id="color"
           v-model="hue"
           step="1"
@@ -21,6 +22,7 @@
         >
       </div>
       <input
+        v-if="Number.isInteger(capability.hsv.s)"
         id="saturation"
         v-model="saturation"
         step="1"
@@ -67,7 +69,7 @@
       <thermostat-input :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
-      <toggle-switch :checked="capability.value" vertical-large :ico="toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
+      <toggle-switch :checked="String(capability.value).includes('true')||String(capability.value).includes('open')" vertical-large openable :ico="props.icon" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
     </div>
   </div>
 </template>
@@ -79,7 +81,7 @@ import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
 import { useUserStore } from "~/store/user"
 import Icon from "~/components/shared/Icon.vue"
-import type {ServiceCapability} from "~/components/Service/ServiceCapability.vue";
+import type { ServiceCapability } from "~/components/Service/ServiceCapability.vue"
 
 const props = defineProps<ServiceCapability>()
 const emit = defineEmits(['update-bool-val'])
