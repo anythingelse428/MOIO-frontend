@@ -49,6 +49,12 @@
 	  -webkit-box-orient: vertical;
 	  overflow: hidden;
     min-height: 1em;
+    span{
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
     &.--edited{
       display: flex;
       width: 100%;
