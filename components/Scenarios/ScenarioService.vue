@@ -90,7 +90,7 @@ const isDeleteModalShow = ref(false)
 const groupStore = useGroupsStore()
 
 onClickOutside(target, (event) => {
-  if (event.target?.className?.includes('modal__content')) {
+  if (event.target?.className && event.target?.className?.includes('modal__content')) {
     isCapabilitiesShow.value = false
     isDeleteModalShow.value = false
   }
