@@ -11,15 +11,16 @@
     role="button"
     :disabled="isPending&&!isDead"
     :aria-disabled="isPending&&!isDead"
+    @mousedown.right="isCapabilitiesShow = true"
   >
-    <div class="service-info" @mousedown.left="turnOnDevice()" @mousedown.right="isCapabilitiesShow = true">
+    <div class="service-info" @mousedown.left="turnOnDevice()">
       <div
         :style="isDeviceOn&&`color:rgb(${Math.round(color?.red*255)},${Math.round(color?.green*255)},${Math.round(color?.blue*255)})`"
         class="service-ico-wrapper"
       >
         <icon :name="currentIcon" size="36" />
         <div v-if="stuff?.value" class="service-stuff">
-          {{ stuff.value }}{{ stuff.instance.includes('temp')?'°C':'' }}
+          {{ stuff.value }}{{ stuff.instance?.includes('temp')?'°C':'' }}
         </div>
       </div>
       <div class="service-name">
@@ -28,13 +29,11 @@
         </span>
       </div>
     </div>
-    <div v-if="isMounted && capabilities && capabilities?.length>=1" v-show="isCapabilitiesShow" class="service-capabilities-list-wrapper">
+    <div v-if="isMounted && capabilities?.length>=1" class="service-capabilities-list-wrapper">
       <the-modal
-        v-if="isMounted"
         :is-shown="isCapabilitiesShow"
         transition-fade-name="fade"
         transition-content-name="translate"
-        bg-color=""
         backdrop-filter="blur(5px)"
       >
         <template #inner>
@@ -51,7 +50,7 @@
                 {{ name }}
               </span>
             </div>
-            <div :class="`service-capabilities-modal__body ${isDeviceOn === true || isDeviceOpen == 'true' || String(isDeviceOpen)?.indexOf('open') > -1 ? '--active':''}`">
+            <div :class="`service-capabilities-modal__body ${isDeviceOn|| String(isDeviceOpen)?.indexOf('true')>-1 || String(isDeviceOpen)?.indexOf('open') > -1 ? '--active':''}`">
               <service-capabilities-structure>
                 <template
                   v-for="item in capabilities"
@@ -223,13 +222,11 @@ const { $bus } = useNuxtApp()
 const stuff = ref<ICapability>({} as ICapability)
 const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v && useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100))
 onClickOutside(target, (event) => {
-  if (isCapabilitiesShow.value && event.target?.className) {
-    isCapabilitiesShow.value = false
-    isDeleteModalShow.value = false
-    isIconModalShow.value = false
-    // после закрытия модалки обновляю данные
-    setDisplayedStuff()
-  }
+  isCapabilitiesShow.value = false
+  isDeleteModalShow.value = false
+  isIconModalShow.value = false
+  // после закрытия модалки обновляю данные
+  setDisplayedStuff()
 }, { ignore: [deleteModal] })
 onClickOutside(deleteModal, () => {
   isDeleteModalShow.value = false

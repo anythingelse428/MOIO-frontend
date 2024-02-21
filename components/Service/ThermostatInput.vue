@@ -32,8 +32,8 @@
         ref="currentMark"
         class="thermostat-svg__current"
         r="4"
-        cx="120.379"
-        cy="120.379"
+        cx="108"
+        cy="108"
         fill="#32be55"
       />
       <circle
@@ -138,7 +138,7 @@ function thermostatAction () {
         const index = Math.max(1, newVal) / stepAttr
         const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points.length - 1]
         currentMark.value.setAttribute('cx', point.x)
-        currentMark.value.setAttribute('cy', point.y)
+        currentMark.value.setAttribute('cy', point.y - 14)
       }
     }
     const getClosestPoint = (x, y) => {
