@@ -22,11 +22,11 @@
             Автоматизация выполнится если:
           </div>
           <div :class="`automation__run-condition  ${!runByAllConditions ? ' --active' : ''}`">
-            <label for="run_condition" class="automation__run-condition-description">
+            <label for="run_condition-1" class="automation__run-condition-description">
               Если срабатывает одно условие
             </label>
             <input
-              id="run_condition" type="radio" name="run_condition" :checked="!runByAllConditions" @input="runByAllConditions=false"
+              id="run_condition-1" type="radio" name="run_condition" :checked="!runByAllConditions" @input="runByAllConditions=false"
             >
           </div>
           <div :class="`automation__run-condition ${runByAllConditions ? ' --active' : ''}`">
