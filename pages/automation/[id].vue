@@ -100,7 +100,7 @@ import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import type { IAutomationUpdateProps } from "~/api/automations/update"
 import { useGroupsStore } from "~/store/groups"
 import { type IGroupResponseItem } from "~/api/group/getById"
-import type { Service } from "~/components/Service/TheService.vue"
+import type { ServiceProps } from "~/components/Service/TheService.vue"
 
 const route = useRoute()
 const isLoading = ref(true)
@@ -123,7 +123,7 @@ const sensors = ref<{id:string, name:string, type:string}[]>([])
 
 isLoading.value = false
 
-function selectOnlySensors (group:IGroupResponseItem, arr:Service[] = []) {
+function selectOnlySensors (group:IGroupResponseItem, arr:ServiceProps[] = []) {
   arr.push(...group.devices.filter(el => el.id.includes('_sen')))
   group.inverseParent?.forEach(el => selectOnlySensors(el, arr))
   return arr

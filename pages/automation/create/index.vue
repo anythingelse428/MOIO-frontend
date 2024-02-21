@@ -99,9 +99,10 @@ function deleteCondition (id:number) {
 }
 function addConditionInArr (id:number, type:'sensor'|'time', value:string) {
   const isConditionExist = acceptedConditions.value.findIndex(el => el.id === id)
-  const timeOffset = Date()?.match(/GMT.\d\d:\d\d/gm) as string[]
+  const timeOffset = Date()?.match(/GMT.\d\d?\d\d/gm) as string[]
+  const validTimeOffset = timeOffset[0].replace('GMT', '').substring(0, 3) + ':' + timeOffset[0].replace('GMT', '').substring(3)
   if (isConditionExist > -1 && type === 'time') {
-    acceptedConditions.value[isConditionExist].value = `2077-01-24T${value}:00${timeOffset[0].replace('GMT', '')}`
+    acceptedConditions.value[isConditionExist].value = `2077-01-24T${value}:00${validTimeOffset}`
     return
   }
   if (isConditionExist > -1 && type === 'sensor') {
@@ -114,7 +115,7 @@ function addConditionInArr (id:number, type:'sensor'|'time', value:string) {
     return
   }
   if (isConditionExist === -1 && type === "time") {
-    acceptedConditions.value.push({ id, type, value: `2077-01-24T${value}:00${timeOffset[0].replace('GMT', '')}` })
+    acceptedConditions.value.push({ id, type, value: `2077-01-24T${value}:00${validTimeOffset}` })
   }
   if (isConditionExist === -1 && type === "sensor") {
     acceptedConditions.value.push({ id, type, value })

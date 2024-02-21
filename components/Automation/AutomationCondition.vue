@@ -8,7 +8,7 @@
         {{ type==='sensor'?'Сценарий выполняется если сработал датчик':'Время начала активности автоматизации:' }}
       </div>
       <div v-if="type==='time'" class="automation-condition__value">
-        {{ Date().match(/GMT.\d\d.\d\d/gm)[0] }}
+        {{ Date().match(/GMT.\d\d?\d\d/gm)[0] }}
         <input v-model="time" type="time" name="" :disabled="Number(editable) === 0"> часов
       </div>
       <div v-if="type==='sensor'" class="automation-condition__sensors">
@@ -54,12 +54,12 @@ export interface AutomationConditionProps {
   }
   editable?:boolean
 }
-const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`,currSensor:{id:'',name:'',type:''}, editable: true })
+const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`, currSensor: { id: '', name: '', type: '' }, editable: true })
 const emits = defineEmits(['select-option'])
 const time = computed({
   get () {
     if (props.currTime.includes('2077-01-24T')) {
-      return props.currTime.replace('2077-01-24T', '').replace(/.\d\d:\d\d/, '')
+      return props.currTime.replace('2077-01-24T', '').replace(/.\d\d?\d\d/, '')
     }
     return props.currTime
   },
