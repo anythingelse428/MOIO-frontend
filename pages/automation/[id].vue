@@ -178,8 +178,8 @@ function selectScenarios (id:string) {
 const automationStore = useAutomationStore()
 async function create () {
   isLoading.value = true
-  const timeOffset = Date()?.match(/GMT.\d\d:\d\d/gm) as string[]
-
+  const timeOffset = Date()?.match(/GMT.\d\d?\d\d/gm) as string[]
+  const validTimeOffset = timeOffset[0].replace('GMT', '').substring(0, 3) + ':' + timeOffset[0].replace('GMT', '').substring(3)
   const automationData:IAutomationUpdateProps = {
     id: id as string,
     name: name.value,
@@ -191,7 +191,7 @@ async function create () {
     }),
     newTrigger: newConditions.value.map((el) => {
       if (el.value.match(/\d\d:\d\d/)) {
-        return `2077-01-24T${el.value}:00${timeOffset[0].replace('GMT', '')}`
+        return `2077-01-24T${el.value}:00${validTimeOffset}`
       }
       return el.value
     }),
