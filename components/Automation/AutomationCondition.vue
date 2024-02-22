@@ -16,14 +16,13 @@
           v-for="sensor in sensors"
           :key="sensor.id"
           class="automation-condition__sensor"
-          @click="emits('select-option',{type,value:sensor.id})"
+          @click="editable&&emit('select-option',{type,value:sensor.id})"
         >
           <icon :name="useIcoByDeviceType(sensor.type).name" size="28" />
-          <input type="radio" :value="sensor.id === currSensor.id" :name="'sensor-select-' + idx" :disabled="Number(editable) === 0">
-          <span class="mask" />
+          <span :class="`mask ${sensor.id === currSensor.id&&' --active'}`" />
           {{ sensor.name }}
         </div>
-        <div v-if="currSensor?.id" class="automation-condition__sensor">
+        <div v-if="currSensor?.id&&!editable" class="automation-condition__sensor">
           <icon :name="useIcoByDeviceType(currSensor.type).name" size="28" />
           <input type="radio" name="sensor-curr" :disabled="Number(editable) === 0">
           <span class="mask" />
@@ -54,7 +53,7 @@ export interface AutomationConditionProps {
   editable?:boolean
 }
 const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`, currSensor: { id: '', name: '', type: '' }, editable: true })
-const emits = defineEmits(['select-option'])
+const emit = defineEmits(['select-option'])
 const time = computed({
   get () {
     if (props.currTime.includes('2077-01-24T')) {
@@ -63,7 +62,7 @@ const time = computed({
     return props.currTime
   },
   set (val) {
-    emits('select-option', { type: 'time', value: val })
+    emit('select-option', { type: 'time', value: val })
   },
 })
 
@@ -109,7 +108,7 @@ const time = computed({
     gap: 14px;
     position: relative;
     input[type="radio"] {
-     cursor: pointer;
+      cursor: pointer;
       position: absolute;
       inset: 0;
       opacity: 0.5;
@@ -121,11 +120,11 @@ const time = computed({
       border-radius: 12px;
       border: 1px solid transparent;
       z-index: 0;
-    }
-    input:checked + .mask{
-      border: 1px solid $color-active;
-      box-shadow: 0px 0px 16px 0px $color-active;
-      -webkit-box-shadow: 0px 0px 16px 0px $color-active;
+      &.--active{
+        border: 1px solid $color-active;
+        box-shadow: 0px 0px 16px 0px $color-active;
+        -webkit-box-shadow: 0px 0px 16px 0px $color-active;
+      }
     }
     .mdi {
       margin: auto 0;

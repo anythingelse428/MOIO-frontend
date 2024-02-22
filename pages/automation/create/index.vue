@@ -21,29 +21,23 @@
           <div class="automation__description">
             Автоматизация выполнится если:
           </div>
-          <div :class="`automation__run-condition  ${!runByAllConditions ? ' --active' : ''}`">
+          <div :class="`automation__run-condition  ${!runByAllConditions ? ' --active' : ''}`" @click="runByAllConditions=false">
             <label for="run_condition-1" class="automation__run-condition-description">
               Если срабатывает одно условие
             </label>
-            <input
-              type="radio" name="run_condition" :checked="!runByAllConditions" @input="runByAllConditions=false"
-            >
           </div>
-          <div :class="`automation__run-condition ${runByAllConditions ? ' --active' : ''}`">
+          <div :class="`automation__run-condition ${runByAllConditions ? ' --active' : ''}`" @click="runByAllConditions=true">
             <label for="run_condition" class="automation__run-condition-description">Если срабатывают все условия</label>
-            <input
-              type="radio" name="run_condition" :checked="runByAllConditions" @input="runByAllConditions=true"
-            >
           </div>
         </div>
 
         <the-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
-            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{conditions.push({type:e,id:conditions.length+1});showConditionModal = false}" />
+            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{acceptedConditions.push({type:e,id:conditions.length+1});showConditionModal = false}" />
           </template>
         </the-modal>
-        <div v-for="item in conditions" :key="item.id" class="automation__conditions">
-          <automation-condition :type="item.type" :sensors="sensors" :idx="item.id" @select-option="e=>addConditionInArr(item.id, e?.type, e.value)" />
+        <div v-for="item in acceptedConditions" :key="item.id" class="automation__conditions">
+          <automation-condition :type="item.type" :sensors="sensors" :curr-sensor="{id: item?.value, name:'', type:'sensor'}" :idx="item.id" @select-option="e=>addConditionInArr(item.id, e?.type, e.value)" />
           <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
             Удалить
           </button>
@@ -75,25 +69,20 @@ import type { IAutomationCreateProps } from "~/api/automations/create"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { useGroupsStore } from "~/store/groups"
 import type { IGroupResponseItem } from "~/api/group/getById"
-import type { Service } from "~/components/Service/TheService.vue"
+import type { ServiceProps } from "~/components/Service/TheService.vue"
 
 const isLoading = ref(false)
-const conditions = ref<{type:'sensor'|'time', id:number}[]>([])
 const runByAllConditions = ref(true)
 const showConditionModal = ref(false)
 const acceptedConditions = ref<{id:number, type:'sensor'|'time', value:string}[]>([])
 const groupStore = useGroupsStore()
 const scenarios = ref<string[]>([])
 const name = ref('')
-const sensors = ref<Service[]>([])
+const sensors = ref<ServiceProps[]>([])
 const existingScenarios = await useScenarioStore().getAll()
 function deleteCondition (id:number) {
   acceptedConditions.value.splice(
     acceptedConditions.value.findIndex(el => el.id === id),
-    1,
-  )
-  conditions.value.splice(
-    conditions.value.findIndex(el => el.id === id),
     1,
   )
 }
@@ -122,7 +111,7 @@ function addConditionInArr (id:number, type:'sensor'|'time', value:string) {
   }
 }
 
-function selectOnlySensors (group:IGroupResponseItem, arr:Service[] = []) {
+function selectOnlySensors (group:IGroupResponseItem, arr:ServiceProps[] = []) {
   arr.push(...group.devices.filter(el => el.id.includes('_sen')))
   group.inverseParent?.forEach(el => selectOnlySensors(el, arr))
   return arr

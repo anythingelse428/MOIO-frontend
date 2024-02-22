@@ -21,19 +21,13 @@
           <div class="automation__description">
             Автоматизация выполнится если:
           </div>
-          <div :class="`automation__run-condition  ${!runByAllConditions ? ' --active' : ''}`">
+          <div :class="`automation__run-condition  ${!runByAllConditions ? ' --active' : ''}`" @click="runByAllConditions=false">
             <label for="run_condition" class="automation__run-condition-description">
               Если срабатывает одно условие
             </label>
-            <input
-              id="run_condition" type="radio" name="run_condition" :checked="!runByAllConditions" @input="runByAllConditions=false"
-            >
           </div>
-          <div :class="`automation__run-condition ${runByAllConditions ? ' --active' : ''}`">
+          <div :class="`automation__run-condition ${runByAllConditions ? ' --active' : ''}`" @click="runByAllConditions=true">
             <label for="run_condition" class="automation__run-condition-description">Если срабатывают все условия</label>
-            <input
-              id="run_condition" type="radio" name="run_condition" :checked="runByAllConditions" @input="runByAllConditions=true"
-            >
           </div>
         </div>
 
