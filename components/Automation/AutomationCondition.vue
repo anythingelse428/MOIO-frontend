@@ -24,8 +24,7 @@
         </div>
         <div v-if="currSensor?.id&&!editable" class="automation-condition__sensor">
           <icon :name="useIcoByDeviceType(currSensor.type).name" size="28" />
-          <input type="radio" name="sensor-curr" :disabled="Number(editable) === 0">
-          <span class="mask" />
+          <span class="mask --active" />
           {{ currSensor.name }}
         </div>
       </div>
