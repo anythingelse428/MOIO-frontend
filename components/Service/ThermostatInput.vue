@@ -185,11 +185,11 @@ function thermostatAction () {
       thumb.value.setAttribute('r', '14')
       setPath(p.value)
     }
-
+    const capabilityModal = range.value.parentElement?.parentElement.parentElement.parentElement.parentElement
     const dragEnd = () => {
       isMoving = false
-      if (document.querySelector('.service-capabilities-modal__body')?.style) {
-        document.querySelector('.service-capabilities-modal__body').style.overflow = 'auto'
+      if (capabilityModal?.style) {
+        capabilityModal.style.overflowY = 'auto'
       }
       if (svg.value?.classList) {
         svg.value.classList.remove('moving')
@@ -198,9 +198,8 @@ function thermostatAction () {
 
     const dragStart = () => {
       isMoving = true
-
-      if (document.querySelector('.service-capabilities-modal__body')?.style) {
-        document.querySelector('.service-capabilities-modal__body').style.overflow = 'hidden'
+      if (capabilityModal?.style) {
+        capabilityModal.style.overflowY = 'hidden'
       }
 
       if (svg.value?.classList) {
