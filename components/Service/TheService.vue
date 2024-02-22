@@ -12,8 +12,9 @@
     :disabled="isPending&&!isDead"
     :aria-disabled="isPending&&!isDead"
     @mousedown.right="isCapabilitiesShow = true"
+    @mousedown.left="turnOnDevice()"
   >
-    <div class="service-info" @mousedown.left="turnOnDevice()">
+    <div class="service-info">
       <div
         :style="isDeviceOn&&`color:rgb(${Math.round(color?.red*255)},${Math.round(color?.green*255)},${Math.round(color?.blue*255)})`"
         class="service-ico-wrapper"
@@ -237,6 +238,9 @@ onClickOutside(iconModal, () => {
 onLongPress(service, () => {
   isCapabilitiesShow.value = true
 }, { delay: 400 })
+onLongPress(service, () => {
+  turnOnDevice()
+}, { delay: 4 })
 
 async function turnOnDevice (isChangeRange?:any) {
   if (!props.id.includes('_sen') && !isChangeRange) {
