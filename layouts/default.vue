@@ -55,29 +55,21 @@ function changeCapability (message:ServiceProps, group = groupStore.currentGroup
       if (deviceIdx > -1) {
         categoriesStore.devicesInCategory[category][deviceIdx].capabilities = message.capabilities
         isChanged = true
-        break
       }
     }
     return
   }
-  if (group.id === message.groupId && !isChanged) {
+  if (group.id === message.groupId) {
     const deviceIdx = group.devices.findIndex(el => el.id === message.id)
     group.devices[deviceIdx].capabilities = message.capabilities
     isChanged = true
     return
   }
-  for (let i = 0; i < group.inverseParent.length; i++) {
-    if (group.inverseParent[i].id === message.groupId) {
-      const deviceIdx = group.inverseParent[i].devices.findIndex(el => el.id === message.id)
-      if (deviceIdx > -1) {
-        group.inverseParent[i].devices[deviceIdx].capabilities = message.capabilities
-        isChanged = true
-        return
-      }
+  if (group.inverseParent && !isChanged) {
+    for (let i = 0; i < group.inverseParent.length; i++) {
+      changeCapability(message, group.inverseParent[i])
     }
-    changeCapability(message, group.inverseParent[i + 1])
   }
-  // console.log(isChanged)
 }
 
 </script>

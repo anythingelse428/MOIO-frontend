@@ -238,8 +238,8 @@ onLongPress(service, () => {
   isCapabilitiesShow.value = true
 }, { delay: 400 })
 
-async function turnOnDevice (isChangeRange?:any) {
-  if (!props.id.includes('_sen') && !isChangeRange) {
+async function turnOnDevice () {
+  if (!props.id.includes('_sen')) {
     isPending.value = true
 
     const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
@@ -307,21 +307,25 @@ function setDisplayedStuff () {
   }
 }
 watch(props, (value) => {
-  isPending.value = false
-  isDeviceOn.value = value.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value
-  isDeviceOpen.value = value.capabilities?.find(el => el.instance === 'open' || el.type === 'devices.types.openable.garage')?.value
+  const newIsDeviceOn = value.capabilities?.find(el => el.type === 'devices.capabilities.on_off')?.value
+  const newIsDeviceOpen = value.capabilities?.find(el => el.instance === 'open' || el.type === 'devices.types.openable.garage')?.value
+  isDeviceOn.value = newIsDeviceOn
+  isDeviceOpen.value = newIsDeviceOpen
 }, { deep: true })
 
+watch([isDeviceOpen, isDeviceOn], () => {
+  isPending.value = false
+}, { deep: true })
 const onStateUpdate = (data:ServiceProps) => {
   if (data.id === props.id) {
     isPending.value = false
   }
 }
 onMounted(() => {
+  $bus.on('device-update-emit', onStateUpdate)
   setTimeout(() => {
     isMounted.value = true
     setDisplayedStuff()
-    $bus.on('device-update-emit', onStateUpdate)
 
     window.addEventListener('contextmenu', (e) => {
       e.preventDefault()
