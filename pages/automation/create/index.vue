@@ -33,7 +33,7 @@
 
         <the-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
-            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{acceptedConditions.push({type:e,id:conditions.length+1});showConditionModal = false}" />
+            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{acceptedConditions.push({type:e,id:acceptedConditions.length+1}); showConditionModal = false}" />
           </template>
         </the-modal>
         <div v-for="item in acceptedConditions" :key="item.id" class="automation__conditions">
