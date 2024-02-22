@@ -68,7 +68,7 @@ export interface IThermostatProps {
 const props = defineProps<IThermostatProps>()
 
 const emit = defineEmits(['t-input'])
-const getSliderValue = (value) => {
+const getSliderValue = (value:number) => {
   const max = props.max - props.min
   const flex = value - props.min
   return (flex / max) * 100
@@ -89,6 +89,7 @@ watch(p, (newP) => {
   const unStepped = (props.max - props.min) * (newP / 100) + props.min
   emit('t-input', Number((stepped(unStepped, (props.step || 1)) + 1 - props.step).toFixed(2)))
 })
+watch(() => props.current, () => thermostatAction())
 function thermostatAction () {
   if (thermostat?.value) {
     let isMoving = false
@@ -138,7 +139,7 @@ function thermostatAction () {
         const index = Math.max(1, newVal) / stepAttr
         const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points.length - 1]
         currentMark.value.setAttribute('cx', point.x)
-        currentMark.value.setAttribute('cy', point.y - 14)
+        currentMark.value.setAttribute('cy', point.y * 1.01)
       }
     }
     const getClosestPoint = (x, y) => {
