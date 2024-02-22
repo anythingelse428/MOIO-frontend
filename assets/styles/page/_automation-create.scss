@@ -98,10 +98,11 @@
 			font-size: 16px;
 		}
 		input[type="radio"]{
+			z-index: 5;
 			position: absolute;
 			cursor: pointer;
 			inset: 0;
-			opacity: 0;
+			opacity: .5;
 		}
 		&.--active{
 			border: 1px solid $color-active;

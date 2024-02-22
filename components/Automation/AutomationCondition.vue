@@ -108,11 +108,11 @@ const time = computed({
     min-height: 76px;
     gap: 14px;
     position: relative;
-    input{
+    input[type="radio"] {
      cursor: pointer;
       position: absolute;
       inset: 0;
-      opacity: 0;
+      opacity: 0.5;
       z-index: 10;
     }
     .mask {
