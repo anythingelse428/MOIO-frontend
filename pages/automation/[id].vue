@@ -39,8 +39,8 @@
         <div v-for="(item,i) in oldConditions" :key="item.id" class="automation__conditions">
           <automation-condition
             :type="item.type"
-            :curr-time="item.type==='time'?item.value as string:undefined"
             :curr-sensor="item.type==='sensor'?item.value:undefined"
+            :curr-time="item.type==='time'?item.value as string:undefined"
             :editable="false"
             :idx="i+1"
             @select-option="e=>addConditionInArr(item.id, e?.type, e.value)"
@@ -52,7 +52,8 @@
         <div v-for="(item,i) in newConditions" :key="item.id+i" class="automation__conditions">
           <automation-condition
             :type="item.type"
-            :curr-time="item.value"
+            :curr-sensor="item.type === 'sensor'?{id:item.value,name:'',type:''}:undefined"
+            :curr-time="item.type === 'time'?item.value:undefined"
             :sensors="sensors"
             :editable="true"
             :idx="i+oldConditions.length+1"
