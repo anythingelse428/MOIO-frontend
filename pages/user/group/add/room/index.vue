@@ -16,7 +16,7 @@
       <div v-if="existingFloors?.length>0" class="add-group__input-group">
         <label for="floor" class="add-group__label">Выберите этаж</label>
         <div v-for="floors in existingFloors" :key="floors.id" class="add-group__input-wrapper">
-          <input id="floor" v-model="floor" :value="floors.id" type="radio" name="floor" class="add-group__input">
+          <span id="floor" @click="floor = floors.id" role="radio" class="add-group__input"/>
           <span class="floor-label">{{ floors.name }}</span>
         </div>
       </div>
@@ -84,8 +84,8 @@
 
 
 <script setup lang="ts">
-import { useGroupsStore } from "~/store/groups"
-import { useUserStore } from "~/store/user"
+import {useGroupsStore} from "~/store/groups"
+import {useUserStore} from "~/store/user"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
@@ -123,10 +123,10 @@ async function getDevicesByGroupId () {
   isLoading.value = true
   existingDevices.value = []
   await groupStore.getDevicesByGroupId(house.value)
+  isLoading.value = false
   for (const category of Object.values(groupStore.devices)) {
     existingDevices.value.push(...category)
   }
-  isLoading.value = false
 }
 getDevicesByGroupId()
 async function addGroup () {

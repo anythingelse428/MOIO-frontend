@@ -47,11 +47,11 @@ const isLoading = ref(true)
 async function fetchGroups () {
   isLoading.value = true
   await categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome)
+  isLoading.value = false
   groupData.value = {
     name: categoryStore.categoryById(categoryId)?.name,
     groups: categoryStore.devices,
   }
-  isLoading.value = false
 }
 // await fetchGroups()
 

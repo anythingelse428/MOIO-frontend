@@ -38,7 +38,7 @@ socket.connection.on("UpdateSensorState", (message:string) => {
   useNotification("info", message)
 })
 socket.connection.on("UpdateDeviceState", (message:ServiceProps) => {
-  // console.log("UpdateDeviceState", message)
+  console.log("UpdateDeviceState", message)
   isChanged = false
   changeCapability(message)
   $bus.emit('device-update-emit', message)

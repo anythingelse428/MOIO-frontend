@@ -49,6 +49,7 @@ async function auth () {
       login: login.value,
       password: password.value,
     })
+    isLoading.value = false
     const config = useRuntimeConfig()
     const cookie = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME, { maxAge: 30 * 60 * 60 * 90 })
     cookie.value = refreshToken

@@ -9,7 +9,7 @@
           <label for="custom-select__option-label">
             {{ option.description }}
           </label>
-          <input id="select-value" class="custom-select__option-value" type="radio" name="select-value" :value="option.value" @change="emit('custom-select',option.value)">
+          <span id="select-value" class="custom-select__option-value" role="radio" @click="emit('custom-select',option.value)" />
         </div>
       </div>
     </transition>

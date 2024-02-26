@@ -121,10 +121,9 @@
 
 
 <script setup lang="ts">
-import { useGroupsStore } from "~/store/groups"
-import { useUserStore } from "~/store/user"
+import {useGroupsStore} from "~/store/groups"
+import {useUserStore} from "~/store/user"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
-import type { Ref } from "vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
 
@@ -148,12 +147,12 @@ const previewData = ref({
 async function getRoomsByHomeId(){
   isLoading.value = true
   await groupStore.getAll(house.value)
+  isLoading.value = false
   existingRooms.value = groupStore.groups.filter(el=>el.typeId===3&&el.parentId===house.value).map(el=>{
     return {
       id: el.id,
       name: el.name,
   }})
-  isLoading.value = false
 }
 getRoomsByHomeId()
 function setItem (e:Event, target:any, data:{ id: string, name:string }) {
@@ -171,8 +170,8 @@ async function getDevicesByGroupId () {
   isLoading.value = true
   existingDevices.value = []
   const { devices } = await groupStore.getGroupById(house.value)
-  existingDevices.value = devices
   isLoading.value = false
+  existingDevices.value = devices
 }
 getDevicesByGroupId()
 async function addGroup () {

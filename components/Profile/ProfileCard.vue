@@ -85,18 +85,22 @@ const isLoading = ref(false)
 const newName = ref(props.displayedName)
 const newClientId = ref(props.clientId ?? '')
 async function changeName () {
-  isLoading.value = true
-  await userStore.changeName(newName.value)
-  await userStore.init()
+  if (props.displayedName !== newName.value) {
+    isLoading.value = true
+    await userStore.changeName(newName.value)
+    await userStore.init()
+    isLoading.value = false
+  }
   isNameChanging.value = false
-  isLoading.value = false
 }
 async function changeClientId () {
-  isLoading.value = true
-  await userStore.changeClientId(newClientId.value)
-  await userStore.init()
+  if (props.clientId !== newClientId.value) {
+    isLoading.value = true
+    await userStore.changeClientId(newClientId.value)
+    await userStore.init()
+    isLoading.value = false
+  }
   isClientIdChanging.value = false
-  isLoading.value = false
 }
 async function copyToClipBoard (text:string, type:'clientId'|'email') {
   try {

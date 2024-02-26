@@ -52,7 +52,7 @@
         <invited-house v-for="house in invitedHouses" :id="house.id" :key="house.id" :group-creator-id="house.groupCreatorId" :name="house.name" />
       </div>
     </div>
-    <button v-if="isHouseOwner?.id" class="profile__sync-device" @click="aliceSync()">
+    <button v-if="isHouseOwner?.id||!groupStore.uppperGroups?.length" class="profile__sync-device" @click="aliceSync()">
       Синхронизировать с Алисой
     </button>
   </div>
@@ -87,12 +87,12 @@ onMounted(() => {
   isLoading.value = true
   nextTick(async () => {
     // console.log(await groupStore.getUsersByGroupId(groupStore.currentHome))
-    roommates.value = await groupStore.getUsersByGroupId(groupStore.currentHome)
-    roommates.value = roommates.value.filter(el => el.id !== groupStore.uppperGroups.find(el => el.id === groupStore.currentHome).groupCreatorId)
     if (userInfo.value.name?.length < 1) {
       await userStore.init()
     }
+    roommates.value = await groupStore.getUsersByGroupId(groupStore.currentHome)
     isLoading.value = false
+    roommates.value = roommates.value.filter(el => el.id !== groupStore.uppperGroups.find(el => el.id === groupStore.currentHome).groupCreatorId)
   })
 })
 </script>

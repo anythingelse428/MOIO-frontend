@@ -110,13 +110,13 @@ const removeCondition = ref<string[]>([])
 
 const scenarios = ref<string[]>([])
 const existingScenarios = await useScenarioStore().getAll()
+isLoading.value = false
 
 const runByAllConditions = ref(true)
 
 const showConditionModal = ref(false)
 const sensors = ref<{id:string, name:string, type:string}[]>([])
 
-isLoading.value = false
 
 function selectOnlySensors (group:IGroupResponseItem, arr:ServiceProps[] = []) {
   arr.push(...group.devices.filter(el => el.id.includes('_sen')))
@@ -201,6 +201,7 @@ async function create () {
 async function getData () {
   isLoading.value = true
   const response = await automationStore.getById(id as string)
+  isLoading.value = false
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
   runByAllConditions.value = response.allConditions
@@ -214,7 +215,6 @@ async function getData () {
   response.triggers.sensors.forEach((el) => {
     oldConditions.value.push({ id: el.automationTriggerId, type: 'sensor', value: { id: el.id, name: el.name, type: el.type } })
   })
-  isLoading.value = false
 }
 getData()
 
