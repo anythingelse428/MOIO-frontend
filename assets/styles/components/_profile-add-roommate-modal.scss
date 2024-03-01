@@ -62,6 +62,54 @@
     gap: 16px;
     margin-top: 36px;
   }
+  &__groups{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    &-item {
+      @include action-item;
+      padding: 8px 22px ;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: $settings-color;
+      border-radius: 12px;
+      &-checkbox{
+        position: relative;
+        color: $settings-color;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 24px;
+        height: 24px;
+        input[type="checkbox"]{
+          position: absolute;
+          opacity: 0;
+          right: 0;
+          inset: 0;
+          z-index: 5;
+          cursor: pointer;
+          &:checked ~ .ui-icon {
+            background: $color-active;
+            border-color: $color-active;
+            svg {
+              opacity: 1;
+            }
+          }
+        }
+        .ui-icon{
+          width: 24px;
+          height: 24px;
+          background: $bg-primary;
+          border-radius: 3px;
+          border: 2px solid $bg-primary;
+          svg {
+            opacity: 0;
+          }
+        }
+      }
+    }
+  }
   &__input-group {
     display: flex;
     flex-direction: row;

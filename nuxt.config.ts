@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import path from 'path'
+import fs from 'fs'
+
 export default defineNuxtConfig({
   devtools: { enabled: false },
   ssr: Boolean(process.env.NUXT_SSR),
@@ -18,6 +21,9 @@ export default defineNuxtConfig({
   ],
 
   devServer: {
+    https: {
+
+    },
     host: process.env.NITRO_HOST,
     port: Number(process.env.NITRO_PORT) || 3000,
   },
@@ -60,6 +66,10 @@ export default defineNuxtConfig({
       headers: {
         'Cache-Control': 'max-age=31536000',
       },
+      https: {
+        key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
+        cert: fs.readFileSync(path.resolve(__dirname, 'server.crt')),
+      },
     },
   },
   nitro: {
@@ -73,9 +83,6 @@ export default defineNuxtConfig({
       '~/assets/styles/utils/_colors.scss',
       '~/assets/styles/utils/_fontsizes.scss',
     ],
-    // sass: [
-    //   '~/assets/fonts/hk-icons/homekit-icons.sass',
-    // ],
   },
   css: [
     '~/assets/fonts/Jura/stylesheet.css',

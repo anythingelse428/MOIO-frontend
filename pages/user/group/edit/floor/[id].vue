@@ -121,10 +121,9 @@ const isLoading = ref(false)
 const groupStore = useGroupsStore()
 const { groups, currentHome } = storeToRefs(groupStore)
 const name = ref('')
-const oldDevices = []
 const house = ref(currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
-const existingDevices = ref()
+const existingDevices = ref<{id:string, name:string}[]>([])
 const users = ref<{id:number, name:string}[]>()
 const id = useRoute().params.id as string
 const usersForRemove = ref<{id:number, name:string}[]>([])
@@ -137,7 +136,7 @@ const previewData = ref({
   users,
 })
 
-function setItem (target:any, data:{ id: string, name:string }) {
+function setItem (target:{ id: string, name:string }[], data:{ id: string, name:string }) {
   const isSelected = target?.findIndex(el => el?.id === data.id)
   if (isSelected === -1) {
     target?.push(unref(data))
@@ -167,8 +166,10 @@ getGroupData()
 async function getDevicesByGroupId (id:string, deviceRef:globalThis.Ref<any>) {
   deviceRef.value = []
   const devices = await groupStore.getDevicesByGroupId(id)
-  for (const [key, val] of Object.entries(devices)) {
-    deviceRef.value.push(...val)
+  if (devices) {
+    for (const val of Object.values(devices)) {
+      deviceRef.value.push(...val)
+    }
   }
 }
 async function editGroup () {
@@ -176,8 +177,8 @@ async function editGroup () {
   if (name.value !== oldName) {
     await groupStore.changeName(id, name.value)
   }
-  if (oldDevices.length > 0) {
-    await groupStore.changeDevices(groupStore.currentHome, [...oldDevices])
+  if (existingDevices.value.length > 0) {
+    await groupStore.changeDevices(groupStore.currentHome, existingDevices.value.map(el => el.id))
   }
   if (devices.value.length > 0) {
     await groupStore.changeDevices(id, devices.value.map(el => el.id))

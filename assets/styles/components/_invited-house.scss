@@ -1,0 +1,26 @@
+.invited-house{
+	display: flex;
+	justify-content: space-between;
+	padding: 18px 32px;
+	border-radius: 16px;
+	background: $bg-primary;
+	&__info{
+		display: flex;
+		flex-direction: column;
+		gap:8px;
+		&-house-name{
+			@include action-item;
+		}
+		&-owner-name{
+			@include carousel-category-item;
+		}
+	}
+	&__leave-from-house-button{
+		border: 1px solid $color-active;
+		color: $color-active;
+		@include action-item;
+		padding: 8px 12px;
+		border-radius: 16px;
+		background: $settings-color;
+	}
+}

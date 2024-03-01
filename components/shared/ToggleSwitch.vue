@@ -24,7 +24,7 @@ export interface IToggleSwitchProps {
   ico?:TUiIconNames
   openable?:boolean
 }
-const props = withDefaults(defineProps<IToggleSwitchProps>(), { ico: 'service/help' })
+const props = withDefaults(defineProps<IToggleSwitchProps>(), { ico: 'service/other/help' })
 const emit = defineEmits(['check'])
 const currentValue = computed({
   get () {

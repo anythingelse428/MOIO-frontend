@@ -74,7 +74,7 @@ const asideContent:IAsideContent =
         },
         {
           icon: 'aside/automation',
-          name: 'автоматизация',
+          name: 'автоматизации',
           url: '/automation',
         },
         {

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+source ~/.nvm/nvm.sh
 # Остановить процесс nuxt-prod в PM2
 pm2 stop nuxt-prod
 

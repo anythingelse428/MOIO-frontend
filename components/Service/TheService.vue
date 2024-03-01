@@ -70,7 +70,7 @@
                     :value="item.value"
                     :icon="deviceIcon?.name"
                     :float="floatValue?.value"
-                    @update-bool-val="e=>turnOnDevice(e)"
+                    @update-bool-val="turnOnDevice()"
                   />
                 </template>
               </service-capabilities-structure>
@@ -174,18 +174,18 @@ export interface ICapability {
   reportable: boolean
   value: string
   instance: string
-  range?: {
+  range: {
     min: number
     max: number
     precision: number
   }
-  hsv?: {
+  hsv: {
     h: number
     s: number
     v: number
   }
 }
-export type ServiceProps = {
+export interface ServiceProps {
   id:string
   name: string
   type:string
@@ -204,13 +204,13 @@ const isDeviceOpen = ref(props.capabilities?.find(el => el.instance === 'open' |
 const target = ref(null)
 const deleteModal = ref(null)
 const iconModal = ref(null)
-const ico = props.deviceIcon?.name ?? useIcoByDeviceType(props.type)
+const ico = props.deviceIcon?.name ?? useIcoByDeviceType(props.type).name
 const isEdit = ref(false)
 const isPending = ref(false)
 const isDead = ref(false)
 const isDeleteModalShow = ref(false)
 const isIconModalShow = ref(false)
-const currentIcon:TUiIconNames = props.deviceIcon?.name ?? ico.name
+const currentIcon:TUiIconNames = props.deviceIcon?.name ?? ico
 const selectedIcon = ref<TUiIconNames>('' as TUiIconNames)
 const existingIcons = uiIconNames
 const newDeviceName = ref(props.name)
@@ -220,7 +220,7 @@ const categoriesStore = useCategoriesStore()
 const floatValue = ref(props.capabilities?.find(el => el.type.includes('float')))
 const { $bus } = useNuxtApp()
 const stuff = ref<ICapability>({} as ICapability)
-const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v && useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100))
+const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v ? useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100) : { red: 1, green: 1, blue: 1 })
 onClickOutside(target, (event) => {
   isCapabilitiesShow.value = false
   isDeleteModalShow.value = false
@@ -242,12 +242,12 @@ async function turnOnDevice () {
   if (!props.id.includes('_sen')) {
     isPending.value = true
 
-    const oldValue:boolean|string = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
-    const newValue = oldValue === false || String(oldValue)?.includes('close')
+    const oldValue = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
+    const newValue = !oldValue || String(oldValue).includes('close') || String(oldValue).includes('false')
     const isOpenable = props?.capabilities?.find(el => el.instance?.includes('open'))
 
     if (isOpenable) {
-      await deviceStore.changeOpenClose({ clientId: groupStore.clientId, deviceId: props.id, open: !(isOpenable.value === 'open' || isOpenable.value === 'true' || (isOpenable.value as unknown as boolean) === true) })
+      await deviceStore.changeOpenClose({ clientId: groupStore.clientId, deviceId: props.id, open: newValue })
     } else {
       await deviceStore.changeOnOf({ clientId: groupStore.clientId, deviceId: props.id, onOffStatus: newValue })
     }
@@ -272,19 +272,23 @@ async function deleteDevice () {
 
   }
 }
-
-async function setNewDeviceName () {
-  await deviceStore.changeName(props.id, newDeviceName.value)
-  isEdit.value = false
+async function refreshData () {
   if (Number.isInteger(Number(props.groupId))) {
-    await categoriesStore.getDevicesByCategoryId(props.groupId, groupStore.currentHome)
+    await categoriesStore.getDevicesByCategoryId(Number(props.groupId), groupStore.currentHome)
   } else {
     await groupStore.getGroupById(groupStore.currentGroup.id)
   }
 }
+async function setNewDeviceName () {
+  await deviceStore.changeName(props.id, newDeviceName.value)
+  isEdit.value = false
+  await refreshData()
+}
 
 async function setNewIcon () {
   await deviceStore.changeIcon(props.id, selectedIcon.value)
+  isIconModalShow.value = false
+  await refreshData()
 }
 
 function setDisplayedStuff () {
@@ -303,7 +307,7 @@ function setDisplayedStuff () {
     stuff.value.hsv = props?.capabilities[hsvIdx].hsv
   }
   if (!isDeviceOn.value) {
-    stuff.value.hsv = { h: null, s: null, v: null }
+    stuff.value.hsv = { h: 0, s: 0, v: 64 }
   }
 }
 watch(props, (value) => {

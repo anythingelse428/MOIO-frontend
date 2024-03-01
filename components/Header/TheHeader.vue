@@ -5,7 +5,7 @@
         <icon name="header/plus-circle-outline" size="40" />
       </button>
       <transition name="fade">
-        <header-menu v-show="isAddMenuShow" ref="addMenu" :items="addMenuItems" @click="isAddMenuShow=false" />
+        <header-menu v-show="isAddMenuShow" ref="addMenu" :items="isHouseEditable ? [...addMenuItems, ...ownerAddMenuItems] : [...addMenuItems]" @click="isAddMenuShow=false" />
       </transition>
     </div>
     <div class="header-content__menu-container">
@@ -22,10 +22,13 @@
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
 import Icon from "~/components/shared/Icon.vue"
+import { useUserStore } from "~/store/user"
 
 const groupsStore = useGroupsStore()
+const { id } = useUserStore()
 const { houses } = storeToRefs(groupsStore)
 const route = useRoute()
+const isHouseEditable = ref(groupsStore.uppperGroups.find(el => el.id === groupsStore.currentHome)?.groupCreatorId === id)
 const addMenuItems = [
   {
     icon: "aside/automation",
@@ -37,6 +40,8 @@ const addMenuItems = [
     name: "Добавить сценарий",
     url: '/scenarios/create',
   },
+]
+const ownerAddMenuItems = [
   {
     icon: "aside/room",
     name: "Добавить комнату",
@@ -51,8 +56,7 @@ const addMenuItems = [
     icon: "header/home",
     name: "Добавить дом",
     url: '/user/group/add/house',
-  },
-]
+  }]
 const settingsMenuItems = []
 const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)
@@ -60,6 +64,7 @@ const addMenu = ref(null)
 const settingsMenu = ref(null)
 const settingsMenuTrigger = ref(null)
 const addMenuTrigger = ref(null)
+
 onClickOutside(addMenu, (e) => {
   if (isAddMenuShow.value) {
     isAddMenuShow.value = false
@@ -74,6 +79,9 @@ onClickOutside(settingsMenu, (e) => {
 watch(() => route.fullPath, () => {
   isSettingsMenuShow.value = false
   isAddMenuShow.value = false
+})
+watch(() => groupsStore.currentHome, () => {
+  isHouseEditable.value = groupsStore.uppperGroups.find(el => el.id === groupsStore.currentHome)?.groupCreatorId === id
 })
 </script>
 

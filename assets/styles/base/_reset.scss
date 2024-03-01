@@ -14,9 +14,14 @@
 svg{
   transition: unset;
 }
+html {
+  background: $main-bg-gradient-end;
+}
+
 body{
   height: 100%;
   overflow: hidden;
+  background: $main-bg-gradient-end;
 }
 .layout {
   *{

@@ -19,10 +19,13 @@ export default function useIcoByGroupName (name:string):{name:TUiIconNames, code
       return { name: 'service/other/help', code: '\\' }
     case 'розетки':
       return { name: 'service/devices/power-socket-eu', code: '\\' }
+    case '3':
     case 'комната':
       return { name: 'aside/room', code: '\\' }
+    case '2':
     case 'этаж':
       return { name: 'aside/floor', code: '\\' }
+    case '1':
     case 'дом':
       return { name: 'aside/home', code: '\\' }
     default:

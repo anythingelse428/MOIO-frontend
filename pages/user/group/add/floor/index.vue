@@ -17,7 +17,7 @@
           <h2 class="add-group-available-devices__header">
             {{existingDevices?.length?
               'Доступные устройства':
-              'Устройства уже распределены по комнатам или не найдены'
+              'Устройства уже распределены по группам или не найдены'
             }}
           </h2>
           <div class="add-group-available-devices__list" v-if="existingDevices?.length>0">
@@ -138,7 +138,7 @@ const existingHouses = ref()
 const existingDevices = ref()
 const upperGroups = ref(groupStore.uppperGroups)
 existingHouses.value =  upperGroups.value.filter(el=>el.groupCreatorId === useUserStore().id)
-const selectData = ref(existingHouses.value.reduce((acc:{description:string,value:string}[], curr)=>[...acc,{description:curr.name,value:curr.id}],[]))
+const selectData = ref(existingHouses.value.reduce((acc:{description:string,value:string}[], curr:{name:string,id:string})=>[...acc,{description:curr.name,value:curr.id}],[]))
 const previewData = ref({
   name: name,
   devices: devices,
@@ -148,21 +148,21 @@ async function getRoomsByHomeId(){
   isLoading.value = true
   await groupStore.getAll(house.value)
   isLoading.value = false
-  existingRooms.value = groupStore.groups.filter(el=>el.typeId===3&&el.parentId===house.value).map(el=>{
+  existingRooms.value = groupStore.groups.filter(el => el.typeId===3 && el.parentId===house.value).map(el=>{
     return {
       id: el.id,
-      name: el.name,
+      name: el.name ?? '',
   }})
 }
 getRoomsByHomeId()
-function setItem (e:Event, target:any, data:{ id: string, name:string }) {
+function setItem (e:Event, target:{ id: string, name:string }[], data:{ id: string, name:string }) {
   const isChecked = (<HTMLInputElement>e.target)?.checked
-  const isSelected = target?.find(el=>el?.id === data.id)
+  const isSelected = target?.find(el => el?.id === data.id)
   if (isChecked && !isSelected){
     target?.push(data)
   }
   if (!isChecked && isSelected){
-    const idx = target.findIndex(el=>el.id === data.id)
+    const idx = target.findIndex(el => el.id === data.id)
     target?.splice(idx,1)
   }
 }
@@ -184,7 +184,7 @@ async function addGroup () {
 }
 watch(house, () => {
   getDevicesByGroupId()
-  selectData.value = existingHouses.value.reduce((acc:{description:string,value:string}[], curr)=>[...acc,{description:curr.name,value:curr.id}],[])
+  selectData.value = existingHouses.value.reduce((acc:{description:string,value:string}[], curr:{name:string,id:string})=>[...acc,{description:curr.name,value:curr.id}],[])
 })
 </script>
 <style lang="scss">

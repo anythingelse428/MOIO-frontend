@@ -18,6 +18,7 @@ const props = defineProps({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "assets/styles/components/loader-screen";
+@import "assets/styles/utils/loader-animation";
 </style>

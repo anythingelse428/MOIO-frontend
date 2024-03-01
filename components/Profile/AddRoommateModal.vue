@@ -76,11 +76,11 @@
 
 <script setup lang="ts">
 
-import { useGroupsStore } from "~/store/groups"
+import {useGroupsStore} from "~/store/groups"
 import CustomSelect from "~/components/shared/CustomSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
-import { useUserStore } from "~/store/user"
+import {useUserStore} from "~/store/user"
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)
@@ -128,11 +128,11 @@ async function getSubgroups () {
   selectDataGroups.value = await groupStore.getSubgroups(selectedHouse.value)
 }
 function selectGroups (e:Event, id:string) {
-  if (e.target?.checked) {
+  if ((<HTMLInputElement>e.target)?.checked) {
     groupIds.value.push(id)
-  } else {
-    groupIds.value = groupIds.value.filter(el => el !== id)
+    return
   }
+    groupIds.value = groupIds.value.filter(el => el !== id)
 }
 async function addRoommate () {
   if (groupIds.value.length === 0 && selectedHouse.value.length === 0) {
@@ -162,52 +162,5 @@ watch(groups, (newValue) => {
 
 <style lang="scss">
 @import "assets/styles/components/profile-add-roommate-modal";
-.add-roommate-modal__groups{
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  &-item {
-    @include action-item;
-    padding: 8px 22px ;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: $settings-color;
-    border-radius: 12px;
-    &-checkbox{
-      position: relative;
-      color: $settings-color;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 24px;
-      height: 24px;
-      input[type="checkbox"]{
-        position: absolute;
-        opacity: 0;
-        right: 0;
-        inset: 0;
-        z-index: 5;
-        cursor: pointer;
-        &:checked ~ .ui-icon {
-          background: $color-active;
-          border-color: $color-active;
-          svg {
-            opacity: 1;
-          }
-        }
-      }
-      .ui-icon{
-        width: 24px;
-        height: 24px;
-        background: $bg-primary;
-        border-radius: 3px;
-        border: 2px solid $bg-primary;
-        svg {
-          opacity: 0;
-        }
-      }
-    }
-  }
-}
+
 </style>

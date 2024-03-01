@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 import type { IGroupResponseItem } from "~/api/group/getAll"
 import apiGroupGetAll from "~/api/group/getAll"
 import apiGroupAddRoom from "~/api/group/addRoom"
-import { useCategoriesStore } from "~/store/categories"
 import type { IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 import apiGroupGetDevicesById from "~/api/group/getDevicesByGroupId"
 import apiGroupsGetUpperGroups from "~/api/group/getUpperGroups"
@@ -17,6 +16,8 @@ import apiGroupGetUserByGroupId from "~/api/group/getUsersByGroupId"
 import apiGroupRemoveUsers from "~/api/group/removeUsers"
 import apiGroupsGetSubgroups from "~/api/group/getSubgroups"
 import apiGroupCheckCode from "~/api/group/checkCode"
+import useIcoByGroupName from "~/composables/useIcoByGroupName"
+import type { AsideCategory } from "~/components/Aside/AsideCategory.vue"
 
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
@@ -31,34 +32,42 @@ export const useGroupsStore = defineStore('groups', {
     allGroups: state => state.groups,
     groupById: state => (id:string) => state.groups.find(el => el.id === id),
     group: state => state.currentGroup,
-    isEditable: (state) => {
+    formattedGroup: state => (typeId:number) => {
       const { id } = useUserStore()
-      return Boolean(state.uppperGroups?.find(el => el.id === state.currentHome && el.groupCreatorId === id)?.id === state.currentHome)
+      return state[typeId === 1 ? 'uppperGroups' : 'groups']
+        .reduce((acc:AsideCategory['categoryItems'], curr:AsideCategory['categoryItems'][0]) => {
+          if (curr.typeId === typeId) {
+            acc.push(
+              {
+                name: curr.name,
+                url: `/user/group/${curr.id}`,
+                icon: useIcoByGroupName(String(typeId))?.name,
+                id: curr.id,
+                isEditable: curr.groupCreatorId === id,
+                typeId: curr.typeId,
+                isActive: curr.id === state.currentHome,
+              },
+            )
+          }
+          return acc
+        }, [])
     },
-    floors (state) {
-      const categoriesStore = useCategoriesStore()
-      const isEditable = this.isEditable
-      // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 2), 'group', 'этаж', isEditable)
+    floors () {
+      return this.formattedGroup(2)
     },
-    rooms (state) {
-      const categoriesStore = useCategoriesStore()
-      const isEditable = this.isEditable
-      // @ts-ignore
-      return categoriesStore.allCategories(state.groups.filter(el => el.typeId === 3), 'group', 'комната', isEditable)
+    rooms () {
+      return this.formattedGroup(3)
     },
-    houses (state) {
-      const categoriesStore = useCategoriesStore()
-      const isEditable = this.isEditable
-      // @ts-ignore
-      return categoriesStore.allCategories(state.uppperGroups, 'group', 'дом', isEditable, state.currentHome)
+    houses () {
+      return this.formattedGroup(1)
     },
   },
   actions: {
     async getAll (groupId?:string) {
-      if (this.currentHome.length > 1 || (groupId && groupId?.length > 1)) {
+      const id = groupId?.length ? groupId : this.currentHome
+      if (id?.length > 0) {
         try {
-          const data = await apiGroupGetAll(this.currentHome.length > 1 ? this.currentHome : groupId)
+          const data = await apiGroupGetAll(id)
           if (data.length) {
             this.groups = data
           }
@@ -94,10 +103,8 @@ export const useGroupsStore = defineStore('groups', {
     async addRoom (name:string, typeId = 3, parentId?:string, devicesIds?:string[], groupIds?:string[]) {
       try {
         const { response } = await apiGroupAddRoom({ name, typeId, parentId, devicesIds, groupIds })
-        // console.log(response)
-        // console.log(name, groupIds)
         if (!response?.status) {
-          useNotification('info', 'Комната успешно добавлена')
+          useNotification('info', 'Группа успешно добавлена')
           setTimeout(() => {
             window.location.href = useRuntimeConfig().app.baseURL || '/'
           }, 1000)

@@ -1,16 +1,9 @@
-import type { IAllDevicesResponse } from "~/api/device/getAll"
+import type { ServiceProps } from "~/components/Service/TheService.vue"
 
 export interface IScenarioResponse {
-data:{
   id:string,
   name:string
-  devicesScenarios:{
-    deviceId:string,
-    name:string,
-    type:string,
-    capabilities:IAllDevicesResponse["capabilities"]
-  }[]
-}
+  devicesScenarios:ServiceProps[]
 }
 export default async function apiScenariosGetById (id:string):Promise<IScenarioResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {

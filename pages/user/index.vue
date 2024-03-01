@@ -92,39 +92,12 @@ onMounted(() => {
     }
     roommates.value = await groupStore.getUsersByGroupId(groupStore.currentHome)
     isLoading.value = false
-    roommates.value = roommates.value.filter(el => el.id !== groupStore.uppperGroups.find(el => el.id === groupStore.currentHome).groupCreatorId)
+    roommates.value = roommates.value.filter(el => el.id !== groupStore.uppperGroups.find(el => el.id === groupStore.currentHome)?.groupCreatorId)
   })
 })
 </script>
 
 <style lang="scss">
 @import "assets/styles/page/_user";
-.profile__sync-device{
-  display: block;
-  cursor: pointer;
-  margin-inline: auto;
-  margin-top: 52px;
-  padding: 8px 12px;
-  font-size: 25px;
-  font-weight: 600;
-  background: $color-active;
-  border-radius: 16px;
-  color: $color-accent;
-  border: 0;
-  @media screen and (max-width:768px) {
-    font-size: 21px;
-  }
-}
-.invited-house-section{
-  margin-top: 48px;
-  &__header{
-    text-align: center;
-  }
-  &__container{
-    margin-top: 28px;
-    display: flex;
-    flex-direction: column;
-    gap:12px;
-  }
-}
+
 </style>

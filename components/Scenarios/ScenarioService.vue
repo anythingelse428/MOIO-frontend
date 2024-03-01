@@ -90,16 +90,16 @@ const isDeleteModalShow = ref(false)
 const groupStore = useGroupsStore()
 
 onClickOutside(target, (event) => {
-  if (event.target?.classList?.value?.includes('modal__content')) {
+  if (event.target instanceof HTMLElement && event.target?.classList?.value?.includes('modal__content')) {
     isCapabilitiesShow.value = false
     isDeleteModalShow.value = false
   }
 })
 function handleLeftMouse () {
-  if (props.isPreview === true) {
+  if (props.isPreview) {
     emit('left-mouse-click', props)
   }
-  if (props.isPreview === false) {
+  if (!props.isPreview) {
     isCapabilitiesShow.value = true
   }
 }
@@ -125,9 +125,5 @@ onUnmounted(() => {
 
 <style lang="scss">
 @import "assets/styles/components/service-capabilities-modal";
-.--scenario{
-  .service-capabilities-modal__header{
-    top: -8px;
-  }
-}
+@import "assets/styles/components/scenario-service";
 </style>

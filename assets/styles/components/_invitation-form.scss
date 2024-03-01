@@ -1,0 +1,52 @@
+.profile-invitation{
+	width: min(400px,100%);
+	margin-inline: auto;
+	&__header{
+		@include capabilities-modal-header;
+		text-align: center;
+		margin-top: 40px;
+	}
+	&__form{
+		margin-top: 20px;
+		input[type="submit"]{
+			color: $color-accent;
+			background: $color-active;
+			font-size: 24px;
+			font-weight: 600;
+			padding: 3px 12px;
+			border-radius: 16px;
+			border: 0;
+			margin-inline: auto;
+			display: block;
+			margin-top: 32px;
+		}
+	}
+	&__label{
+		@include carousel-category-item;
+		text-align: center;
+		margin-inline: auto;
+	}
+	&__input-container{
+		display: flex;
+		gap:12px;
+		width: 100%;
+		margin-top: 36px;
+		position: relative;
+		button.blank{
+			color: $color-active;
+		}
+	}
+	&__input-group{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	&__input{
+		background: $settings-color;
+		border: 0;
+		border-radius: 12px;
+		padding: 8px 16px ;
+		@include tool-item;
+		width: calc(100% - 12px - 28px);
+	}
+}

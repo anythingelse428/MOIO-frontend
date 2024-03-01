@@ -8,7 +8,7 @@
       <label for="scenario-name">
         Введите название сценария
       </label>
-      <input v-model="roomName" type="text" placeholder="Название сценария">
+      <input v-model="scenarioName" type="text" placeholder="Название сценария" required>
     </div>
     <div class="scenarios-create__selected-list">
       <h2 class="scenarios-create__selected-list-header">
@@ -65,9 +65,11 @@
         <h2>Группа не найдена</h2>
       </div>
     </div>
-    <button class="scenarios-create__submit" @click="createScenario()">
-      Сохранить
-    </button>
+    <div class="scenarios-create__save">
+      <button class="scenarios-create__submit" @click="createScenario()">
+        Сохранить
+      </button>
+    </div>
   </div>
 </template>
 
@@ -99,12 +101,11 @@ isLoading.value = false
 const selectedDevice = ref<{ [key:string]: ServiceProps[] }>({})
 const capabilities = ref<{ [key: string]: ServiceProps['capabilities'][] }>({})
 const roomsName:{[key:string]:string} = {}
-const roomName = ref()
+const scenarioName = ref()
 const searchGroupInput = ref('')
 const flatGroupsArray = ref<IGroupResponseItem[]>([])
 const filteredGroups = computed(() => flatGroupsArray.value.filter(el => el.name?.toLowerCase().includes(searchGroupInput.value.toLowerCase())))
 function expandGroups (groups:IGroupResponseItem):IGroupResponseItem[] {
-  console.log(groups)
   if (groups?.devices?.length) {
     flatGroupsArray.value.push({ ...groups, inverseParent: [] })
   }
@@ -170,179 +171,21 @@ function getRoomsName (data:IGroupResponseItem) {
 getRoomsName(data.value)
 
 async function createScenario () {
+  if (!scenarioName.value.length) {
+    useNotification('error', 'Введите название сценария')
+    return
+  }
+  if (!Object.entries(capabilities.value).length) {
+    useNotification('error', 'Не выбраны устройства')
+    return
+  }
   isLoading.value = true
-  await useScenarioStore().createScenario({ name: roomName.value, devicesValueStates: capabilities.value })
+  await useScenarioStore().createScenario({ name: scenarioName.value, devicesValueStates: capabilities.value })
   isLoading.value = false
 }
 </script>
 
 <style lang="scss">
-.scenarios-create {
-  padding: 0 96px 100px;
-  @media screen and (max-width: 700px) {
-    padding: 0 20px 100px;
-  }
-  .group__header{
-    font-size: 25px;
-    font-weight: 400;
-    width: 100%;
-    text-align: center;
-  }
-  .group-list{
-    margin-top: 36px;
-    margin-inline: 0;
-    &.--child{
-      margin-inline: 0;
-    }
-    .subgroup-item__service-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap:28px;
-    }
-  }
-  .service{
-    width: calc(25% - 24px);
-    min-width: 192px;
-    padding: 14px 8px;
-    aspect-ratio: auto;
-    border-radius: 12px;
-    background: $settings-color;
-    border: 1px solid transparent;
-    &.--active {
-      box-shadow: 0px 0px 16px 0px $color-active;
-      -webkit-box-shadow: 0px 0px 16px 0px $color-active;
-      border: 1px solid $color-active;
-    }
-    &:not(.--active){
-      box-shadow: none;
-      -webkit-box-shadow: none;
-    }
-    .service-info{
-      display: flex;
-      .service-name{
-        margin-top: 0;
-        font-size: 16px;
-        font-weight: 700;
-        margin-left: 22px;
-      }
-      .service-ico-wrapper {
-        width: 26px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        margin: 0;
-        .ui-icon{
-          font-size: 28px!important;
-          position: relative;
-          inset: 0;
-        }
-      }
-    }
+@import "assets/styles/page/scenarios-create";
 
-  }
-  .scenarios-create__header {
-    font-size: 40px;
-    font-weight: 600;
-    color: $color-primary;
-    text-align: center;
-  }
-  &__search{
-    display: flex;
-    flex-direction: column;
-    gap:12px;
-    width: min(95%, 346px);
-    margin-inline: auto;
-    margin-top: 48px;
-    label{
-      font-size: 20px;
-      font-weight: 400;
-      color: $color-primary;
-      text-align: center;
-    }
-    input {
-      border-radius: 16px;
-      background: $settings-color;
-      padding: 8px 16px;
-      display: inline-block;
-      outline: none;
-      border: none;
-      font-size: 20px;
-      text-align: center;
-      color: $color-active;
-      &::placeholder{
-      color: $color-active;
-
-      }
-    }
-  }
-  &__selected-list {
-    display: flex;
-    flex-direction: column;
-    margin-top: 60px;
-    &-header{
-      width: 100%;
-      font-size: 24px;
-      font-weight: 400;
-      color: $color-primary;
-    }
-  }
-  &__selected-list-group{
-    display: flex;
-    flex-wrap: wrap;
-    padding-inline: 1.25em;
-    gap: 20px;
-    &-header {
-      font-size: 20px;
-      font-weight: 400;
-      color: $color-primary;
-      width: 100%;
-      margin-top: 16px;
-    }
-    &-devices{
-      display: flex;
-      flex-wrap: wrap;
-      gap:28px 30px;
-      padding-inline: 1em;
-      .ui-icon.--delete {
-        position: absolute;
-        bottom: 12px;
-        right: 16px;
-        font-size: 16px!important;
-        color: #D15151;
-      }
-    }
-  }
-  &__available{
-    &-header{
-      width: 100%;
-      font-size: 30px;
-      font-weight: 400;
-      text-align: center;
-      margin-top: 48px;
-    }
-    .scenarios-create__search{
-      margin-top: 24px;
-    }
-    &-list{
-      margin-top: 28px;
-      &.--empty{
-        text-align: center;
-      }
-    }
-  }
-  &__submit{
-    display: block;
-    width: fit-content;
-    margin-inline: auto;
-    font-size: 24px;
-    font-weight: 600;
-    color: $color-accent;
-    background: $color-active;
-    padding: 4px 14px;
-    border-radius: 16px;
-    margin-top: 180px;
-    border: 0;
-    cursor: pointer;
-  }
-}
 </style>

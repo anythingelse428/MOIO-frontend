@@ -1,15 +1,14 @@
 import fs from 'fs'
 import path from 'path'
-import { defineNuxtModule, addTemplate, createResolver, addTypeTemplate } from 'nuxt/kit'
+import { addTypeTemplate, createResolver, defineNuxtModule } from 'nuxt/kit'
 import { consola } from 'consola'
-import { TUiIconNames } from "../../.nuxt/types/ui-icon"
 
 export default defineNuxtModule({
   meta: {
     name: 'ui-icon',
   },
 
-  async setup () {
+  setup () {
     function* readAllFiles (dir: string): Generator<string> {
       const files = fs.readdirSync(dir, { withFileTypes: true })
       for (const file of files) {

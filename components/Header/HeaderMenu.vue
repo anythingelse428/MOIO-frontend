@@ -1,10 +1,10 @@
 <template>
   <div class="header-menu">
     <nuxt-link v-for="item in items" :key="item.icon+item.name+item.id" :to="item?.url||'/'">
-      <div :class="`header-menu__item ${item?.active?'--active':''}`">
+      <div :class="`header-menu__item ${item?.isActive?'--active':''}`">
         <icon :name="item.icon" size="28" />
         <span class="header-menu__item-title">{{ item.name }}</span>
-        <nuxt-link v-if="item.editable" :to="`/user/group/edit/house/${item.id}`" class="header-menu__item-edit">
+        <nuxt-link v-if="item.isEditable" :to="`/user/group/edit/house/${item.id}`" class="header-menu__item-edit">
           <icon name="pencil" :size="28" />
         </nuxt-link>
       </div>
@@ -18,12 +18,12 @@ import Icon from "~/components/shared/Icon.vue"
 
 export interface HeaderMenuProps {
   items:{
+    id:string
     icon:TUiIconNames,
     name:string,
     url?:string
-    active?:boolean
-    editable?:boolean
-    id:string
+    isActive?:boolean
+    isEditable?:boolean
   }[]
 }
 

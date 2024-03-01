@@ -3,6 +3,7 @@ import type { IGetAllResponseItem } from "~/api/category/getAll"
 import apiCategoryGetAll from "~/api/category/getAll"
 import apiCategoryGetDevicesById, { type IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 import useIcoByGroupName from "~/composables/useIcoByGroupName"
+import type { AsideCategory } from "~/components/Aside/AsideCategory.vue"
 
 export const useCategoriesStore = defineStore('categories', {
   state: () => ({
@@ -10,18 +11,17 @@ export const useCategoriesStore = defineStore('categories', {
     devicesInCategory: {} as IDevicesInCategory,
   }),
   getters: {
-    allCategories: state => (array = state.categories, urlPrefix = 'category', staticIcon?:string, editable = false, activeId = '-1') => {
-      return array.reduce((acc:{name:string, url:string, icon:string, id:any, editable?:boolean, active?:boolean, typeId?:number}[], curr, i) => {
-        acc[i] =
+    allCategories: state => (array = state.categories) => {
+      return array.reduce((
+        acc:AsideCategory['categoryItems'],
+        curr:AsideCategory['categoryItems'][0]) => {
+        acc.push(
           {
             name: curr.name,
-            url: `/user/${urlPrefix}/${curr.id}`,
-            icon: useIcoByGroupName(staticIcon || curr.name)?.name,
+            url: `/user/category/${curr.id}`,
+            icon: useIcoByGroupName(curr.name)?.name,
             id: curr.id,
-            editable,
-            active: curr.id === activeId,
-            typeId: curr?.typeId,
-          }
+          })
         return acc
       }, [])
     },

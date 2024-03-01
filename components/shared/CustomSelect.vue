@@ -32,7 +32,7 @@ const emit = defineEmits(['custom-select'])
 const selectCollapsed = ref(false)
 const currentValueDescriptionByValue = computed(() => {
   if (props.options && props.currentValue && props.currentValue?.length > 0 && props.options.length > 0) {
-    return props.options.find(el => el.value === props.currentValue).description
+    return props.options.find(el => el?.value === props?.currentValue)?.description
   }
   return ""
 })

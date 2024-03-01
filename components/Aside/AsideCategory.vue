@@ -11,7 +11,7 @@
         :title="item.name"
         :icon="item.icon"
         :url="item.url"
-        :editable="item?.editable"
+        :is-editable="item?.isEditable"
         :type-id="item?.typeId"
       />
     </div>
@@ -29,9 +29,9 @@ export type AsideCategory = {
         icon: TUiIconNames,
         name: string,
         url: string
-        editable?:boolean
+        isEditable?:boolean
         id?:number|string
-        typeId?:number|string
+        typeId?:number
       }[]
 }
 

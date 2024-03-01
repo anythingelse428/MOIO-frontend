@@ -43,7 +43,7 @@
             :curr-time="item.type==='time'?item.value as string:undefined"
             :editable="false"
             :idx="i+1"
-            @select-option="e=>addConditionInArr(item.id, e?.type, e.value)"
+            @select-option="e=>addCondition(item.id, e?.type, e.value)"
           />
           <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
             Удалить
@@ -57,7 +57,7 @@
             :sensors="sensors"
             :editable="true"
             :idx="i+oldConditions.length+1"
-            @select-option="e=>addConditionInArr(item.id, e?.type, e.value)"
+            @select-option="e=>addCondition(item.id, e?.type, e.value)"
           />
           <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
             Удалить
@@ -144,7 +144,7 @@ function deleteCondition (id:any) {
   }
   newConditions.value.splice(newConditions.value.findIndex(el => el.id === id), 1)
 }
-function addConditionInArr (id:string, type:'sensor'|'time', value:string) {
+function addCondition (id:string, type:'sensor'|'time', value:string) {
   const isConditionExist = newConditions.value.findIndex(el => el.id === id)
   if (isConditionExist > -1 && type === 'time') {
     newConditions.value[isConditionExist].value = value
@@ -172,6 +172,18 @@ function selectScenarios (id:string) {
 }
 const automationStore = useAutomationStore()
 async function create () {
+  if (!name.value.length) {
+    useNotification("error", "Введите название автоматизации")
+    return
+  }
+  if (!newConditions.value.length && removeCondition.value.length === oldConditions.value.length) {
+    useNotification("error", "Не выбрано условие активации")
+    return
+  }
+  if (!scenarios.value.length) {
+    useNotification("error", "Не выбран сценарий")
+    return
+  }
   isLoading.value = true
   const timeOffset = Date()?.match(/GMT.\d\d?\d\d/gm) as string[]
   const validTimeOffset = timeOffset[0].replace('GMT', '').substring(0, 3) + ':' + timeOffset[0].replace('GMT', '').substring(3)

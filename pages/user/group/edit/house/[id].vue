@@ -22,7 +22,7 @@
           <h2 class="add-group-available-devices__header">
             {{ existingDevices?.length?
               'Доступные устройства':
-              'Устройства уже распределены по комнатам или не найдены'
+              'Устройства уже распределены по группам или не найдены'
             }}
           </h2>
           <div class="add-group__preview-wrapper">
@@ -89,7 +89,7 @@ const name = ref('')
 const house = ref("")
 const devices = ref<{ id: string, name:string }[]>([])
 const users = ref<{id:string|number, name:string}[]>([])
-const usersForRemove = ref<{id:string, name:string}[]>([])
+const usersForRemove = ref<{id:number, name:string}[]>([])
 const existingDevices = ref<{id:string, name:string}[]>([])
 // const existingUsers = ref<IUsersByGroupResponse[]>()
 const groupStore = useGroupsStore()
@@ -122,10 +122,12 @@ getGroupData()
 async function getDevicesByGroupId (id:string, deviceRef:globalThis.Ref<any>) {
   deviceRef.value = []
   const devices = await groupStore.getDevicesByGroupId(id)
-  for (const [key, val] of Object.entries(devices)) {
-    deviceRef.value.push(...val.map((el) => {
-      return { id: el.id, name: el.name }
-    }))
+  if (devices) {
+    for (const val of Object.values(devices)) {
+      deviceRef.value.push(...val.map((el) => {
+        return { id: el.id, name: el.name }
+      }))
+    }
   }
 }
 async function editGroup () {

@@ -10,12 +10,12 @@
         <input id="group" v-model="name"  type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
       </div>
       <div v-if="existingHouses?.length" class="add-group__input-group">
-        <label for="house" class="add-group__label">Выберите дом </label>
+        <label for="house" class="add-group__label">Выберите дом</label>
         <custom-select :options="selectData" :current-value="house" @custom-select="(e)=>house = e" select-name="Выберите дом"></custom-select>
       </div>
-      <div v-if="existingFloors?.length>0" class="add-group__input-group">
+      <div v-if="floors?.length>0" class="add-group__input-group">
         <label for="floor" class="add-group__label">Выберите этаж</label>
-        <div v-for="floors in existingFloors" :key="floors.id" class="add-group__input-wrapper">
+        <div v-for="floors in floors" :key="floors.id" class="add-group__input-wrapper">
           <span id="floor" @click="floor = floors.id" role="radio" class="add-group__input"/>
           <span class="floor-label">{{ floors.name }}</span>
         </div>
@@ -24,7 +24,7 @@
         <h2 class="add-group-available-devices__header">
           {{existingDevices?.length?
           'Доступные устройства':
-            'Устройства уже распределены по комнатам или не найдены'
+            'Устройства уже распределены по группам или не найдены'
           }}
         </h2>
         <div class="add-group-available-devices__list" v-if="existingDevices?.length>0">
@@ -66,7 +66,6 @@
                   size="20"
                   @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"
               />
-
             </div>
           </div>
           <div class="add-group__preview-section-value" v-else>
@@ -86,7 +85,7 @@
 <script setup lang="ts">
 import {useGroupsStore} from "~/store/groups"
 import {useUserStore} from "~/store/user"
-import CustomSelect from "~/components/shared/CustomSelect.vue"
+import CustomSelect, {type ISelectProps} from "~/components/shared/CustomSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import Icon from "~/components/shared/Icon.vue"
 
@@ -97,25 +96,26 @@ const name = ref('')
 const floor = ref()
 const house = ref(groupStore.currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
-const existingFloors = ref(floors)
+
 const existingHouses = ref()
 const existingDevices = ref()
-existingFloors.value = floors
 existingHouses.value = uppperGroups.value.filter(el=>el.groupCreatorId === useUserStore().id)
-let previewData = ref({
+
+const previewData = ref({
   name: name,
   devices: devices
 })
-const selectData = ref(existingHouses.value.reduce((acc:{description:string,value:string}[], curr)=>[...acc,{description:curr.name,value:curr.id}],[]))
 
-function setItem (e:Event, target:any, data:{ id: string, name:string }) {
-  const isChecked = (<HTMLInputElement>event.target)?.checked
-  const isSelected = target?.find(el=>el?.id === data.id)
+const selectData = ref<ISelectProps['options']>(existingHouses.value.reduce((acc:{description:string,value:string}[], curr:{name:string,id:string})=>[...acc,{description:curr.name,value:curr.id}],[]))
+
+function setItem (e:Event, target: { id:string,name:string }[], data:{ id: string, name:string }) {
+  const isChecked = (<HTMLInputElement>e.target)?.checked
+  const isSelected = target?.find(el => el?.id === data.id)
   if (isChecked && !isSelected){
     target?.push(data)
   }
   if (!isChecked && isSelected){
-    const idx = target.findIndex(el=>el.id === data.id)
+    const idx = target.findIndex(el => el.id === data.id)
     target?.splice(idx,1)
   }
 }
@@ -139,7 +139,7 @@ async function addGroup () {
 }
 watch(house, () => {
   getDevicesByGroupId()
-  selectData.value = existingHouses.value.reduce((acc:{description:string,value:string}[], curr)=>[...acc,{description:curr.name,value:curr.id}],[])
+  selectData.value = existingHouses.value.reduce((acc:{description:string,value:string}[], curr:{name:string,id:string})=>[...acc,{description:curr.name,value:curr.id}],[])
 })
 </script>
 <style lang="scss">

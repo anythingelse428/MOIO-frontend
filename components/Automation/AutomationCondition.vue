@@ -51,84 +51,26 @@ export interface AutomationConditionProps {
   }
   editable?:boolean
 }
-const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`, currSensor: { id: '', name: '', type: '' }, editable: true })
+const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`, currSensor: undefined, editable: true })
 const emit = defineEmits(['select-option'])
 const time = computed({
   get () {
-    if (props.currTime.includes('2077-01-24T')) {
-      return props.currTime.replace('2077-01-24T', '').replace(/.\d\d?\d\d/, '')
+    const timezoneOffsetRegex = /(\+|-)?(\d{2}):(\d{2})/
+    const match = props.currTime.replace('2077-01-24T', '').match(timezoneOffsetRegex)
+    if (match) {
+      return match[0]
     }
-    return props.currTime
+    return props.currTime.replace('2077-01-24T', '')
   },
-  set (val) {
-    emit('select-option', { type: 'time', value: val })
+  set (value) {
+    emit('select-option', { type: 'time', value })
   },
 })
-
+onMounted(() => {
+  emit('select-option', { type: 'time', value: props.currTime })
+})
 </script>
 
 <style lang="scss">
-.automation-condition {
-  margin-top: 32px;
-  &__header{
-    font-size: 24px;
-    font-weight: 600;
-  }
-  &__description{
-    margin-top: 24px;
-  }
-  &__value{
-    margin-top: 20px;
-    width: 212px;
-    border-radius: 16px;
-    border: 1px solid $color-active;
-    padding: 20px 24px;
-    input[type="time"]{
-      background: $color-active;
-      border-radius: 16px;
-      padding: 10px 8px;
-      color: $color-accent;
-      border: 0;
-    }
-  }
-  &__sensors{
-    display: flex;
-    gap:28px;
-    flex-wrap: wrap;
-  }
-  &__sensor{
-    background: $settings-color;
-    margin-top: 20px;
-    border-radius: 12px;
-    width: max(192px, calc(25% - 28px));
-    padding: 8px 12px;
-    display: flex;
-    min-height: 76px;
-    gap: 14px;
-    position: relative;
-    input[type="radio"] {
-      cursor: pointer;
-      position: absolute;
-      inset: 0;
-      opacity: 0.5;
-      z-index: 10;
-    }
-    .mask {
-      position: absolute;
-      inset: 0;
-      border-radius: 12px;
-      border: 1px solid transparent;
-      z-index: 0;
-      &.--active{
-        border: 1px solid $color-active;
-        box-shadow: 0px 0px 16px 0px $color-active;
-        -webkit-box-shadow: 0px 0px 16px 0px $color-active;
-      }
-    }
-    .mdi {
-      margin: auto 0;
-      font-size: 36px;
-    }
-  }
-}
+@import "assets/styles/components/automation-condition";
 </style>

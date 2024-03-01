@@ -14,14 +14,9 @@
       <h2 class="scenarios-create__selected-list-header">
         Выбранные устройства
       </h2>
-      <!--        v-for="groupId in Object.keys(selectedDevice)"-->
-      <!--        :key="groupId"-->
       <div
         class="scenarios-create__selected-list-group"
       >
-        <!--        <h3 class="scenarios-create__selected-list-group-header">-->
-        <!--          {{ roomsName[groupId] }}-->
-        <!--        </h3>-->
         <div class="scenarios-create__selected-list-group-devices">
           <scenario-service
             v-for="service in selectedDevice"
@@ -85,6 +80,7 @@ import type { IScenarioUpdateProps } from "~/api/scenarios/update"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 export interface ICapability {
+  deviceId: string;
   chanel:string
   id:string
   deviceType:null | string
@@ -179,8 +175,8 @@ async function getData () {
   isLoading.value = true
   const response = await scenarioStore.getById(router.params.id as string)
   isLoading.value = false
-  selectedDevice.value = response?.devicesScenarios
-  scenarioName.value = response?.name
+  selectedDevice.value = response?.devicesScenarios ?? []
+  scenarioName.value = response?.name as string
   selectedDevice.value?.forEach((el) => {
     toggleSelected(el.id, data.value)
     if (capabilities.value[el.id]) {
@@ -192,6 +188,14 @@ async function getData () {
 }
 getData()
 async function updateScenario () {
+  if (!scenarioName.value.length) {
+    useNotification("error", "Введите название сценария")
+    return
+  }
+  if (!Object.entries(capabilities.value).length) {
+    useNotification("error", "Не выбрано ни одного устройства")
+    return
+  }
   isLoading.value = true
   const updateData:IScenarioUpdateProps = {
     id: router.params.id as string,
@@ -209,180 +213,5 @@ async function deleteScenario () {
 </script>
 
 <style lang="scss">
-.scenarios-create {
-  padding: 0 96px 100px;
-  @media screen and (max-width: 700px) {
-    padding: 0 20px 100px;
-  }
-  .group__header{
-    font-size: 25px;
-    font-weight: 400;
-    width: 100%;
-    text-align: center;
-  }
-  .group-list{
-    margin-top: 36px;
-    margin-inline: 0;
-    &.--child{
-      margin-left: 0;
-    }
-    .subgroup-item__service-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap:28px;
-      justify-content: center;
-    }
-  }
-  .service{
-    width: calc(25% - 22px);
-    min-width: 200px;
-    padding: 14px 8px;
-    aspect-ratio: auto;
-    border-radius: 12px;
-    background: $settings-color;
-    border: 1px solid transparent;
-    &.--active {
-      box-shadow: 0px 0px 16px 0px $color-active;
-      -webkit-box-shadow: 0px 0px 16px 0px $color-active;
-      border: 1px solid $color-active;
-    }
-    &:not(.--active){
-      box-shadow: none;
-      -webkit-box-shadow: none;
-    }
-    .service-info{
-      display: flex;
-      .service-name{
-        margin-top: 0;
-        font-size: 16px;
-        font-weight: 700;
-        margin-left: 22px;
-      }
-      .service-ico-wrapper {
-        width: 26px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        margin: 0;
-        .mdi{
-          font-size: 28px;
-        }
-      }
-    }
-    .ui-icon.--delete {
-      position: absolute;
-      bottom: 12px;
-      right: 16px;
-      font-size: 16px!important;
-      color: #D15151;
-    }
-  }
-  .scenarios-create__header{
-    font-size: 40px;
-    font-weight: 600;
-    color: $color-primary;
-    text-align: center;
-  }
-  &__search{
-    display: flex;
-    flex-direction: column;
-    gap:12px;
-    width: min(95%, 346px);
-    margin-inline: auto;
-    margin-top: 48px;
-    label{
-      font-size: 20px;
-      font-weight: 400;
-      color: $color-primary;
-      text-align: center;
-    }
-    input {
-      border-radius: 16px;
-      background: $settings-color;
-      padding: 8px 16px;
-      display: inline-block;
-      outline: none;
-      border: none;
-      font-size: 20px;
-      text-align: center;
-      color: $color-active;
-      &::placeholder{
-        color: $color-active;
-
-      }
-    }
-  }
-  &__selected-list {
-    display: flex;
-    flex-direction: column;
-    margin-top: 60px;
-    &-header{
-      width: 100%;
-      font-size: 24px;
-      font-weight: 400;
-      color: $color-primary;
-    }
-  }
-  &__selected-list-group{
-    display: flex;
-    flex-wrap: wrap;
-    padding-inline: 1.25em;
-    gap: 20px;
-    &-header {
-      font-size: 20px;
-      font-weight: 400;
-      color: $color-primary;
-      width: 100%;
-      margin-top: 16px;
-    }
-    &-devices{
-      display: flex;
-      flex-wrap: wrap;
-      gap:28px 30px;
-      padding-inline: 1em;
-      margin-top: 24px;
-    }
-  }
-  &__available{
-    &-header{
-      width: 100%;
-      font-size: 30px;
-      font-weight: 400;
-      text-align: center;
-      margin-top: 48px;
-    }
-    .scenarios-create__search{
-      margin-top: 24px;
-    }
-    &-list{
-      margin-top: 28px;
-      &.--empty{
-        text-align: center;
-      }
-    }
-  }
-  &__save{
-    margin-top: 180px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap:32px;
-    .scenarios-create__submit{
-      display: block;
-      width: fit-content;
-      font-size: 24px;
-      font-weight: 600;
-      color: $color-accent;
-      background: $color-active;
-      padding: 4px 14px;
-      border-radius: 16px;
-      border: 0;
-      cursor: pointer;
-      &.--delete{
-        background: #D15151;
-      }
-    }
-  }
-
-}
+@import "assets/styles/page/scenarios-create";
 </style>

@@ -10,7 +10,7 @@
           <div class="automation__param-label">
             Название автоматизации
           </div>
-          <input v-model="name" class="automation__param-input" type="text" autocomplete="false">
+          <input v-model="name" class="automation__param-input" type="text" autocomplete="false" required>
         </div>
       </div>
       <div class="automation__conditions-container">
@@ -33,11 +33,11 @@
 
         <the-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
-            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{acceptedConditions.push({type:e,id:acceptedConditions.length+1}); showConditionModal = false}" />
+            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{conditions.push({type:e,id:conditions.length+1}); showConditionModal = false}" />
           </template>
         </the-modal>
-        <div v-for="item in acceptedConditions" :key="item.id" class="automation__conditions">
-          <automation-condition :type="item.type" :sensors="sensors" :curr-sensor="{id: item?.value, name:'', type:'sensor'}" :idx="item.id" @select-option="e=>addConditionInArr(item.id, e?.type, e.value)" />
+        <div v-for="item in conditions" :key="item.id" class="automation__conditions">
+          <automation-condition :type="item.type" :curr-time="item.value?.replace('2077-01-24T', '').replace(/^\+(\d{2})(:?\d{2})?$/, '')" :sensors="sensors" :curr-sensor="item.type === 'sensor' ? {id: item?.value, name:'', type:'sensor'} : undefined" :idx="item.id" @select-option="e=>addCondition(item.id, e?.type, e.value)" />
           <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
             Удалить
           </button>
@@ -74,40 +74,44 @@ import type { ServiceProps } from "~/components/Service/TheService.vue"
 const isLoading = ref(false)
 const runByAllConditions = ref(true)
 const showConditionModal = ref(false)
-const acceptedConditions = ref<{id:number, type:'sensor'|'time', value:string}[]>([])
+const conditions = ref<{id:number, type:'sensor'|'time', value:string}[]>([])
 const groupStore = useGroupsStore()
 const scenarios = ref<string[]>([])
 const name = ref('')
 const sensors = ref<ServiceProps[]>([])
 const existingScenarios = await useScenarioStore().getAll()
 function deleteCondition (id:number) {
-  acceptedConditions.value.splice(
-    acceptedConditions.value.findIndex(el => el.id === id),
+  conditions.value.splice(
+    conditions.value.findIndex(el => el.id === id),
     1,
   )
 }
-function addConditionInArr (id:number, type:'sensor'|'time', value:string) {
-  const isConditionExist = acceptedConditions.value.findIndex(el => el.id === id)
+function addCondition (id:number, type:'sensor'|'time', value:string) {
+  const isConditionExist = conditions.value.findIndex(el => el.id === id)
   const timeOffset = Date()?.match(/GMT.\d\d?\d\d/gm) as string[]
   const validTimeOffset = timeOffset[0].replace('GMT', '').substring(0, 3) + ':' + timeOffset[0].replace('GMT', '').substring(3)
-  if (isConditionExist > -1 && type === 'time') {
-    acceptedConditions.value[isConditionExist].value = `2077-01-24T${value}:00${validTimeOffset}`
-    return
-  }
-  if (isConditionExist > -1 && type === 'sensor') {
-    const elInValueExist = acceptedConditions.value[isConditionExist].value?.includes(value)
-    if (elInValueExist) {
-      acceptedConditions.value[isConditionExist].value = ''
+  if (isConditionExist > -1) {
+    if (type === 'time') {
+      conditions.value[isConditionExist].value = `2077-01-24T${value}:00${validTimeOffset}`
       return
     }
-    acceptedConditions.value[isConditionExist].value = value
-    return
+    if (type === 'sensor') {
+      const elInValueExist = conditions.value[isConditionExist].value?.includes(value)
+      if (elInValueExist) {
+        conditions.value[isConditionExist].value = ''
+        return
+      }
+      conditions.value[isConditionExist].value = value
+      return
+    }
   }
-  if (isConditionExist === -1 && type === "time") {
-    acceptedConditions.value.push({ id, type, value: `2077-01-24T${value}:00${validTimeOffset}` })
-  }
-  if (isConditionExist === -1 && type === "sensor") {
-    acceptedConditions.value.push({ id, type, value })
+  if (isConditionExist === -1) {
+    if (type === 'time') {
+      conditions.value.push({ id, type, value: `2077-01-24T${value}:00${validTimeOffset}` })
+    }
+    if (type === 'sensor') {
+      conditions.value.push({ id, type, value })
+    }
   }
 }
 
@@ -134,11 +138,23 @@ function selectScenarios (id:string) {
 }
 const automationStore = useAutomationStore()
 async function create () {
+  if (!name.value.length) {
+    useNotification("error", "Введите название автоматизации")
+    return
+  }
+  if (!conditions.value.length) {
+    useNotification("error", "Не выбрано условие активации")
+    return
+  }
+  if (!scenarios.value.length) {
+    useNotification("error", "Не выбран сценарий")
+    return
+  }
   isLoading.value = true
   const automationData:IAutomationCreateProps = {
     name: name.value,
     code: 'string',
-    value: acceptedConditions.value.map(el => el.value),
+    value: conditions.value.map(el => el.value),
     scenariosOrder: scenarios.value.map((el, id) => {
       return {
         scenarioId: el,
