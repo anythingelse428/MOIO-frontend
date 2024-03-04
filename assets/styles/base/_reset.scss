@@ -42,9 +42,10 @@ body{
 .Toastify__toast-body>div:last-child {
   word-break: break-word;
 }
-div,h1,h2,h3,span,label,p,i,main,section,header,aside,nav{
+a,div,h1,h2,h3,span,label,p,i,main,section,header,aside,nav{
   transition: all .3s;
   word-break: break-word;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button.blank{

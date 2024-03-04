@@ -146,19 +146,23 @@ function deleteCondition (id:any) {
 }
 function addCondition (id:string, type:'sensor'|'time', value:string) {
   const isConditionExist = newConditions.value.findIndex(el => el.id === id)
-  if (isConditionExist > -1 && type === 'time') {
-    newConditions.value[isConditionExist].value = value
-    return
+  if (isConditionExist > -1) {
+    if (type === 'time') {
+      newConditions.value[isConditionExist].value = value
+      return
+    }
+    if (type === 'sensor') {
+      newConditions.value[isConditionExist].value = value
+      return
+    }
   }
-  if (isConditionExist > -1 && type === 'sensor') {
-    newConditions.value[isConditionExist].value = value
-    return
-  }
-  if (isConditionExist === -1 && type === "time") {
-    newConditions.value.push({ id, type, value })
-  }
-  if (isConditionExist === -1 && type === "sensor") {
-    newConditions.value.push({ id, type, value })
+  if (isConditionExist === -1) {
+    if (type === "time") {
+      newConditions.value.push({ id, type, value })
+    }
+    if (type === "sensor") {
+      newConditions.value.push({ id, type, value })
+    }
   }
 }
 
@@ -217,7 +221,6 @@ async function getData () {
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
   runByAllConditions.value = response.allConditions
-  // console.log(response.triggers)
   response.triggers.time.forEach((el) => {
     const time = new Date(`7/07/2077 ${el.time} UTC`)
     const hours = String(time.getHours()).length === 1 ? `0${time.getHours()}` : time.getHours()
