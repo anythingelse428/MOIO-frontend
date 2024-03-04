@@ -153,7 +153,6 @@ async function create () {
   isLoading.value = true
   const automationData:IAutomationCreateProps = {
     name: name.value,
-    code: 'string',
     value: conditions.value.map(el => el.value),
     scenariosOrder: scenarios.value.map((el, id) => {
       return {

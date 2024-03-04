@@ -1,8 +1,5 @@
 <template>
   <div class="auth">
-    <button @click="testFgPrint()">
-      test fgprint
-    </button>
     <loader-screen :is-loading="isLoading" />
     <h1 class="auth__header">
       Регистрация
@@ -111,36 +108,7 @@ async function register () {
     isLoading.value = false
   }
 }
-async function testFgPrint () {
-  const credential = await navigator.credentials.create({
-    publicKey: {
-      challenge: new Uint8Array([117, 61, 252, 231, 191, 241]),
-      rp: { id: "localhost", name: "MOIO" },
-      user: {
-        id: new Uint8Array([79, 252, 83, 72, 214, 7, 89, 26]),
-        name: "jamiedoe",
-        displayName: "Jamie Doe",
-      },
-      pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
-    },
-  })
-  console.log(credential)
-  testFgPrintGet()
-}
-async function testFgPrintGet () {
-  const credential = await navigator.credentials.get({
-    publicKey: {
-      challenge: new Uint8Array([139, 66, 181, 87, 7, 203]),
-      rpId: "localhost",
-      allowCredentials: [{
-        type: "public-key",
-        id: new Uint8Array([64, 66, 25, 78, 168, 226, 174]),
-      }],
-      userVerification: "required",
-    },
-  })
-  console.log(credential)
-}
+
 </script>
 
 <style lang="scss">

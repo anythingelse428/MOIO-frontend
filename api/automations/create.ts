@@ -1,6 +1,5 @@
 export interface IAutomationCreateProps {
   name: string,
-  code: string,
   value: string[]
   scenariosOrder: {
      scenarioId: string,

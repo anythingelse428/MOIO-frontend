@@ -67,7 +67,7 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
     }
   } catch (e) {
     config.public.APP_DEBUG && consola.error('[useAsyncQuery]: Catch', e)
-    config.public.APP_DEBUG && useNotification('error', `Произошла ошибка при обработке запроса ${e?.config.url}`)
+    config.public.APP_DEBUG && useNotification('error', `Произошла ошибка при обработке запроса ${e?.config.url as unknown}`)
     if (e?.response?.status === 400) {
       useNotification('error', e.response.request.response)
     }

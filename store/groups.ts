@@ -32,25 +32,27 @@ export const useGroupsStore = defineStore('groups', {
     allGroups: state => state.groups,
     groupById: state => (id:string) => state.groups.find(el => el.id === id),
     group: state => state.currentGroup,
-    formattedGroup: state => (typeId:number) => {
-      const { id } = useUserStore()
-      return state[typeId === 1 ? 'uppperGroups' : 'groups']
-        .reduce((acc:AsideCategory['categoryItems'], curr:AsideCategory['categoryItems'][0]) => {
-          if (curr.typeId === typeId) {
-            acc.push(
-              {
-                name: curr.name,
-                url: `/user/group/${curr.id}`,
-                icon: useIcoByGroupName(String(typeId))?.name,
-                id: curr.id,
-                isEditable: curr.groupCreatorId === id,
-                typeId: curr.typeId,
-                isActive: curr.id === state.currentHome,
-              },
-            )
-          }
-          return acc
-        }, [])
+    formattedGroup: (state) => {
+      return (typeId:number) => {
+        const { id } = useUserStore()
+        return state[typeId === 1 ? 'uppperGroups' : 'groups']
+          .reduce((acc:AsideCategory['categoryItems'], curr:AsideCategory['categoryItems'][0]) => {
+            if (curr.typeId === typeId) {
+              acc.push(
+                {
+                  name: curr.name,
+                  url: `/user/group/${curr.id}`,
+                  icon: useIcoByGroupName(String(typeId))?.name,
+                  id: curr.id,
+                  isEditable: curr.groupCreatorId === id,
+                  typeId: curr.typeId,
+                  isActive: curr.id === state.currentHome,
+                },
+              )
+            }
+            return acc
+          }, [])
+      }
     },
     floors () {
       return this.formattedGroup(2)
