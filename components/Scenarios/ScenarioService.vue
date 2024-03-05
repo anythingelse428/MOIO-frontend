@@ -1,6 +1,6 @@
 <template>
-  <div ref="service" :class="`service --scenario ${selected&&'--active'}`" role="button" @mousedown.left="handleLeftMouse()">
-    <div class="service-info">
+  <div ref="service" :class="`service --scenario ${selected&&'--active'}`" role="button">
+    <div class="service-info" @mousedown.left="handleLeftMouse()">
       <div class="service-ico-wrapper">
         <icon :name="ico" size="30" />
       </div>
@@ -60,7 +60,7 @@
       color="#D15151"
       size="20"
       class="--delete"
-      @click="emit('left-mouse-click',props)"
+      @click.prevent="emit('left-mouse-click',props)"
     />
   </div>
 </template>
