@@ -1,3 +1,4 @@
+import { type AxiosError } from "axios"
 
 export interface IScenarioUpdateProps {
   id:string,
@@ -19,8 +20,8 @@ export default async function apiScenariosUpdate (props:IScenarioUpdateProps) {
         useNotification('info', 'Сценарий успешно обновлен')
         return response
       }
-    } catch {
-      useNotification('error', 'Произошла ошибка при изменении сценария')
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при изменении сценария')
     }
   })
 }

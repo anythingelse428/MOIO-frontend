@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios"
 
 export interface IAddScenario {
   name: string,
@@ -22,9 +23,10 @@ export default async function apiScenariosAdd (props:IAddScenario) {
       const response = await axios.post(path + 'v1/scenarios/create', props)
       if (response.status === 200) {
         useNotification('info', "Сценарий успешно добавлен")
+        return response
       }
-    } catch {
-      useNotification('error', "Произошла ошибка при создании сценария")
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка при создании сценария')
     }
   })
 }
