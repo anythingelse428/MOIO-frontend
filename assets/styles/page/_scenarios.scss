@@ -18,23 +18,30 @@
 			flex-wrap: wrap;
 			gap:48px;
 			&-item{
-				display: block;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
 				background: $settings-color;
 				padding: 20px;
 				position: relative;
 				font-size: 20px;
 				font-weight: 600;
-				height: 120px;
+				min-height: 120px;
 				width: calc(50% - 40px);
 				min-width: min(300px, 100%);
 				margin-inline: auto;
 				border-radius: 12px;
 				cursor: pointer;
+				@media screen and (max-width: 1024px){
+					width: 100%;
+				}
+				&-edit{
+					display: flex;
+					flex-direction: row;
+					justify-content: flex-end;
+				}
 				.ui-icon {
-					position: absolute;
 					color: $color-active!important;
-					right: 24px;
-					bottom: 20px;
 					font-size: 28px!important;
 				}
 			}

@@ -24,6 +24,8 @@ const code = ref('')
 const groupStore = useGroupsStore()
 async function checkCode () {
   await groupStore.checkCode(code.value)
+  await groupStore.getAll()
+  await groupStore.getHouses()
 }
 </script>
 

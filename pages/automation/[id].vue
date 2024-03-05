@@ -4,7 +4,7 @@
     <h1 class="automation__header">
       Настройка автоматизации
     </h1>
-    <form class="automation__params" method="post" @submit.prevent="create()">
+    <form class="automation__params" method="post" @submit.prevent="update()">
       <div class="automation__params-main">
         <div class="automation__param">
           <div class="automation__param-label">
@@ -43,7 +43,6 @@
             :curr-time="item.type==='time'?item.value as string:undefined"
             :editable="false"
             :idx="i+1"
-            @select-option="e=>addCondition(item.id, e?.type, e.value)"
           />
           <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
             Удалить
@@ -175,7 +174,7 @@ function selectScenarios (id:string) {
   scenarios.value.push(id)
 }
 const automationStore = useAutomationStore()
-async function create () {
+async function update () {
   if (!name.value.length) {
     useNotification("error", "Введите название автоматизации")
     return
@@ -218,6 +217,9 @@ async function getData () {
   isLoading.value = true
   const response = await automationStore.getById(id as string)
   isLoading.value = false
+  if (!response?.id?.length || !response?.name?.length) {
+    window.history.back()
+  }
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
   runByAllConditions.value = response.allConditions

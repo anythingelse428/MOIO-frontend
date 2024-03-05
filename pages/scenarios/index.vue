@@ -10,7 +10,9 @@
       </h2>
       <div class="scenarios-available__list">
         <div v-for="scenario in scenarios" :key="scenario.id" class="scenarios-available__list-item" @click="executeScenario(scenario.id)">
-          {{ scenario.name }}
+          <div class="scenarios-available__list-item-name">
+            {{ scenario.name }}
+          </div>
           <div class="scenarios-available__list-item-edit">
             <icon name="pencil" role="link" @click.stop="redirect(`scenarios/edit/${scenario.id}`)" />
           </div>

@@ -12,6 +12,14 @@ export interface IAutomationUpdateProps {
 
 export default async function apiAutomationsUpdate (props:IAutomationUpdateProps) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.put(path + '/v1/automations/update', props)
+    try {
+      const response = await axios.put(path + '/v1/automations/update', props)
+      if (response.status === 200) {
+        useNotification('info', 'Автоматизация обновлена')
+      }
+      return response
+    } catch {
+      console.log('Ошибка редактирования автоматизации')
+    }
   })
 }

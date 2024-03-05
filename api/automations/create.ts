@@ -10,6 +10,14 @@ export interface IAutomationCreateProps {
 
 export default async function apiAutomationsCreate (props:IAutomationCreateProps) {
   return await useAsyncQuery(async ({ axios, path }) => {
-    return await axios.post(path + '/v1/automations/create', props)
+    try {
+      const response = await axios.post(path + '/v1/automations/create', props)
+      if (response.status === 200) {
+        useNotification('info', 'Автоматизация успешно создана')
+      }
+      return response
+    } catch {
+
+    }
   })
 }
