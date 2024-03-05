@@ -64,7 +64,7 @@
         </div>
       </div>
 
-      <button class="automation__add-condition" @click.prevent="showConditionModal = true">
+      <button class="automation__add-condition" @click.prevent="setConditionalModal()">
         Добавить условие
       </button>
       <div class="scenarios">
@@ -116,6 +116,13 @@ const runByAllConditions = ref(true)
 const showConditionModal = ref(false)
 const sensors = ref<{id:string, name:string, type:string}[]>([])
 
+function setConditionalModal () {
+  if (sensors.value.length > 0) {
+    showConditionModal.value = true
+    return
+  }
+  newConditions.value.push({ type: 'time', id: oldConditions.value.length + newConditions.value.length + 1 })
+}
 
 function selectOnlySensors (group:IGroupResponseItem, arr:ServiceProps[] = []) {
   arr.push(...group.devices.filter(el => el.id.includes('_sen')))

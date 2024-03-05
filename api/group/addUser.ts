@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
 export default async function apiGroupAddUser (usersLogins:string[], groupsIds:string[]) {
@@ -11,8 +12,8 @@ export default async function apiGroupAddUser (usersLogins:string[], groupsIds:s
         useNotification('info', 'Пользователям был отправлен пригласительный код')
         return response
       }
-    } catch {
-      useNotification('error', 'Произошла ошибка')
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка, проверьте введенные данные')
     }
   })
 }

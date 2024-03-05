@@ -30,24 +30,14 @@ export const useCategoriesStore = defineStore('categories', {
   },
   actions: {
     async getAll () {
-      try {
-        const data = await apiCategoryGetAll()
-        if (data.length) {
-          this.categories = data
-        }
-      } catch (e) {
-        useNotification('error', 'Что-то пошло не так с получением категорий')
+      const data = await apiCategoryGetAll()
+      if (data.length) {
+        this.categories = data
       }
     },
     async getDevicesByCategoryId (id:number, homeId:string) {
-      try {
-        this.devicesInCategory = {}
-        const data = await apiCategoryGetDevicesById(id, homeId)
-        // console.log('dataFrom GetDevicesByCategoryAndGroup', data)
-        this.devicesInCategory = data
-      } catch (e) {
-        useNotification('error', 'Что-то пошло не так с получением категории')
-      }
+      this.devicesInCategory = {}
+      this.devicesInCategory = await apiCategoryGetDevicesById(id, homeId)
     },
   },
 })

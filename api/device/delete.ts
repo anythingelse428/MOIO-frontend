@@ -1,3 +1,4 @@
+import { type AxiosError } from "axios"
 import useAsyncQuery from "~/composables/useAsyncQuery"
 
 export default async function apiDeviceDelete (deviceId:string) {
@@ -8,8 +9,9 @@ export default async function apiDeviceDelete (deviceId:string) {
         useNotification('info', 'Устройство успешно удалено')
         return response
       }
-    } catch {
-      useNotification('error', "Произошла непредвиденная ошибка")
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка в удалении устройства')
+      console.log(e)
     }
   })
 }

@@ -65,7 +65,7 @@ export const useDevicesStore = defineStore('devices', {
       try {
         await apiDeviceChangeTemperature(props)
       } catch (e) {
-        useNotification('error', "Произошла непредвиденная ошибка")
+        useNotification('error', "Произошла ошибка при смене температуры")
       }
     },
     async changeName (id:string, name:string) {
@@ -75,7 +75,7 @@ export const useDevicesStore = defineStore('devices', {
           useNotification('info', 'Имя устройства успешно изменено')
         }
       } catch {
-        useNotification('error', 'Произошла ошибка при смене имени')
+        useNotification('error', 'Произошла ошибка при смене названия')
       }
     },
     async deleteDevice (id:string) {

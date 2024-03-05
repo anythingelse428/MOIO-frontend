@@ -1,4 +1,5 @@
 import useAsyncQuery from "~/composables/useAsyncQuery"
+import { useUserStore } from "~/store/user"
 
 export interface UserRefreshTokenResponse{
     accessToken:string,
@@ -12,7 +13,7 @@ export default async function apiUserRefreshToken (refresh_token :string):Promis
         tokenHash: refresh_token,
       })
     } catch (e) {
-      useNotification('error', 'Ошибка рефреша')
+      await useUserStore().logout()
     }
   })
 }

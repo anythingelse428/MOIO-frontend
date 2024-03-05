@@ -17,7 +17,7 @@
         <h2 class="automation__subheader">
           Условия
         </h2>
-        <div class="automation__run-conditions">
+        <div v-if="sensors.length" class="automation__run-conditions">
           <div class="automation__description">
             Автоматизация выполнится если:
           </div>
@@ -43,7 +43,7 @@
           </button>
         </div>
       </div>
-      <button class="automation__add-condition" @click.prevent="showConditionModal = true">
+      <button class="automation__add-condition" @click.prevent="setShowConditionalModal()">
         Добавить условие
       </button>
       <div class="scenarios">
@@ -72,7 +72,7 @@ import type { IGroupResponseItem } from "~/api/group/getById"
 import type { ServiceProps } from "~/components/Service/TheService.vue"
 
 const isLoading = ref(false)
-const runByAllConditions = ref(true)
+const runByAllConditions = ref(false)
 const showConditionModal = ref(false)
 const conditions = ref<{id:number, type:'sensor'|'time', value:string}[]>([])
 const groupStore = useGroupsStore()
@@ -80,6 +80,13 @@ const scenarios = ref<string[]>([])
 const name = ref('')
 const sensors = ref<ServiceProps[]>([])
 const existingScenarios = await useScenarioStore().getAll()
+function setShowConditionalModal () {
+  if (sensors.value.length > 0) {
+    showConditionModal.value = true
+    return
+  }
+  conditions.value.push({ type: 'time', id: conditions.value.length + 1 })
+}
 function deleteCondition (id:number) {
   conditions.value.splice(
     conditions.value.findIndex(el => el.id === id),

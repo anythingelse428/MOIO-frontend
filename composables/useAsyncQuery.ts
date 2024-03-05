@@ -1,5 +1,6 @@
-import { type AxiosInstance } from 'axios'
+import { type AxiosError, type AxiosInstance } from 'axios'
 import { consola } from 'consola'
+
 import { useUserStore } from '~/store/user'
 import useNotification from "~/composables/useNotification"
 
@@ -65,11 +66,12 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
       config.public.APP_DEBUG && consola.box(`[useAsyncQuery] ${response.config.url}`, response)
       return response.data
     }
-  } catch (e) {
+  } catch (err) {
+    const e = err as AxiosError
     config.public.APP_DEBUG && consola.error('[useAsyncQuery]: Catch', e)
-    config.public.APP_DEBUG && useNotification('error', `Произошла ошибка при обработке запроса ${e?.config.url as unknown}`)
+    config.public.APP_DEBUG && useNotification('error', `Произошла ошибка при обработке запроса ${e?.config?.url}`)
     if (e?.response?.status === 400) {
-      useNotification('error', e.response.request.response)
+      useNotification('error', e.request.response)
     }
   }
 }

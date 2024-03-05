@@ -66,36 +66,28 @@ export const useGroupsStore = defineStore('groups', {
   },
   actions: {
     async getAll (groupId?:string) {
-      const id = groupId?.length ? groupId : this.currentHome
+      const id = groupId ?? this.currentHome
       if (id?.length > 0) {
-        try {
-          const data = await apiGroupGetAll(id)
-          if (data.length) {
-            this.groups = data
-          }
-        } catch (e) {
-          useNotification('error', "Произошла ошибка в получении групп")
+        const data = await apiGroupGetAll(id)
+        if (data.length) {
+          this.groups = data
         }
       }
     },
     async getHouses () {
-      try {
-        const response = await apiGroupsGetUpperGroups()
-        const user = useUserStore()
-        if (!Number.isInteger(user.id)) {
-          await user.init()
-        }
-        this.uppperGroups = response
-        if (localStorage.getItem('moio-current-home')?.length) {
-          this.currentHome = localStorage.getItem('moio-current-home') as string
-        } else {
-          this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id ?? this.uppperGroups[0]?.id
-          localStorage.setItem('moio-current-home', this.currentHome)
-        }
-        this.clientId = this.uppperGroups.find(el => el.id === this.currentHome)?.clientId ?? ''
-      } catch {
-        useNotification('error', "Произошла ошибка в получении домов")
+      const response = await apiGroupsGetUpperGroups()
+      const user = useUserStore()
+      if (!Number.isInteger(user.id)) {
+        await user.init()
       }
+      this.uppperGroups = response
+      if (localStorage.getItem('moio-current-home')?.length) {
+        this.currentHome = localStorage.getItem('moio-current-home') as string
+      } else {
+        this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id ?? this.uppperGroups[0]?.id
+        localStorage.setItem('moio-current-home', this.currentHome)
+      }
+      this.clientId = this.uppperGroups.find(el => el.id === this.currentHome)?.clientId ?? ''
     },
     async setCurrentHome (id:string) {
       localStorage.setItem('moio-current-home', id)
@@ -146,7 +138,7 @@ export const useGroupsStore = defineStore('groups', {
         await this.getAll()
         useNotification('info', 'Имя группы успешно изменено')
       } catch {
-        useNotification('error', 'Произошла ошибка при смене имени')
+        useNotification('error', 'Произошла ошибка при смене названия')
       }
     },
     async changeDevices (id:string, devices:string[]) {

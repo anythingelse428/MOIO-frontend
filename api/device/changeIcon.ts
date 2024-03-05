@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios"
 
 export default async function apiDeviceChangeIcon (deviceId:string, iconName:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -6,8 +7,8 @@ export default async function apiDeviceChangeIcon (deviceId:string, iconName:str
       if (response.status === 200) {
         useNotification('info', "Иконка успешно изменена")
       }
-    } catch {
-      useNotification('error', "Произошла ошибка при изменении иконки")
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при изменении иконки')
     }
   })
 }

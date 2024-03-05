@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
 export interface IUsersByGroupResponse {
@@ -16,8 +17,8 @@ export default async function apiGroupGetUserByGroupId (id:string):Promise<IUser
       if (response.status === 200) {
         return response
       }
-    } catch {
-      useNotification('error', 'Произошла ошибка получения гостей')
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка получения гостей')
     }
   })
 }
