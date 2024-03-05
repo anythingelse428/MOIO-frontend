@@ -21,6 +21,8 @@
   }
   @media screen and (max-width: 300px) {
     width: 95%;
+    aspect-ratio: auto;
+    
   }
   &.--active {
     cursor: pointer;

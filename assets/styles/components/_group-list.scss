@@ -29,8 +29,22 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 16px;
+		justify-content: start;
+		&::after {
+			content: "";
+			width: min(36%, 140px);
+			@media screen and (max-width: 560px) {
+				width: min(100%, 124px);
+			}
+			@media screen and (max-width: 300px) {
+				width: 95%;
+			}
+		}
 		@media screen and (max-width: 768px) {
 			gap: 8px;
+		}
+		@media screen and (max-width: 428px) {
+			justify-content: center;
 		}
 	}
 }
