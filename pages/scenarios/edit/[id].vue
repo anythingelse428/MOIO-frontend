@@ -112,7 +112,7 @@ function filterGroups (data:IGroupResponseItem, groupName:string) {
     return data
   }
   for (let i = 0; i < data?.inverseParent?.length; i++) {
-    if (data.inverseParent[i].name?.toLowerCase()?.includes(groupName.toLowerCase())) {
+    if (data.inverseParent[i]?.name?.toLowerCase()?.includes(groupName.toLowerCase())) {
       return data.inverseParent[i]
     }
     filterGroups(data.inverseParent[i], groupName)

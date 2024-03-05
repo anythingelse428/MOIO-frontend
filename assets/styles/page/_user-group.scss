@@ -1,44 +1,6 @@
 .group{
-  margin-inline-start: 32px;
-  @media screen and (max-width: 768px) {
-    margin-inline-start: 8px;
-  }
-  &__header{
-    @include section-header;
-    word-break: break-word;
-    display: flex;
-    align-items: flex-end;
-  }
-  &-list{
-    margin-top: 60px;
-    margin-inline-start: 32px;
-    @media screen and (max-width: 768px) {
-      margin-inline-start: 8px;
-    }
-  }
-  @media screen and (max-width: 768px) {
-    margin-inline-start: 8px;
-  }
-}
-.subgroup-item{
-  &__header {
-    @include header-submenu-item;
-    font-weight: 600;
-    margin-top: 40px;
-    word-break: break-word;
-    display: flex;
-    align-items: flex-end;
-  }
-  &__service-list{
-    margin-top: 40px;
-    display: flex;
-    flex-wrap: wrap;
-    gap:50px;
-    @media screen and (max-width: 768px) {
-      gap: 28px;
-    }
-    &.--empty{
-      font-size: 24px;
-    }
-  }
+	padding-inline: 80px;
+	@media screen and (max-width: 768px){
+		padding-inline: 16px;
+	}
 }

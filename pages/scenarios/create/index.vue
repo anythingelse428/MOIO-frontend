@@ -19,10 +19,10 @@
         :key="groupId"
         class="scenarios-create__selected-list-group"
       >
-        <h3 class="scenarios-create__selected-list-group-header">
+        <h3 v-show="selectedDevice[groupId]?.length" class="scenarios-create__selected-list-group-header">
           {{ roomsName[groupId] }}
         </h3>
-        <div class="scenarios-create__selected-list-group-devices">
+        <div v-show="selectedDevice[groupId]?.length" class="scenarios-create__selected-list-group-devices">
           <scenario-service
             v-for="service in selectedDevice[groupId]"
             :id="service.id"
@@ -142,7 +142,7 @@ function toggleSelected (id:string, data:IGroupResponseItem) {
     data.devices[idx].selected = !data.devices[idx].selected
     return idx
   }
-  if (data.inverseParent.length > 0) {
+  if (data.inverseParent?.length > 0) {
     for (let i = 0; i < data.inverseParent.length; i++) {
       if (idx > -1) { break }
       idx = toggleSelected(id, data.inverseParent[i])

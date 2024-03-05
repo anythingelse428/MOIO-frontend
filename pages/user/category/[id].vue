@@ -1,27 +1,25 @@
 <template>
   <div class="category">
-    <div class="group">
-      <loader-screen :is-loading="isLoading" />
-      <h1 class="group__header">
-        {{ groupData?.name }}
-      </h1>
-      <div v-if="groupData?.groups" class="subgroup-list">
-        <div v-for="group in Object.keys(groupData.groups)" :key="group" class="subgroup-item">
-          <h2 v-if="groupData.groups[group]?.length" class="subgroup-item__header">
-            {{ group }}
-          </h2>
-          <div v-if="groupData.groups[group]?.length" class="subgroup-item__service-list">
-            <the-service
-              v-for="service in groupData.groups[group]"
-              :id="service.id"
-              :key="service.groupId"
-              :group-id="categoryId"
-              :name="service.name"
-              :type="service.type"
-              :capabilities="service?.capabilities"
-              :device-icon="service.deviceIcon"
-            />
-          </div>
+    <loader-screen :is-loading="isLoading" />
+    <h1 class="category__header">
+      {{ groupData?.name }}
+    </h1>
+    <div v-if="groupData?.groups" class="category__group-list">
+      <div v-for="group in Object.keys(groupData.groups)" :key="group" class="category__group">
+        <h2 v-if="groupData.groups[group]?.length" class="category__group-header">
+          {{ group }}
+        </h2>
+        <div v-if="groupData.groups[group]?.length" class="category__group-service-list">
+          <the-service
+            v-for="service in groupData.groups[group]"
+            :id="service.id"
+            :key="service.id"
+            :group-id="categoryId"
+            :name="service.name"
+            :type="service.type"
+            :capabilities="service?.capabilities"
+            :device-icon="service.deviceIcon"
+          />
         </div>
       </div>
     </div>
@@ -35,13 +33,14 @@ import TheService from '~/components/Service/TheService.vue'
 import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import { type IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 
 const categoryStore = useCategoriesStore()
 const groupStore = useGroupsStore()
 const { devicesInCategory } = storeToRefs(categoryStore)
 const route = useRoute()
 const categoryId = Number(route.params.id) as number
-const groupData = ref()
+const groupData = ref<{name:string, groups:IDevicesInCategory}>()
 const isLoading = ref(true)
 
 async function fetchGroups () {
@@ -49,7 +48,7 @@ async function fetchGroups () {
   await categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome)
   isLoading.value = false
   groupData.value = {
-    name: categoryStore.categoryById(categoryId)?.name,
+    name: categoryStore.categoryById(categoryId)?.name ?? "",
     groups: categoryStore.devices,
   }
 }
@@ -66,19 +65,6 @@ watch(devicesInCategory, (newVal, oldValue) => {
 </script>
 
 <style lang="scss">
-@import "assets/styles/page/user-group";
-.category {
-  .group{
-    padding-inline: 80px;
-    @media screen and (max-width: 768px){
-      padding-inline: 8px;
-    }
-    .subgroup-item__service-list{
-      padding-inline: 40px;
-      @media screen and (max-width: 600px){
-        padding-inline: 0px;
-      }
-    }
-  }
-}
+@import "assets/styles/page/user-category";
+
 </style>

@@ -1,0 +1,27 @@
+.category{
+	padding-inline: 80px;
+	@media screen and (max-width: 768px){
+		padding-inline: 16px;
+	}
+	&__header{
+		@include section-header;
+	}
+	&__group{
+		margin-top: 40px;
+	}
+	&__group-service-list{
+		margin-top: 40px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		padding-inline: 20px;
+		@media screen and (max-width: 768px){
+			gap: 8px;
+			padding-inline: 8px;
+		}
+	}
+	&__group-header{
+		@include header-submenu-item;
+		font-weight: 600;
+	}
+}

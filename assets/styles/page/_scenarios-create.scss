@@ -3,15 +3,16 @@
 	@media screen and (max-width: 700px) {
 		padding: 0 20px 100px;
 	}
-	.group__header{
-		font-size: 25px;
-		font-weight: 400;
-		width: 100%;
-		text-align: center;
-	}
 	.group-list{
 		margin-top: 36px;
 		margin-inline: 0;
+		&__header{
+			font-size: 24px;
+			font-weight: 400;
+			width: 100%;
+			text-align: center;
+			display: inline-block;
+		}
 		&.--child{
 			margin-left: 0;
 		}
@@ -19,12 +20,10 @@
 			display: flex;
 			flex-wrap: wrap;
 			gap:28px;
-			justify-content: center;
 		}
 	}
 	.service{
-		width: calc(25% - 22px);
-		min-width: 200px;
+		width: min(192px, 100%);
 		padding: 14px 8px;
 		aspect-ratio: auto;
 		border-radius: 12px;
@@ -152,7 +151,7 @@
 		}
 	}
 	&__save{
-		margin-top: 180px;
+		margin-top: 80px;
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;

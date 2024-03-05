@@ -1,0 +1,36 @@
+.group-list{
+	&__header{
+		margin-top: 1em;
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		cursor:pointer;
+		&::first-letter{
+			text-transform: capitalize;
+		}
+	}
+	&.--child-0{
+		.group-list__header{
+			font-size: 4rem;
+		}
+	}
+	&.--child-1{
+		.group-list__header{
+			font-size: 3rem;
+		}
+	}
+	&.--child-2{
+		.group-list__header{
+			font-size: 2rem;
+		}
+	}
+	.subgroup-item__service-list{
+		margin-top: 1em;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		@media screen and (max-width: 768px) {
+			gap: 8px;
+		}
+	}
+}

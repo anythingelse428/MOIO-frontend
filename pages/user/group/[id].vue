@@ -59,5 +59,5 @@ watch(route, () => {
 </script>
 
 <style lang="scss">
-@import "assets/styles/page/_user-group";
+@import "assets/styles/page/user-group";
 </style>

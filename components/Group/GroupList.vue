@@ -1,10 +1,10 @@
 <template>
-  <div v-if="name" :class="`group-list  ${isCollapsed?'--collapsed':''}`">
-    <h1 v-if="!hideEmpty" class="group__header" @click="isCollapsed = !isCollapsed">
+  <div v-if="name" :class="`group-list  ${isCollapsed?'--collapsed':''} ${!isScenarios&&`--child-${childDepth || 0}`} `">
+    <h1 v-if="!hideEmpty" class="group-list__header">
       {{ name }}
-      <icon v-show="!isCollapsed&&devices?.length>0" name="chevron-right" style="font-size: inherit" />
     </h1>
-    <h1 v-if="hideEmpty && devices?.length>0" class="group__header">
+    <h1 v-if="hideEmpty && (devices?.length>0||inverseParent?.length)" class="group-list__header" @click="isCollapsed = !isCollapsed">
+      <icon v-if="!isScenarios" :name="isCollapsed?'plus-thick':'minus-thick'" :size="28" />
       {{ name }}
     </h1>
     <div v-if="filteredDevices()?.length&&isScenarios" class="subgroup-item__service-list">
@@ -36,21 +36,24 @@
         />
       </div>
     </transition>
-    <div v-if="inverseParent?.length" :class="`group-list --child ${isCollapsed?'--collapsed':''}`">
-      <group-list
-        v-for="group in inverseParent"
-        :id="group.id"
-        :key="group.name"
-        :hide-empty="hideEmpty"
-        :devices="group.devices"
-        :name="group.name"
-        :inverse-parent="group?.inverseParent"
-        :is-scenarios="isScenarios"
-        :hide-devices="hideDevices"
-        :hide-sensors="hideSensors"
-        @get-data="e=>emit('get-data',{...e,groupId:group.id})"
-      />
-    </div>
+    <transition v-show="isCollapsed" name="fade">
+      <div v-if="inverseParent?.length">
+        <group-list
+          v-for="group in inverseParent"
+          :id="group.id"
+          :key="group.name"
+          :devices="group.devices"
+          :name="group.name"
+          :inverse-parent="group?.inverseParent"
+          :is-scenarios="isScenarios"
+          :hide-devices="hideDevices"
+          :hide-empty="hideEmpty"
+          :hide-sensors="hideSensors"
+          :child-depth="(childDepth??0)+1"
+          @get-data="e=>emit('get-data',{...e,groupId:group.id})"
+        />
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -69,6 +72,7 @@ export interface GroupList {
   hideSensors?:boolean
   hideDevices?:boolean
   isScenarios?:boolean
+  childDepth?:number
 }
 
 const props = defineProps<GroupList>()
@@ -93,13 +97,6 @@ const filteredDevices = () => {
 
 <style lang="scss">
 @import 'assets/styles/utils/transitions';
-
-.group__header,
-.subgroup-item__service-list{
-  margin-top: 1em;
-  &::first-letter{
-    text-transform: capitalize;
-  }
-}
+@import "assets/styles/components/group-list";
 
 </style>

@@ -65,7 +65,7 @@ function changeCapability (message:ServiceProps, group = groupStore.currentGroup
     isChanged = true
     return
   }
-  if (group.inverseParent && !isChanged) {
+  if (group.inverseParent?.length && !isChanged) {
     for (let i = 0; i < group.inverseParent.length; i++) {
       changeCapability(message, group.inverseParent[i])
     }

@@ -15,7 +15,7 @@
   >
     <div class="service-info" @mousedown.left="turnOnDevice()">
       <div
-        :style="isDeviceOn&&`color:rgb(${Math.round(color?.red*255)},${Math.round(color?.green*255)},${Math.round(color?.blue*255)})`"
+        :style="isDeviceOn && stuff?.hsv?.s && `color:rgb(${Math.round(color?.red*255)},${Math.round(color?.green*255)},${Math.round(color?.blue*255)})`"
         class="service-ico-wrapper"
       >
         <icon :name="currentIcon" size="36" />

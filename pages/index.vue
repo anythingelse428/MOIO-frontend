@@ -1,15 +1,14 @@
 <template>
-  <div class="main-page">
-    <div class="group">
-      <loader-screen :is-loading="isLoading" />
-      <group-list
-        v-if="currentGroup?.name"
-        :id="groupStore.currentHome"
-        :name="currentGroup?.name"
-        :devices="currentGroup.devices"
-        :inverse-parent="currentGroup?.inverseParent"
-      />
-    </div>
+  <div class="group">
+    <loader-screen :is-loading="isLoading" />
+    <group-list
+      v-if="currentGroup?.name"
+      :id="groupStore.currentHome"
+      :name="currentGroup?.name"
+      :devices="currentGroup.devices"
+      :inverse-parent="currentGroup?.inverseParent"
+      :hide-empty="true"
+    />
   </div>
 </template>
 
@@ -42,5 +41,5 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
-@import "assets/styles/page/_index";
+@import "assets/styles/page/user-group";
 </style>
