@@ -94,6 +94,9 @@
     position: relative;
     z-index: 1;
     width: fit-content;
+    transform: translate3d(0,0,0);
+    -webkit-transform: translate3d(0,0,0);
+    -o-transform:translate3d(0,0,0);
     @media screen and (max-width:768px) {
       font-size: 20px;
     }
