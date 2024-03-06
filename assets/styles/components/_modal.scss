@@ -6,13 +6,22 @@
   background: v-bind(bgColor);
   position: fixed;
   width: 100vw;
-  min-height: 100vh;
+  min-height: 100dvh;
   z-index: 135;
   top: 0;
   inset: 0;
   pointer-events: none;
   height: -webkit-fill-available;
   -webkit-overflow-scrolling: touch;
+  .modal{
+    z-index: 137;
+    .modal{
+      z-index: 139;
+      .modal{
+        z-index: 141;
+      }
+    }
+  }
   @media screen and (max-width: 600px) {
     padding: 16px;
   }
