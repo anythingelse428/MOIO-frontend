@@ -12,16 +12,25 @@
 	&.--child-0{
 		.group-list__header{
 			font-size: 4rem;
+			@media screen and (max-width: 560px) {
+				font-size: 3.8rem;
+			}
 		}
 	}
 	&.--child-1{
 		.group-list__header{
 			font-size: 3rem;
+			@media screen and (max-width: 560px) {
+				font-size: 2.8rem;
+			}
 		}
 	}
 	&.--child-2{
 		.group-list__header{
 			font-size: 2rem;
+			@media screen and (max-width: 560px) {
+				font-size: 1.8rem;
+			}
 		}
 	}
 	.subgroup-item__service-list{

@@ -4,7 +4,7 @@
       {{ name }}
     </h1>
     <h1 v-if="hideEmpty && (devices?.length>0||inverseParent?.length)" class="group-list__header" @click="isCollapsed = !isCollapsed">
-      <icon v-if="!isScenarios" :name="isCollapsed?'plus-thick':'minus-thick'" :size="28" />
+      <icon v-if="!isScenarios" :name="isCollapsed?'minus-thick':'plus-thick'" :size="28" />
       {{ name }}
     </h1>
     <div v-if="filteredDevices()?.length&&isScenarios" class="subgroup-item__service-list">
