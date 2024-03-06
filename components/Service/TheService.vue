@@ -20,7 +20,7 @@
       >
         <icon :name="currentIcon" size="36" />
         <div v-if="stuff?.value" class="service-stuff">
-          {{ stuff.value }}{{ stuff.instance?.includes('temp')?'°C':'' }}
+          {{ stuff.value }}{{ stuff.instance?.includes('temp')?'°C':'' }}{{ stuff.instance?.includes('brightness')?'%':'' }}
         </div>
       </div>
       <div class="service-name">
@@ -273,6 +273,7 @@ async function deleteDevice () {
   }
 }
 async function refreshData () {
+  console.log('refresh device data')
   if (Number.isInteger(Number(props.groupId))) {
     await categoriesStore.getDevicesByCategoryId(Number(props.groupId), groupStore.currentHome)
   } else {

@@ -44,7 +44,14 @@
       >
     </div>
     <div v-if="instance?.includes('temperature')" class="service-capability__control --thermostat">
-      <thermostat-input :current="float" :value="capability.value" :step="capability.range?.precision ?? 1" :min="capability.range?.min ?? 20" :max="capability.range?.max ?? 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
+      <thermostat-input
+        :current="float"
+        :value="capability.value"
+        :step="capability.range?.precision ?? 1"
+        :min="capability.range?.min ?? 20"
+        :max="capability.range?.max ?? 40"
+        @t-input="(e)=>{capability.value=e.value;updateDevice({type:'devices.capabilities.range',value:Number(e.value)},e.delay)}"
+      />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
       <toggle-switch :checked="String(capability.value).includes('open')||String(capability.value).includes('true')" vertical-large openable :ico="icon??toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
@@ -87,14 +94,22 @@ export type ServiceCapability = {
 
 const props = defineProps<ServiceCapability>()
 const emit = defineEmits(['update-bool-val'])
-const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
 const devicesStore = useDevicesStore()
+const groupStore = useGroupsStore()
+const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
 const capabilitySource = ref({ ...props })
 const capability = ref(capabilitySource)
 const isMounted = ref(false)
 const hue = ref(Number(capability.value.hsv?.h))
 const saturation = ref(Number(capability.value.hsv?.s))
 const rgb = computed(() => useHSVToRGB(Number(hue.value), saturation.value / 100, capability.value.hsv.v / 100))
+
+const throttledAction = useThrottle(actionFabric)
+const mainActionProps = {
+  clientId: groupStore.clientId,
+  deviceId: props.deviceId,
+}
+
 if (capability.value && String(capability.value?.value)?.indexOf('close') > -1) {
   capability.value.value = false
 }
@@ -107,38 +122,22 @@ async function actionFabric (fnName:'changeOnOf'|'changeTemperature'|'changeBrig
   // вынесено для вызова в useThrottle, чтобы работали замыкания
   return await devicesStore[fnName](args)
 }
-const throttledAction = useThrottle(actionFabric, 2000)
-const groupStore = useGroupsStore()
-function updateDevice (val:{type:string, value:any}) {
-  const mainActionProps = {
-    clientId: groupStore.clientId,
-    deviceId: props.deviceId,
-  }
-
+function updateDevice (val:{type:string, value:any}, delay?:number) {
   switch (val.type) {
-    case 'open':
-      // @ts-ignore
-      // throttledAction('changeOpenClose', { ...mainActionProps, open: val.value })
-      emit('update-bool-val')
-      break
     case 'devices.capabilities.on_off':
-      // @ts-ignore
-      // throttledAction('changeOnOf', { ...mainActionProps, onOffStatus: val.value })
+    case 'open':
       emit('update-bool-val')
       break
     case 'devices.capabilities.range':
-      if (props.instance && props.instance === 'threshold_temperature') {
-      // @ts-ignore
-        throttledAction('changeTemperature', { ...mainActionProps, temperature: val.value })
+      if (props?.instance === 'threshold_temperature') {
+        throttledAction(delay ?? 70, 'changeTemperature', { ...mainActionProps, temperature: val.value })
       }
-      if ((props.instance && props.instance === 'brightness') || capability.value?.hsv?.v || props.instance === 'hsv') {
-      // @ts-ignore
-        throttledAction('changeBrightness', { ...mainActionProps, brightness: val.value })
+      if ((props?.instance === 'brightness') || capability.value?.hsv?.v || props.instance === 'hsv') {
+        throttledAction(delay ?? 2_000, 'changeBrightness', { ...mainActionProps, brightness: val.value })
       }
       break
     case 'devices.capabilities.color_setting':
-      // @ts-ignore
-      throttledAction('changeRGB', { ...mainActionProps, ...val.value })
+      throttledAction(delay ?? 2_000, 'changeRGB', { ...mainActionProps, ...val.value })
       break
   }
 }

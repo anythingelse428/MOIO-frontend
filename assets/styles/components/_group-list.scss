@@ -32,18 +32,18 @@
 		justify-content: start;
 		&::after {
 			content: "";
-			width: min(36%, 140px);
-			@media screen and (max-width: 560px) {
-				width: min(100%, 124px);
+			@media screen and (max-width: 440px) {
+				width: calc(50% - 4px);
 			}
 			@media screen and (max-width: 300px) {
 				width: 95%;
+				aspect-ratio: auto;
 			}
 		}
 		@media screen and (max-width: 768px) {
 			gap: 8px;
 		}
-		@media screen and (max-width: 428px) {
+		@media screen and (max-width: 440px) {
 			justify-content: center;
 		}
 	}

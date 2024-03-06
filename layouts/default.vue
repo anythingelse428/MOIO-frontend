@@ -38,7 +38,7 @@ socket.connection.on("UpdateSensorState", (message:string) => {
   useNotification("info", message)
 })
 socket.connection.on("UpdateDeviceState", (message:ServiceProps) => {
-  console.log("UpdateDeviceState", message)
+  // console.log("UpdateDeviceState", message)
   isChanged = false
   changeCapability(message)
   $bus.emit('device-update-emit', message)
@@ -47,13 +47,13 @@ socket.connection.on("UpdateConfig", (message:ServiceProps) => {
   // console.log("UpdateConfig", message)
   useNotification("info", `Обновлено состояние устройства ${message.name}`)
 })
+
 function changeCapability (message:ServiceProps, group = groupStore.currentGroup) {
   const isCategory = route.path.includes('category/')
   if (isCategory && !isChanged) {
     for (const category of Object.keys(categoriesStore.devicesInCategory)) {
       const deviceIdx = categoriesStore.devicesInCategory[category].findIndex(el => el.id === message.id)
       if (deviceIdx > -1) {
-        categoriesStore.devicesInCategory[category][deviceIdx].capabilities = message.capabilities
         isChanged = true
       }
     }

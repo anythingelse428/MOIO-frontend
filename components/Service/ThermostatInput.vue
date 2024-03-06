@@ -1,6 +1,15 @@
 <template>
   <div ref="thermostat" class="thermostat-input">
-    <input id="range" ref="range" v-model="p" type="range" :min="0" :max="100" :step="props.step||1" hidden>
+    <input
+      id="range"
+      ref="range"
+      v-model="p"
+      type="range"
+      :min="0"
+      :max="100"
+      :step="props.step||1"
+      hidden
+    >
     <div class="thermostat-input__range-border --min">
       {{ min }}C
     </div>
@@ -10,7 +19,13 @@
     <div class="thermostat-input__range-border --max">
       {{ max }}C
     </div>
-    <svg ref="svg" class="thermostat-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" fill="none">
+    <svg
+      ref="svg"
+      class="thermostat-svg"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 260 260"
+      fill="none"
+    >
       <path
         id="track"
         ref="track"
@@ -46,10 +61,18 @@
       />
     </svg>
     <div class="thermostat-input__controls">
-      <button class="thermostat-input__controls-action blank" :disabled="p>=100" @click="p=getSliderValue(value + step);thermostatAction()">
+      <button
+        class="thermostat-input__controls-action blank"
+        :disabled="p>=100"
+        @click.prevent="p=getSliderValue(value + step);updateSliderValue(p,5);thermostatAction()"
+      >
         +
       </button>
-      <button class="thermostat-input__controls-action blank" :disabled="p<=0" @click="p=getSliderValue(value - step);thermostatAction()">
+      <button
+        class="thermostat-input__controls-action blank"
+        :disabled="p<=0"
+        @click.prevent="p=getSliderValue(value - step);updateSliderValue(p,5);thermostatAction()"
+      >
         -
       </button>
     </div>
@@ -68,11 +91,6 @@ export interface IThermostatProps {
 const props = defineProps<IThermostatProps>()
 
 const emit = defineEmits(['t-input'])
-const getSliderValue = (value:number) => {
-  const max = props.max - props.min
-  const flex = value - props.min
-  return (flex / max) * 100
-}
 const p = ref(getSliderValue(props.value))
 const range = ref<InstanceType<typeof SVGElement>>()
 const svg = ref<InstanceType<typeof SVGElement>>()
@@ -81,15 +99,32 @@ const track = ref<InstanceType<typeof SVGGeometryElement>>()
 const currentMark = ref<InstanceType<typeof SVGElement>>()
 const thumb = ref<InstanceType<typeof SVGElement>>()
 const thermostat = ref<InstanceType<typeof HTMLDivElement>>()
+
+watch(p, (newP) => {
+  updateSliderValue(newP, 2000)
+})
 const stepped = (val:number, divider:number) => {
   return (Math.floor((val + divider - 1) / divider)) * divider
 }
-
-watch(p, (newP) => {
+function getSliderValue (value:number) {
+  const max = props.max - props.min
+  const flex = value - props.min
+  return (flex / max) * 100
+}
+function updateSliderValue (newP = p.value, delay:number) {
   const unStepped = (props.max - props.min) * (newP / 100) + props.min
-  emit('t-input', Number((stepped(unStepped, (props.step || 1)) + 1 - props.step).toFixed(2)))
-})
-watch(() => props.current, () => thermostatAction())
+  emit('t-input', { value: Number((stepped(unStepped, (props.step || 1)) + 1 - props.step).toFixed(2)), delay })
+}
+const cache:{[key:string]:{[key:string]:any}} = {}
+function memoize (fn:Function, key:string, args:any) {
+  if (cache[key] && cache[key][args.toString()]) {
+    return cache[key][args.toString()]
+  }
+  const data = fn(...args)
+  cache[key] = {}
+  cache[key][args.toString()] = data
+  return data
+}
 function thermostatAction () {
   if (thermostat?.value) {
     let isMoving = false
@@ -97,16 +132,7 @@ function thermostatAction () {
     const maxOfRange = parseFloat(range.value?.getAttribute('max') as string) || 100
     const minOfRange = parseFloat(range.value?.getAttribute('min') as string) || 1
     const steps = ((maxOfRange - minOfRange) / stepAttr)
-    function memoize (fn:Function, key:string, args:any) {
-      if (cache[key] && cache[key][args.toString()]) {
-        return cache[key][args.toString()]
-      }
-      const data = fn(...args)
-      cache[key] = {}
-      cache[key][args.toString()] = data
-      return data
-    }
-    const cache:{[key:string]:{[key:string]:any}} = {}
+
     const getPoints = (trackLength:number) => {
       const points = []
       const step = trackLength / steps
@@ -145,7 +171,6 @@ function thermostatAction () {
       }
     }
     const getClosestPoint = (x:number, y:number) => {
-      // TODO облегчить функцию
       const distances:number[][] = []
       const points = memoize(getPoints, 'points', [track.value?.getTotalLength()])
       points.forEach((point:{x:number, y:number, d:number}, index:number) => {
@@ -154,7 +179,6 @@ function thermostatAction () {
         const distance = Math.sqrt((diffX * diffX) + (diffY * diffY)).toFixed(3)
         distances.push([index, parseFloat(distance)])
       })
-      console.log(points)
       distances.sort((a, b) => a[1] - b[1])
       return points[distances[0][0]]
     }

@@ -1,23 +1,27 @@
-/* eslint-disable */
-const useThrottle = (fn: Function, wait = 1000) => {
-  let inThrottle: boolean,
-    lastFn: ReturnType<typeof setTimeout>,
-    lastTime: number
-  return function (this: any) {
-    const context = this
-    const args = arguments
+type ThrottleFunction<T extends (...args: any[]) => any> = (wait?: number, ...args: Parameters<T>) => void;
+
+const useThrottle = <T extends (...args: any[]) => any>(fn: T, initialWait = 1000): ThrottleFunction<T> => {
+  let inThrottle = false
+  let lastFn: ReturnType<typeof setTimeout> | null = null
+  let lastTime = 0
+
+  return function (this: ThisParameterType<T>, wait = initialWait, ...args: Parameters<T>) {
+    console.log('wait: ', wait)
     if (!inThrottle) {
-      fn.apply(context, args)
+      fn.apply(this, args)
       lastTime = Date.now()
       inThrottle = true
+
+      setTimeout(() => {
+        inThrottle = false
+      }, wait)
     } else {
-      clearTimeout(lastFn)
+      if (lastFn) { clearTimeout(lastFn) }
       lastFn = setTimeout(() => {
-        if (Date.now() - lastTime >= wait) {
-          fn.apply(context, args)
-          lastTime = Date.now()
-        }
-      }, Math.max(wait - (Date.now() - lastTime), 0))
+        fn.apply(this, args)
+        lastTime = Date.now()
+        inThrottle = false
+      }, wait - (Date.now() - lastTime))
     }
   }
 }

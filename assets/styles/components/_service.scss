@@ -1,7 +1,7 @@
 .service{
   cursor: pointer;
   //width: min(36%, 160px);
-  width: min(36%, 140px);
+  width: min(calc(25% - 16px), 160px);
 
   display: block;
   aspect-ratio: 1;
@@ -11,18 +11,16 @@
   //-webkit-box-shadow: 0px 0px 24px 0px rgb($service-shadow-color / 0.5);
   position: relative;
   border: 2px solid transparent;
-  @media screen and (max-width: 768px) {
-    width: min(36%, 140px);
-    aspect-ratio: 1;
-    padding-bottom: 20px;
+
+  @media screen and (max-width: 600px) {
+    width: calc(33% - 4px);
   }
-  @media screen and (max-width: 560px) {
-    width: min(100%, 124px);
+  @media screen and (max-width: 440px) {
+    width: calc(50% - 4px);
   }
   @media screen and (max-width: 300px) {
     width: 95%;
     aspect-ratio: auto;
-    
   }
   &.--active {
     cursor: pointer;
