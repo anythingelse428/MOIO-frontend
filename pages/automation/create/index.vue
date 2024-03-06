@@ -103,7 +103,10 @@ function deleteCondition (id:number) {
 function addCondition (id:number, type:'sensor'|'time', value:string) {
   const isConditionExist = conditions.value.findIndex(el => el.id === id)
   const timeOffset = Date()?.match(/GMT.\d\d?\d\d/gm) as string[]
-  const validTimeOffset = timeOffset[0].replace('GMT', '').substring(0, 3) + ':' + timeOffset[0].replace('GMT', '').substring(3)
+  const validTimeOffset = timeOffset[0]
+    .replace('GMT', '')
+    .substring(0, 3) + ':' + timeOffset[0]
+    .replace('GMT', '').substring(3)
   if (isConditionExist > -1) {
     if (type === 'time') {
       conditions.value[isConditionExist].value = `2077-01-24T${value}:00${validTimeOffset}`
@@ -179,6 +182,7 @@ async function create () {
     }),
     allConditions: runByAllConditions.value,
   }
+  console.log(automationData)
   isSensorsValid && await automationStore.create(automationData)
   isLoading.value = false
 }
