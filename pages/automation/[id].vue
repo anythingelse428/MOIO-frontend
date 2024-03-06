@@ -164,7 +164,7 @@ function addCondition (id:string|number, type:'sensor'|'time', value:string) {
   }
   if (isConditionExist === -1) {
     if (type === "time") {
-      newConditions.value.push({ id: newConditions.value.length + oldConditions.value.length + 1, type, value })
+      newConditions.value.push({ id: newConditions.value.length + oldConditions.value.length + 1, type, value: Date()?.replace('2077-01-24T', '').replace(/^\+(\d{2})(:?\d{2})?$/, '') })
     }
     if (type === "sensor") {
       newConditions.value.push({ id: newConditions.value.length + oldConditions.value.length + 1, type, value: sensors.value[0].id })
