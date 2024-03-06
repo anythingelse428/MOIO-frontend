@@ -13,20 +13,20 @@
   pointer-events: none;
   height: -webkit-fill-available;
   -webkit-overflow-scrolling: touch;
-  transform: translate3d(0,0,0);
-  -webkit-transform:translate3d(0,0,0);
+  transform: translate3d(0,0,1px);
+  -webkit-transform:translate3d(0,0,1px);
   .modal{
     z-index: 137;
-    transform: translate3d(0,0,0);
-    -webkit-transform:translate3d(0,0,0);
+    transform: translate3d(0,0,10px);
+    -webkit-transform:translate3d(0,0,10px);
     .modal{
       z-index: 139;
-      transform: translate3d(0,0,0);
-      -webkit-transform:translate3d(0,0,0);
+      transform: translate3d(0,0,20px);
+      -webkit-transform:translate3d(0,0,20px);
       .modal{
         z-index: 141;
-        transform: translate3d(0,0,0);
-        -webkit-transform:translate3d(0,0,0);
+        transform: translate3d(0,0,30px);
+        -webkit-transform:translate3d(0,0,30px);
       }
     }
   }
