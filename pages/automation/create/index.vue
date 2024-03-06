@@ -110,12 +110,7 @@ function addCondition (id:number, type:'sensor'|'time', value:string) {
       return
     }
     if (type === 'sensor') {
-      const elInValueExist = conditions.value[isConditionExist].value?.includes(value)
-      if (elInValueExist) {
-        conditions.value[isConditionExist].value = ''
-        return
-      }
-      conditions.value[isConditionExist].value = value ?? ''
+      conditions.value[isConditionExist].value = value
       return
     }
   }
@@ -125,7 +120,7 @@ function addCondition (id:number, type:'sensor'|'time', value:string) {
       return
     }
     if (type === 'sensor') {
-      conditions.value.push({ id: conditions.value.length + 1, type, value: sensors.value[0] })
+      conditions.value.push({ id: conditions.value.length + 1, type, value: sensors.value[0].id })
     }
   }
 }

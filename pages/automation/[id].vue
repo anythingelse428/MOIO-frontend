@@ -167,7 +167,7 @@ function addCondition (id:string|number, type:'sensor'|'time', value:string) {
       newConditions.value.push({ id: newConditions.value.length + oldConditions.value.length + 1, type, value })
     }
     if (type === "sensor") {
-      newConditions.value.push({ id: newConditions.value.length + oldConditions.value.length + 1, type, value })
+      newConditions.value.push({ id: newConditions.value.length + oldConditions.value.length + 1, type, value: sensors.value[0].id })
     }
   }
 }
