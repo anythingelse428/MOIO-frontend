@@ -38,7 +38,9 @@
       >
         <template #inner>
           <div ref="target" class="service-capabilities-modal" role="dialog">
-            <icon name="pencil" class="edit-ico" @click="isEdit=!isEdit" />
+            <div class="edit-ico" @click="isEdit=!isEdit">
+              <icon name="pencil" />
+            </div>
             <div class="service-capabilities-modal__header">
               <form v-if="isEdit" class="service-capabilities-modal__header --edited" @submit.prevent="setNewDeviceName()">
                 <input v-model="newDeviceName" type="text">
