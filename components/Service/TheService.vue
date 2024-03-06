@@ -89,73 +89,73 @@
           </div>
         </template>
       </the-modal>
-      <the-modal :is-shown="isDeleteModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
-        <template #inner>
-          <div ref="deleteModal" class="delete-device-modal" role="dialog">
-            <div class="delete-device-modal__header">
-              Вы уверерны, что хотите удалить устройство {{ name }}?
+    </div>
+    <the-modal :is-shown="isDeleteModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
+      <template #inner>
+        <div ref="deleteModal" class="delete-device-modal" role="dialog">
+          <div class="delete-device-modal__header">
+            Вы уверерны, что хотите удалить устройство {{ name }}?
+          </div>
+          <div class="delete-device-modal__prompt">
+            <div class="delete-device-modal__prompt-item --danger" role="button" @click="deleteDevice()">
+              Удалить
             </div>
-            <div class="delete-device-modal__prompt">
-              <div class="delete-device-modal__prompt-item --danger" role="button" @click="deleteDevice()">
-                Удалить
-              </div>
-              <div class="delete-device-modal__prompt-item" role="button" @click="isDeleteModalShow = false">
-                Отмена
-              </div>
+            <div class="delete-device-modal__prompt-item" role="button" @click="isDeleteModalShow = false">
+              Отмена
             </div>
           </div>
-        </template>
-      </the-modal>
-      <the-modal :is-shown="isIconModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
-        <template #inner>
-          <div ref="iconModal" class="change-icon-modal" role="dialog">
-            <div class="change-icon-modal__header">
-              Выберите иконку устройства
-              <button class="blank" @click="isIconModalShow = false">
-                <icon name="close" size="16" />
-              </button>
-            </div>
-            <div class="change-icon-modal__icons">
-              <h2 class="change-icon-modal__subheader">
-                Устройства
-              </h2>
-              <span
-                v-for="icon in existingIcons?.devices"
-                :key="icon"
-                class="change-icon-modal__icon"
-                @click="selectedIcon = icon"
-              >
-                <icon
-                  :name="icon"
-                  size="52"
-                  :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
-                />
-              </span>
-            </div>
-            <div class="change-icon-modal__icons">
-              <h2 class="change-icon-modal__subheader">
-                Датчики
-              </h2>
-              <span
-                v-for="icon in existingIcons?.sensor"
-                :key="icon"
-                class="change-icon-modal__icon"
-                @click="selectedIcon = icon"
-              >
-                <icon
-                  :name="icon"
-                  size="52"
-                  :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
-                />
-              </span>
-            </div>
-            <button class="change-icon-modal__submit" @click="setNewIcon()">
-              Сохранить
+        </div>
+      </template>
+    </the-modal>
+    <the-modal :is-shown="isIconModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
+      <template #inner>
+        <div ref="iconModal" class="change-icon-modal" role="dialog">
+          <div class="change-icon-modal__header">
+            Выберите иконку устройства
+            <button class="blank" @click="isIconModalShow = false">
+              <icon name="close" size="16" />
             </button>
           </div>
-        </template>
-      </the-modal>
-    </div>
+          <div class="change-icon-modal__icons">
+            <h2 class="change-icon-modal__subheader">
+              Устройства
+            </h2>
+            <span
+              v-for="icon in existingIcons?.devices"
+              :key="icon"
+              class="change-icon-modal__icon"
+              @click="selectedIcon = icon"
+            >
+              <icon
+                :name="icon"
+                size="52"
+                :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
+              />
+            </span>
+          </div>
+          <div class="change-icon-modal__icons">
+            <h2 class="change-icon-modal__subheader">
+              Датчики
+            </h2>
+            <span
+              v-for="icon in existingIcons?.sensor"
+              :key="icon"
+              class="change-icon-modal__icon"
+              @click="selectedIcon = icon"
+            >
+              <icon
+                :name="icon"
+                size="52"
+                :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
+              />
+            </span>
+          </div>
+          <button class="change-icon-modal__submit" @click="setNewIcon()">
+            Сохранить
+          </button>
+        </div>
+      </template>
+    </the-modal>
   </div>
 </template>
 
