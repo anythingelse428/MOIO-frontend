@@ -12,12 +12,12 @@
       <div v-if="displayedName" class="profile-card-info__name">
         <span v-show="!isNameChanging" class="name">
           {{ displayedName }}
-          <button class="blank" @click="isNameChanging=!isNameChanging">
+          <button class="blank" type="submit" @click="isNameChanging=!isNameChanging">
             <icon name="pencil" size="18" />
           </button>
         </span>
         <form v-show="isNameChanging" method="post" class="profile-card-info__change-name">
-          <input v-model="newName" type="text" class="profile-card-info__change-name-input">
+          <input v-model="newName" type="text" class="profile-card-info__change-name-input" required>
           <button class="blank" @click.prevent="changeName()">
             <icon name="check" size="18" />
           </button>
@@ -61,6 +61,9 @@
         </nuxt-link>
       </div>
     </div>
+    <!--    <button class="add-fg-print" @click="getCredential()">-->
+    <!--      add fg print-->
+    <!--    </button>-->
   </div>
 </template>
 
@@ -85,6 +88,10 @@ const isLoading = ref(false)
 const newName = ref(props.displayedName)
 const newClientId = ref(props.clientId ?? '')
 async function changeName () {
+  if (!newName.value.length) {
+    useNotification('error', 'Имя не может быть пустым')
+    return
+  }
   if (props.displayedName !== newName.value) {
     isLoading.value = true
     await userStore.changeName(newName.value)
@@ -107,9 +114,106 @@ async function copyToClipBoard (text:string, type:'clientId'|'email') {
     const result = await navigator.clipboard.writeText(text)
     useNotification('info', `${type} скопирован в буфер обмена`)
   } catch {
-    console.error('ой')
+
   }
 }
+
+
+function coerceToBase64Url (input:any) {
+  // Array or ArrayBuffer to Uint8Array
+  if (Array.isArray(input)) {
+    input = Uint8Array.from(input)
+  }
+
+  if (input instanceof ArrayBuffer) {
+    input = new Uint8Array(input)
+  }
+
+  // Uint8Array to base64
+
+  if (input instanceof Uint8Array) {
+    let str = ""
+    const len = input.byteLength
+
+    for (let i = 0; i < len; i++) {
+      str += String.fromCharCode(input[i])
+    }
+    input = window.btoa(str)
+  }
+
+  if (typeof input !== "string") {
+    throw new TypeError("could not coerce to string")
+  }
+
+  // base64 to base64url
+  // NOTE: "=" at the end of challenge is optional, strip it off here
+  input = input.replace(/\+/g, "-").replace(/\//g, "_").replace(/=*$/g, "")
+
+  return input
+}
+
+async function setCreds (assertedCredential:any) {
+  console.log(assertedCredential)
+  const authData = new Uint8Array(assertedCredential.response.attestationObject)
+  let clientDataJSON = assertedCredential.response.clientDataJSON
+  delete clientDataJSON.other_keys_can_be_added_here
+  clientDataJSON = new Uint8Array(clientDataJSON)
+  const rawId = new Uint8Array(assertedCredential.rawId)
+  // const sig = new Uint8Array(assertedCredential.response.signature)
+  // const userHandle = new Uint8Array(assertedCredential.response.userHandle)
+
+  const data = {
+    id: coerceToBase64Url(Uint8Array.from(assertedCredential.id.split('').map(letter => letter.charCodeAt(0)))),
+    rawId: coerceToBase64Url(Uint8Array.from(assertedCredential.id.split('').map(letter => letter.charCodeAt(0)))),
+    type: assertedCredential.type,
+    extensions: { },
+    response: {
+      AttestationObject: coerceToBase64Url(authData),
+      clientDataJson: coerceToBase64Url(clientDataJSON),
+    },
+  }
+  console.log(JSON.stringify(data))
+  const test = await useAsyncQuery(async ({ axios, path }) => {
+    return await axios.post(path + '/v1/biometric/makeCredential', { data })
+  })
+  console.log(test)
+}
+const getCredential = async () => {
+  const test = await useAsyncQuery(async ({ axios, path }) => {
+    return await axios.post(path + '/v1/biometric/сreateCredentialOptions')
+  })
+  console.log(test)
+
+  const challenge = test.challenge
+  const publicKeyCredentialCreationOptions = {
+    ...test,
+    rp: {
+      name: 'MOIO',
+      id: 'localhost',
+    },
+    AuthenticatorSelection: {
+      AuthenticatorAttachment: null,
+      RequireResidentKey: false,
+      UserVerification: 0,
+    },
+    user: {
+      id: Uint8Array.from(userStore.id, c => String(c).charCodeAt(0)),
+      name: userStore.displayedName,
+      displayName: userStore.displayedName,
+    },
+    challenge: Uint8Array.from(challenge),
+    pubKeyCredParams: test.pubKeyCredParams.map((el) => { return { type: 'public-key', alg: el.alg } }),
+  }
+  // API вызов для создания новых учетных данных с помощью переданных опций.
+  const result = await navigator.credentials.create({
+    publicKey: publicKeyCredentialCreationOptions,
+  })
+  console.log(result)
+  await setCreds(result)
+  return result
+}
+
+
 </script>
 
 <style lang="scss">

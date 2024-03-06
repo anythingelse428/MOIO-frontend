@@ -13,7 +13,7 @@ export default async function apiUserChangePassword (props:IChangePasswordPayloa
         useNotification('info',
           props.confirmationCode
             ? 'Данные успешно изменены'
-            : 'На ваш старый email был отправлен код подтверждения',
+            : 'На ваш email был отправлен код подтверждения',
         )
       }
     } catch {

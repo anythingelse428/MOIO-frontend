@@ -7,9 +7,9 @@
       <div class="automation-condition__description">
         {{ type==='sensor'?'Сценарий выполняется если сработал датчик':'Время начала активности автоматизации:' }}
       </div>
-      <div v-if="type==='time'" class="automation-condition__value">
+      <div v-if="type==='time'" class="automation-condition__value" @click="openTimeSelect">
         {{ Date().match(/GMT.\d\d?\d\d/gm)[0] }}
-        <input v-model="time" type="time" name="" :disabled="Number(editable) === 0"> часов
+        <input ref="timeInput" v-model="time" type="time" name="" :disabled="Number(editable) === 0"> часов
       </div>
       <div v-if="type==='sensor'" class="automation-condition__sensors">
         <div
@@ -51,23 +51,29 @@ export interface AutomationConditionProps {
   }
   editable?:boolean
 }
-const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: `${new Date().getHours()}:${new Date().getMinutes()}`, currSensor: undefined, editable: true })
+const props = withDefaults(defineProps<AutomationConditionProps>(), { currTime: undefined, currSensor: undefined, editable: true })
 const emit = defineEmits(['select-option'])
-const time = computed({
+const time = props.type === 'time' && computed({
   get () {
     const timezoneOffsetRegex = /(\+|-)?(\d{2}):(\d{2})/
-    const match = props.currTime.replace('2077-01-24T', '').match(timezoneOffsetRegex)
+    const match = props.currTime?.replace('2077-01-24T', '').match(timezoneOffsetRegex)
     if (match) {
       return match[0]
     }
-    return props.currTime.replace('2077-01-24T', '')
+    return props.currTime?.replace('2077-01-24T', '')
   },
   set (value) {
     emit('select-option', { type: 'time', value })
   },
 })
+const timeInput = ref<InstanceType<typeof HTMLInputElement>>()
+function openTimeSelect () {
+  if (props.editable || typeof props.editable === 'undefined') {
+    timeInput.value?.showPicker()
+  }
+}
 onMounted(() => {
-  emit('select-option', { type: 'time', value: props.currTime })
+  props.type === 'time' && emit('select-option', { type: 'time', value: props.currTime })
 })
 </script>
 

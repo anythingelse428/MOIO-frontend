@@ -16,8 +16,7 @@
       <div v-if="floors?.length>0" class="add-group__input-group">
         <label for="floor" class="add-group__label">Выберите этаж</label>
         <div v-for="floors in floors" :key="floors.id" class="add-group__input-wrapper">
-          <span id="floor" @click="floor = floors.id" role="radio" class="add-group__input"/>
-          <span class="floor-label">{{ floors.name }}</span>
+          <span class="floor-label" @click="floor = floors.id" role="radio">{{ floors.name }}</span>
         </div>
       </div>
       <div v-if="house?.length>1 && name.length" class="add-group-available-devices">

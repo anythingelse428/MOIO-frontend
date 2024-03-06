@@ -10,7 +10,7 @@
           <div class="automation__param-label">
             Название автоматизации
           </div>
-          <input v-model="name" class="automation__param-input" type="text" autocomplete="false">
+          <input v-model="name" class="automation__param-input" type="text" autocomplete="false" required>
         </div>
       </div>
       <div class="automation__conditions-container">
@@ -33,7 +33,7 @@
 
         <the-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
-            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{newConditions.push({type:e,id:oldConditions.length+newConditions.length+1});showConditionModal = false}" />
+            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{addCondition(newConditions.length + oldConditions.length + 1,e,undefined);showConditionModal = false}" />
           </template>
         </the-modal>
         <div v-for="(item,i) in oldConditions" :key="item.id" class="automation__conditions">
@@ -150,7 +150,7 @@ function deleteCondition (id:any) {
   }
   newConditions.value.splice(newConditions.value.findIndex(el => el.id === id), 1)
 }
-function addCondition (id:string, type:'sensor'|'time', value:string) {
+function addCondition (id:string|number, type:'sensor'|'time', value:string) {
   const isConditionExist = newConditions.value.findIndex(el => el.id === id)
   if (isConditionExist > -1) {
     if (type === 'time') {
@@ -164,10 +164,10 @@ function addCondition (id:string, type:'sensor'|'time', value:string) {
   }
   if (isConditionExist === -1) {
     if (type === "time") {
-      newConditions.value.push({ id, type, value })
+      newConditions.value.push({ id: newConditions.value.length + oldConditions.value.length + 1, type, value })
     }
     if (type === "sensor") {
-      newConditions.value.push({ id, type, value })
+      newConditions.value.push({ id: newConditions.value.length + oldConditions.value.length + 1, type, value })
     }
   }
 }
@@ -186,7 +186,7 @@ async function update () {
     useNotification("error", "Введите название автоматизации")
     return
   }
-  if (!newConditions.value.length && removeCondition.value.length === oldConditions.value.length) {
+  if (!newConditions.value.length && !oldConditions.value.length) {
     useNotification("error", "Не выбрано условие активации")
     return
   }
@@ -195,6 +195,7 @@ async function update () {
     return
   }
   isLoading.value = true
+  let isSensorsValid = true
   const timeOffset = Date()?.match(/GMT.\d\d?\d\d/gm) as string[]
   const validTimeOffset = timeOffset[0].replace('GMT', '').substring(0, 3) + ':' + timeOffset[0].replace('GMT', '').substring(3)
   const automationData:IAutomationUpdateProps = {
@@ -207,7 +208,11 @@ async function update () {
       }
     }),
     newTrigger: newConditions.value.map((el) => {
-      if (el.value.match(/\d\d:\d\d/)) {
+      if (!el.value?.length && el.type === 'sensor') {
+        isSensorsValid = false
+        useNotification('error', 'Не выбран датчик для условия с датчиком')
+      }
+      if (el.value?.match(/\d\d:\d\d/)) {
         return `2077-01-24T${el.value}:00${validTimeOffset}`
       }
       return el.value
@@ -215,7 +220,7 @@ async function update () {
     removeTriggersIdList: removeCondition.value,
     allConditions: runByAllConditions.value,
   }
-  const response = await automationStore.update(automationData)
+  isSensorsValid && await automationStore.update(automationData)
   // console.log(automationData, response)
   isLoading.value = false
 }

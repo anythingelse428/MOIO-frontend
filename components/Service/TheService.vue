@@ -238,14 +238,16 @@ onClickOutside(iconModal, () => {
   isIconModalShow.value = false
 })
 onLongPress(service, () => {
-  isCapabilitiesShow.value = true
+  if (navigator.maxTouchPoints > 0) {
+    isCapabilitiesShow.value = true
+  }
 }, { delay: 400 })
 
 async function turnOnDevice () {
   if (!props.id.includes('_sen')) {
     isPending.value = true
 
-    const oldValue = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance.includes('open')))?.value
+    const oldValue = props.capabilities?.find(el => el.type.includes('on_off') || (el.type.includes('range') && el.instance?.includes('open')))?.value
     const newValue = !oldValue || String(oldValue).includes('close') || String(oldValue).includes('false')
     const isOpenable = props?.capabilities?.find(el => el.instance?.includes('open'))
 
@@ -284,7 +286,10 @@ async function refreshData () {
   }
 }
 async function setNewDeviceName () {
-  await deviceStore.changeName(props.id, newDeviceName.value)
+  if (newDeviceName.value.length && newDeviceName.value !== props.name) {
+    await deviceStore.changeName(props.id, newDeviceName.value)
+  }
+  newDeviceName.value = props.name
   isEdit.value = false
   await refreshData()
 }

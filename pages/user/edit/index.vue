@@ -10,15 +10,15 @@
       </h2>
       <div v-if="type === 'password'" class="user-edit__input-group">
         <label for="password" class="user-edit__input-group-label">Введите новый пароль</label>
-        <input id="password" v-model="newPassword" type="text" class="user-edit__input-group-input">
+        <input id="password" v-model="newPassword" type="text" class="user-edit__input-group-input" required>
       </div>
       <div v-if="type === 'email'" class="user-edit__input-group">
         <label for="login" class="user-edit__input-group-label">Введите новую почту</label>
-        <input id="login" v-model="login" type="text" class="user-edit__input-group-input">
+        <input id="login" v-model="login" type="text" class="user-edit__input-group-input" required>
       </div>
       <div class="user-edit__input-group">
         <label for="old-pass" class="user-edit__input-group-label">Введите {{ type === 'password' ? 'старый' : "" }} пароль</label>
-        <input id="old-pass" v-model="oldPassword" type="text" class="user-edit__input-group-input">
+        <input id="old-pass" v-model="oldPassword" type="text" class="user-edit__input-group-input" required>
       </div>
       <h2 v-if="step === 2" class="user-edit__subheader">
         Код подтверждения
@@ -31,6 +31,7 @@
           type="text"
           class="user-edit__input-group-input"
           placeholder="Код подтверждения"
+          required
         >
       </div>
       <input type="submit" value="Сохранить">

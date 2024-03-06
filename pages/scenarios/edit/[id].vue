@@ -8,7 +8,7 @@
       <label for="scenario-name">
         Введите название сценария
       </label>
-      <input v-model="scenarioName" type="text" placeholder="Название сценария">
+      <input v-model="scenarioName" type="text" placeholder="Название сценария" required>
     </div>
     <div class="scenarios-create__selected-list">
       <h2 class="scenarios-create__selected-list-header">
@@ -153,7 +153,7 @@ function toggleSelected (id:string, data:IGroupResponseItem) {
 function setCapability (data:ICapability) {
   const id = data.id ?? data?.deviceId
   const capabilityIdx = capabilities.value[id + '_ch' + data.chanel]?.findIndex(el => el.type === data.type)
-  if (data.instance.includes('bright')) {
+  if (data.instance?.includes('bright')) {
     const colorCapabilityIdx = capabilities.value[id + '_ch' + data.chanel]?.findIndex(el => el.type.includes('color'))
     if (colorCapabilityIdx > -1) {
       capabilities.value[id + '_ch' + data.chanel][colorCapabilityIdx] = { ...capabilities.value[id + '_ch' + data.chanel][colorCapabilityIdx], hsv: { ...capabilities.value[id + '_ch' + data.chanel][colorCapabilityIdx].hsv, v: Number(data.value) } }
@@ -203,6 +203,7 @@ async function updateScenario () {
     devicesValueStates: capabilities.value,
     removeDevicesId: devicesForRemove.value,
   }
+  console.log(updateData)
   await scenarioStore.updateScenario(updateData)
   isLoading.value = false
 }

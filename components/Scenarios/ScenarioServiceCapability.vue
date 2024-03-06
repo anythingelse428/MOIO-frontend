@@ -4,10 +4,10 @@
       <label for="color">
         {{ $t(type) }}
       </label>
-      <div v-if="Number.isInteger(capability.hsv.h)" class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
+      <div v-if="Number.isInteger(capability.hsv?.h)" class="service-capability__color-preview" :style="`background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`" />
       <div class="service-capability__color">
         <input
-          v-if="Number.isInteger(capability.hsv.h)"
+          v-if="Number.isInteger(capability.hsv?.h)"
           id="color"
           v-model="hue"
           step="1"
@@ -22,7 +22,7 @@
         >
       </div>
       <input
-        v-if="Number.isInteger(capability.hsv.s)"
+        v-if="Number.isInteger(capability.hsv?.s)"
         id="saturation"
         v-model="saturation"
         step="1"
@@ -58,9 +58,9 @@
         id="range"
         v-model="capability.value"
         type="range"
-        :min="range.min"
-        :max="range.max"
-        :step="range.precision"
+        :min="range?.min"
+        :max="range?.max"
+        :step="range?.precision"
         :class="`${instance?.includes('temperature') && '--temperature'}`"
         @input="updateDevice({type,value:capability.value})"
       >

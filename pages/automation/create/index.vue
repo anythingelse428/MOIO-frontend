@@ -33,11 +33,18 @@
 
         <the-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
-            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{conditions.push({type:e,id:conditions.length+1}); showConditionModal = false}" />
+            <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{addCondition(conditions.length + 1,e,undefined); showConditionModal = false}" />
           </template>
         </the-modal>
         <div v-for="item in conditions" :key="item.id" class="automation__conditions">
-          <automation-condition :type="item.type" :curr-time="item.value?.replace('2077-01-24T', '').replace(/^\+(\d{2})(:?\d{2})?$/, '')" :sensors="sensors" :curr-sensor="item.type === 'sensor' ? {id: item?.value, name:'', type:'sensor'} : undefined" :idx="item.id" @select-option="e=>addCondition(item.id, e?.type, e.value)" />
+          <automation-condition
+            :type="item.type"
+            :curr-time="item.type === 'time' ? Date()?.replace('2077-01-24T', '').replace(/^\+(\d{2})(:?\d{2})?$/, ''):undefined"
+            :sensors="sensors"
+            :curr-sensor="item.type === 'sensor' ? {id: item?.value ?? '', name:'', type:'sensor'} : undefined"
+            :idx="item.id ?? conditions.length + 1"
+            @select-option="e=>addCondition(item.id, e?.type, e.value)"
+          />
           <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
             Удалить
           </button>
@@ -85,7 +92,7 @@ function setShowConditionalModal () {
     showConditionModal.value = true
     return
   }
-  conditions.value.push({ type: 'time', id: conditions.value.length + 1 })
+  conditions.value.push({ type: 'time', id: conditions.value.length + 1, value: Date() })
 }
 function deleteCondition (id:number) {
   conditions.value.splice(
@@ -108,16 +115,17 @@ function addCondition (id:number, type:'sensor'|'time', value:string) {
         conditions.value[isConditionExist].value = ''
         return
       }
-      conditions.value[isConditionExist].value = value
+      conditions.value[isConditionExist].value = value ?? ''
       return
     }
   }
   if (isConditionExist === -1) {
     if (type === 'time') {
-      conditions.value.push({ id, type, value: `2077-01-24T${value}:00${validTimeOffset}` })
+      conditions.value.push({ id: conditions.value.length + 1, type, value: `2077-01-24T${value}:00${validTimeOffset}` })
+      return
     }
     if (type === 'sensor') {
-      conditions.value.push({ id, type, value })
+      conditions.value.push({ id: conditions.value.length + 1, type, value: sensors.value[0] })
     }
   }
 }
@@ -158,9 +166,16 @@ async function create () {
     return
   }
   isLoading.value = true
+  let isSensorsValid = true
   const automationData:IAutomationCreateProps = {
     name: name.value,
-    value: conditions.value.map(el => el.value),
+    value: conditions.value.map((el) => {
+      if (el.type === "sensor" && !el.value?.length) {
+        useNotification('error', `Не выбран датчик для условия ${el.id}`)
+        isSensorsValid = false
+      }
+      return el.value
+    }),
     scenariosOrder: scenarios.value.map((el, id) => {
       return {
         scenarioId: el,
@@ -169,7 +184,7 @@ async function create () {
     }),
     allConditions: runByAllConditions.value,
   }
-  const response = await automationStore.create(automationData)
+  isSensorsValid && await automationStore.create(automationData)
   isLoading.value = false
 }
 </script>

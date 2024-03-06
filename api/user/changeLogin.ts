@@ -13,7 +13,7 @@ export default async function apiUserChangeLogin (props:IChangeLoginPayload) {
         useNotification('info',
           props.confirmationCode
             ? 'Данные успешно изменены'
-            : 'На ваш старый email был отправлен код подтверждения',
+            : 'На ваш email был отправлен код подтверждения',
         )
       }
     } catch {
