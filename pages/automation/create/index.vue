@@ -39,11 +39,11 @@
         <div v-for="item in conditions" :key="item.id" class="automation__conditions">
           <automation-condition
             :type="item.type"
-            :curr-time="item.type === 'time' ? Date()?.replace('2077-01-24T', '').replace(/^\+(\d{2})(:?\d{2})?$/, ''):undefined"
+            :curr-time="item.type === 'time' ? item.value : undefined"
             :sensors="sensors"
             :curr-sensor="item.type === 'sensor' ? {id: item?.value ?? '', name:'', type:'sensor'} : undefined"
             :idx="item.id ?? conditions.length + 1"
-            @select-option="e=>addCondition(item.id, e?.type, e.value)"
+            @select-option="e=>addCondition(item.id, item.type, e.value)"
           />
           <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
             Удалить
@@ -107,6 +107,7 @@ function addCondition (id:number, type:'sensor'|'time', value:string) {
     .replace('GMT', '')
     .substring(0, 3) + ':' + timeOffset[0]
     .replace('GMT', '').substring(3)
+
   if (isConditionExist > -1) {
     if (type === 'time') {
       conditions.value[isConditionExist].value = `2077-01-24T${value}:00${validTimeOffset}`
@@ -119,7 +120,7 @@ function addCondition (id:number, type:'sensor'|'time', value:string) {
   }
   if (isConditionExist === -1) {
     if (type === 'time') {
-      conditions.value.push({ id: conditions.value.length + 1, type, value: `2077-01-24T${value}:00${validTimeOffset}` })
+      conditions.value.push({ id: conditions.value.length + 1, type, value: Date()?.replace('2077-01-24T', '').replace(/^\+(\d{2})(:?\d{2})?$/, '') })
       return
     }
     if (type === 'sensor') {

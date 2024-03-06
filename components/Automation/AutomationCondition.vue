@@ -16,7 +16,7 @@
           v-for="sensor in sensors"
           :key="sensor.id"
           class="automation-condition__sensor"
-          @click="editable&&emit('select-option',{type,value:sensor.id})"
+          @click="editable&&emit('select-option',{type:'sensor',value:sensor.id})"
         >
           <icon :name="useIcoByDeviceType(sensor.type).name" size="28" />
           <span :class="`mask ${sensor.id === currSensor.id&&' --active'}`" />
