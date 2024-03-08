@@ -37,7 +37,7 @@
       >
     </div>
     <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
-      <toggle-switch
+      <ui-toggle
         role="button"
         :checked="capability.value"
         :ico="icon"
@@ -53,7 +53,7 @@
       <label for="range">
         {{ $t(`${type}-${instance}`) }}
       </label>
-      <icon name="service/devices/lightbulb-variant-outline" size="24" />
+      <ui-icon name="service/devices/lightbulb-variant-outline" size="24" />
       <input
         id="range"
         v-model="capability.value"
@@ -69,7 +69,7 @@
       <thermostat-input :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice({type:'devices.capabilities.range',value:Number(e)})}" />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
-      <toggle-switch
+      <ui-toggle
         :checked="String(capability.value).includes('true')||String(capability.value).includes('open')"
         :ico="props.icon"
         vertical-large
@@ -84,10 +84,10 @@
 </template>
 
 <script setup lang="ts">
-import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
+import UiToggle from "~/components/ui/UiToggle.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
 import { useUserStore } from "~/store/user"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import type { ServiceCapability } from "~/components/Service/ServiceCapability.vue"
 
 const props = defineProps<ServiceCapability>()

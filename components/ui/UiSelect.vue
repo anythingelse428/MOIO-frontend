@@ -1,7 +1,7 @@
 <template>
   <div id="custom-select" class="custom-select" @click="selectCollapsed = !selectCollapsed">
     <div class="custom-select__current-value">
-      {{ currentValue.length > 0 ? currentValueDescriptionByValue : selectName }}
+      {{ currentValue?.length > 0 ? currentValueDescriptionByValue : selectName }}
     </div>
     <transition name="fade">
       <div v-show="selectCollapsed" class="custom-select__options">
@@ -31,7 +31,7 @@ const props = defineProps<ISelectProps>()
 const emit = defineEmits(['custom-select'])
 const selectCollapsed = ref(false)
 const currentValueDescriptionByValue = computed(() => {
-  if (props.options && props.currentValue && props.currentValue?.length > 0 && props.options.length > 0) {
+  if (props.options && props.currentValue && props.currentValue?.length > 0 && props.options?.length > 0) {
     return props.options.find(el => el?.value === props?.currentValue)?.description
   }
   return ""

@@ -87,10 +87,10 @@ async function register () {
     login: email.value,
     password: password.value,
   }
-  if (clientId.value.length > 0) {
+  if (clientId.value?.length > 0) {
     registrationData.clientId = clientId.value
   }
-  if (confirmationCode.value.length > 0) {
+  if (confirmationCode.value?.length > 0) {
     registrationData.confirmationCode = confirmationCode.value
   }
   try {

@@ -31,11 +31,11 @@
           </div>
         </div>
 
-        <the-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
+        <ui-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
             <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{addCondition(newConditions.length + oldConditions.length + 1,e,undefined);showConditionModal = false}" />
           </template>
-        </the-modal>
+        </ui-modal>
         <div v-for="(item,i) in oldConditions" :key="item.id" class="automation__conditions">
           <automation-condition
             :type="item.type"
@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import TheModal from "~/components/shared/TheModal.vue"
+import UiModal from "~/components/ui/UiModal.vue"
 import { useScenarioStore } from "~/store/scenario"
 import { useAutomationStore } from "~/store/autmation"
 
@@ -230,7 +230,7 @@ async function getData () {
   const response = await automationStore.getById(id as string)
   isLoading.value = false
   if (!response?.id?.length || !response?.name?.length) {
-    window.history.back()
+    useRouter().push('/automation')
   }
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
@@ -248,7 +248,9 @@ async function getData () {
 getData()
 
 async function deleteAutomation () {
-  const r = await automationStore.deleteAutomation(id as string)
+  isLoading.value = true
+  await automationStore.deleteAutomation(id as string)
+  isLoading.value = false
 }
 </script>
 

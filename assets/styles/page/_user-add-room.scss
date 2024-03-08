@@ -113,44 +113,7 @@
         display: flex;
         justify-content: space-between;
         border-radius: 16px;
-        &-checkbox-wrapper{
-          position: relative;
-          width: 24px;
-          height: 24px;
-          .add-group-available-devices__list-item-checkbox-mask{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            inset: 0;
-            border: 2px solid $bg-primary;
-            background: $color-inactive;
-            border-radius: 4px;
-            transition: border-color, .2s;
-            
-            .ui-icon{
-              opacity: 0;
-            }
-          }
-          input[type="checkbox"]{
-            position: relative;
-            width: 24px;
-            height: 24px;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 1;
-            &:checked~.add-group-available-devices__list-item-checkbox-mask{
-              background: $color-active;
-              border-color: $color-active;
-              .ui-icon{
-                opacity: 1;
-              }
-            }
-          }
-          input[type="checkbox"]:hover ~ .add-group-available-devices__list-item-checkbox-mask{
-            border-color: $color-active;
-          }
-        }
+        
       }
     }
   }

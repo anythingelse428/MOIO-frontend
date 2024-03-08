@@ -9,7 +9,7 @@
           Если другой пользователь пригласил вас в свой дом, то вам на почту было отправлено письмо с кодом подтверждения
         </label>
         <div class="profile-invitation__input-container">
-          <input id="invite-code" v-model="code" placeholder="Код" type="text" class="profile-invitation__input">
+          <input id="invite-code" v-model="code" placeholder="Код" type="text" class="profile-invitation__input" required>
         </div>
       </div>
       <input type="submit" value="Подтвердить">
@@ -23,9 +23,11 @@ import { useGroupsStore } from "~/store/groups"
 const code = ref('')
 const groupStore = useGroupsStore()
 async function checkCode () {
-  await groupStore.checkCode(code.value)
-  await groupStore.getAll()
-  await groupStore.getHouses()
+  if (code.value.length) {
+    await groupStore.checkCode(code.value)
+    await groupStore.getAll()
+    await groupStore.getHouses()
+  }
 }
 </script>
 

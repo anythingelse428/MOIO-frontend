@@ -1,3 +1,5 @@
+import { type AxiosError } from "axios"
+
 export interface IAutomationUpdateProps {
   id: string,
   name: string,
@@ -18,8 +20,8 @@ export default async function apiAutomationsUpdate (props:IAutomationUpdateProps
         useNotification('info', 'Автоматизация обновлена')
       }
       return response
-    } catch {
-      console.log('Ошибка редактирования автоматизации')
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Что-то пошло не так')
     }
   })
 }

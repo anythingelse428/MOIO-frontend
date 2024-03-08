@@ -17,7 +17,7 @@
         <h2 class="automation__subheader">
           Условия
         </h2>
-        <div v-if="sensors.length" class="automation__run-conditions">
+        <div v-if="sensors?.length" class="automation__run-conditions">
           <div class="automation__description">
             Автоматизация выполнится если:
           </div>
@@ -31,11 +31,11 @@
           </div>
         </div>
 
-        <the-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
+        <ui-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
             <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{addCondition(conditions.length + 1,e,undefined); showConditionModal = false}" />
           </template>
-        </the-modal>
+        </ui-modal>
         <div v-for="item in conditions" :key="item.id" class="automation__conditions">
           <automation-condition
             :type="item.type"
@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import TheModal from "~/components/shared/TheModal.vue"
+import UiModal from "~/components/ui/UiModal.vue"
 import { useScenarioStore } from "~/store/scenario"
 import { useAutomationStore } from "~/store/autmation"
 import type { IAutomationCreateProps } from "~/api/automations/create"
@@ -152,15 +152,15 @@ function selectScenarios (id:string) {
 }
 const automationStore = useAutomationStore()
 async function create () {
-  if (!name.value.length) {
+  if (!name.value?.length) {
     useNotification("error", "Введите название автоматизации")
     return
   }
-  if (!conditions.value.length) {
+  if (!conditions.value?.length) {
     useNotification("error", "Не выбрано условие активации")
     return
   }
-  if (!scenarios.value.length) {
+  if (!scenarios.value?.length) {
     useNotification("error", "Не выбран сценарий")
     return
   }
@@ -183,7 +183,6 @@ async function create () {
     }),
     allConditions: runByAllConditions.value,
   }
-  console.log(automationData)
   isSensorsValid && await automationStore.create(automationData)
   isLoading.value = false
 }

@@ -102,7 +102,7 @@ export const useUserStore = defineStore('user', {
       const refresh = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME)
       if (refresh.value) {
         const { accessToken } = await apiUserRefreshToken(refresh.value)
-        if (accessToken.length) {
+        if (accessToken?.length) {
           this.accessToken = accessToken
           localStorage.setItem(config.public.REST_BASE_TOKEN_STORAGE_NAME, accessToken)
           return accessToken

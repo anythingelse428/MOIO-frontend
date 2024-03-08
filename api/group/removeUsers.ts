@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
 export default async function apiGroupRemoveUsers (groupsIds:string[], usersLogins:string[] = [], usersIds:number[] = []) {
@@ -13,8 +14,8 @@ export default async function apiGroupRemoveUsers (groupsIds:string[], usersLogi
       if (response.status === 200) {
         return response
       }
-    } catch {
-      useNotification('error', "Произошла ошибка")
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? "Произошла ошибка")
     }
   })
 }

@@ -13,7 +13,7 @@
 		font-size: 25px;
 		font-weight: 600;
 		color: $color-active;
-		width: 100%;
+		width: calc(100% - 24px);
 		text-align: center;
 		position: relative;
 		display: flex;

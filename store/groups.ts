@@ -69,7 +69,7 @@ export const useGroupsStore = defineStore('groups', {
       const id = groupId ?? this.currentHome
       if (id?.length > 0) {
         const data = await apiGroupGetAll(id)
-        if (data.length) {
+        if (data?.length) {
           this.groups = data
         }
       }
@@ -142,13 +142,7 @@ export const useGroupsStore = defineStore('groups', {
       }
     },
     async changeDevices (id:string, devices:string[]) {
-      try {
-        await apiDevicesChangeDevices(id, devices)
-        useNotification('info', 'Девайсы в группе успешно изменены')
-      } catch {
-        useNotification('error', 'Произошла ошибка при изменении устройств')
-        useRouter().push({ path: '/user/group/' + id })
-      }
+      await apiDevicesChangeDevices(id, devices)
     },
     async deleteGroup (id:string) {
       try {

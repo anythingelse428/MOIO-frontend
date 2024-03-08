@@ -1,19 +1,19 @@
 <template>
-  <div v-if="title.length>1 && url.length" class="aside-item">
+  <div v-if="title?.length>1 && url?.length" class="aside-item">
     <NuxtLink class="aside-item__link" :to="url">
-      <icon :name="icon" size="28" />
+      <ui-icon :name="icon" size="28" />
       <h2 class="aside-item__title">
         {{ title }}
       </h2>
     </NuxtLink>
     <div v-if="isEditable" class="aside-item__edit-btn" role="button" @click.prevent="router.push({path:'/user/group/edit/'+editPostfix+id})">
-      <icon name="pencil" />
+      <ui-icon name="pencil" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import type { TUiIconNames } from "#build/types/ui-icon"
 
 export interface AsideItem {

@@ -155,7 +155,7 @@ function thermostatAction () {
       const points = memoize(getPoints, 'points', [track.value?.getTotalLength()])
       const newVal = Number(p.value)
       const index = Math.max(1, newVal) / stepAttr
-      const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points.length - 1]
+      const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points?.length - 1]
       setCurrentSvg()
       thumb.value?.setAttribute('cx', point.x)
       thumb.value?.setAttribute('cy', point.y)
@@ -165,7 +165,7 @@ function thermostatAction () {
         const points = memoize(getPoints, 'points', [track.value?.getTotalLength()])
         const newVal = Number(getSliderValue(props.current))
         const index = Math.max(1, newVal) / stepAttr
-        const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points.length - 1]
+        const point = points[Number(index.toFixed())] ? points[Number(index.toFixed())] : points[points?.length - 1]
         currentMark.value?.setAttribute('cx', point.x)
         currentMark.value?.setAttribute('cy', (point.y * 1.01).toFixed(2))
       }

@@ -18,7 +18,7 @@
         :style="isDeviceOn && stuff?.hsv?.s && `color:rgb(${Math.round(color?.red*255)},${Math.round(color?.green*255)},${Math.round(color?.blue*255)})`"
         class="service-ico-wrapper"
       >
-        <icon :name="currentIcon" size="36" />
+        <ui-icon :name="currentIcon" size="36" />
         <div v-if="stuff?.value" class="service-stuff">
           {{ stuff.value }}{{ stuff.instance?.includes('temp')?'°C':'' }}{{ stuff.instance?.includes('brightness')?'%':'' }}
         </div>
@@ -30,22 +30,23 @@
       </div>
     </div>
     <div v-if="isMounted && capabilities?.length>=1" class="service-capabilities-list-wrapper">
-      <the-modal
+      <ui-modal
         :is-shown="isCapabilitiesShow"
         transition-fade-name="fade"
         transition-content-name="translate"
         backdrop-filter="blur(5px)"
+        width="320px"
       >
         <template #inner>
           <div ref="target" class="service-capabilities-modal" role="dialog">
             <div class="edit-ico" @click="isEdit=!isEdit">
-              <icon name="pencil" />
+              <ui-icon name="pencil" />
             </div>
             <div class="service-capabilities-modal__header">
               <form v-if="isEdit" class="service-capabilities-modal__header --edited" @submit.prevent="setNewDeviceName()">
                 <input v-model="newDeviceName" type="text">
                 <button type="submit" class="service-capabilities-modal__submit-name">
-                  <icon name="check" />
+                  <ui-icon name="check" />
                 </button>
               </form>
               <span v-show="!isEdit">
@@ -88,11 +89,11 @@
             </div>
           </div>
         </template>
-      </the-modal>
+      </ui-modal>
     </div>
-    <the-modal :is-shown="isDeleteModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
+    <ui-modal ref="deleteModal" :is-shown="isDeleteModalShow" transition-content-name="translate" backdrop-filter="blur(5px)" width="395px" @click-outside="isDeleteModalShow = false">
       <template #inner>
-        <div ref="deleteModal" class="delete-device-modal" role="dialog">
+        <div class="delete-device-modal" role="dialog">
           <div class="delete-device-modal__header">
             Вы уверерны, что хотите удалить устройство {{ name }}?
           </div>
@@ -106,14 +107,16 @@
           </div>
         </div>
       </template>
-    </the-modal>
-    <the-modal :is-shown="isIconModalShow" transition-content-name="translate" backdrop-filter="blur(5px)">
+    </ui-modal>
+    <ui-modal ref="iconModal" :is-shown="isIconModalShow" transition-content-name="translate" backdrop-filter="blur(5px)" width="528px" @click-outside="isIconModalShow=false">
       <template #inner>
-        <div ref="iconModal" class="change-icon-modal" role="dialog">
+        <div class="change-icon-modal" role="dialog">
           <div class="change-icon-modal__header">
-            Выберите иконку устройства
-            <button class="blank" @click="isIconModalShow = false">
-              <icon name="close" size="16" />
+            <div class="header">
+              Выберите иконку устройства
+            </div>
+            <button class="blank close-button" @click="isIconModalShow = false">
+              <ui-icon name="close" />
             </button>
           </div>
           <div class="change-icon-modal__icons">
@@ -126,10 +129,10 @@
               class="change-icon-modal__icon"
               @click="selectedIcon = icon"
             >
-              <icon
+              <ui-icon
                 :name="icon"
                 size="52"
-                :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
+                :class="selectedIcon?.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
               />
             </span>
           </div>
@@ -143,10 +146,10 @@
               class="change-icon-modal__icon"
               @click="selectedIcon = icon"
             >
-              <icon
+              <ui-icon
                 :name="icon"
                 size="52"
-                :class="selectedIcon.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
+                :class="selectedIcon?.length < 1 && currentIcon === icon ? '--selected' : selectedIcon === icon && '--selected'"
               />
             </span>
           </div>
@@ -155,19 +158,19 @@
           </button>
         </div>
       </template>
-    </the-modal>
+    </ui-modal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onLongPress } from '@vueuse/core'
 
-import TheModal from "~/components/shared/TheModal.vue"
+import UiModal from "~/components/ui/UiModal.vue"
 import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useDevicesStore } from "~/store/devices"
 import { useGroupsStore } from "~/store/groups"
 import { useCategoriesStore } from "~/store/categories"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import useHSVToRGB from "~/composables/useHSVToRGB"
 import type { TUiIconNames } from "#build/types/ui-icon"
 
@@ -231,12 +234,7 @@ onClickOutside(target, (event) => {
   // после закрытия модалки обновляю данные
   setDisplayedStuff()
 }, { ignore: [deleteModal, iconModal] })
-onClickOutside(deleteModal, () => {
-  isDeleteModalShow.value = false
-})
-onClickOutside(iconModal, () => {
-  isIconModalShow.value = false
-})
+
 onLongPress(service, () => {
   if (navigator.maxTouchPoints > 0) {
     isCapabilitiesShow.value = true
@@ -286,7 +284,7 @@ async function refreshData () {
   }
 }
 async function setNewDeviceName () {
-  if (newDeviceName.value.length && newDeviceName.value !== props.name) {
+  if (newDeviceName.value?.length && newDeviceName.value !== props.name) {
     await deviceStore.changeName(props.id, newDeviceName.value)
   }
   newDeviceName.value = props.name
@@ -355,69 +353,6 @@ onUnmounted(() => {
 @import "assets/styles/components/service";
 @import "assets/styles/components/service-capabilities-modal";
 @import "assets/styles/components/service-delete-modal";
-.change-icon-modal{
-  max-height: 85dvh;
-  overflow-y: auto;
-  width: min(528px,95%);
-  background: $bg-primary;
-  padding: 24px;
-  border-radius: 32px;
-  &::-webkit-scrollbar{
-    width: 8px;
-    background: $bg-accent;
-  }
-  &::-webkit-scrollbar-track{
-    background: $bg-accent;
+@import "assets/styles/components/service-edit-ico-modal";
 
-  }
-  &::-webkit-scrollbar-thumb{
-    background: $color-active;
-    border-radius: 12px;
-  }
-  &__header{
-    position: relative;
-    text-align: center;
-    color: $color-active;
-    @include capabilities-modal-header;
-    .blank{
-      position: absolute;
-      right: 0;
-      top: 8px;
-      cursor: pointer;
-    }
-  }
-  &__subheader{
-    width: 100%;
-  }
-  &__icons{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-    margin-top: 48px;
-    .ui-icon {
-      padding: 8px;
-      border: 1px solid transparent;
-      border-radius: 8px;
-      &.--selected{
-        border-color: $color-active;
-        box-shadow: 0 0 4px 0 $color-active;
-        -webkit-box-shadow: 0 0 4px 0 $color-active;
-      }
-    }
-  }
-  &__submit{
-    font-size: 24px;
-    font-weight: 600;
-    color: $bg-accent;
-    background: $color-active;
-    border: 0;
-    padding: 8px 12px ;
-    border-radius: 16px;
-    display: block;
-    margin-inline: auto;
-    margin-top: 32px;
-  }
-}
 </style>

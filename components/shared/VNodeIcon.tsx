@@ -1,6 +1,3 @@
-import { Suspense } from "vue"
-import Icon from "~/components/shared/Icon.vue"
-
 export default defineComponent({
   setup (props) {
     return () => (

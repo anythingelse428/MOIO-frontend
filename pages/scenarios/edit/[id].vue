@@ -188,11 +188,11 @@ async function getData () {
 }
 getData()
 async function updateScenario () {
-  if (!scenarioName.value.length) {
+  if (!scenarioName.value?.length) {
     useNotification("error", "Введите название сценария")
     return
   }
-  if (!Object.entries(capabilities.value).length) {
+  if (!Object.entries(capabilities.value)?.length) {
     useNotification("error", "Не выбрано ни одного устройства")
     return
   }
@@ -203,7 +203,6 @@ async function updateScenario () {
     devicesValueStates: capabilities.value,
     removeDevicesId: devicesForRemove.value,
   }
-  console.log(updateData)
   await scenarioStore.updateScenario(updateData)
   isLoading.value = false
 }

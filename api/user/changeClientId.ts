@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios"
 
 export default async function apiUserChangeClientId (clientId:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -7,8 +8,8 @@ export default async function apiUserChangeClientId (clientId:string) {
         useNotification('info', 'ClientId успешно изменен')
         return response
       }
-    } catch {
-      useNotification('error', 'Произошла ошибка при смене ClientId')
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при смене ClientId')
     }
   })
 }

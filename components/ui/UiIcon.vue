@@ -35,7 +35,6 @@ const customStyle = computed(() => {
 <style lang="scss">
 .ui-icon {
   &.nuxt-icon {
-    //display: inline-block;
     display: inline-flex;
     justify-content: center;
     align-items: center;

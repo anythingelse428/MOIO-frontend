@@ -10,21 +10,43 @@
       </h2>
       <div v-if="type === 'password'" class="user-edit__input-group">
         <label for="password" class="user-edit__input-group-label">Введите новый пароль</label>
-        <input id="password" v-model="newPassword" type="text" class="user-edit__input-group-input" required>
+        <input
+          id="password"
+          v-model="newPassword"
+          type="text"
+          class="user-edit__input-group-input"
+          required
+        >
       </div>
       <div v-if="type === 'email'" class="user-edit__input-group">
         <label for="login" class="user-edit__input-group-label">Введите новую почту</label>
-        <input id="login" v-model="login" type="text" class="user-edit__input-group-input" required>
+        <input
+          id="login"
+          v-model="login"
+          type="email"
+          class="user-edit__input-group-input"
+          required
+        >
       </div>
       <div class="user-edit__input-group">
-        <label for="old-pass" class="user-edit__input-group-label">Введите {{ type === 'password' ? 'старый' : "" }} пароль</label>
-        <input id="old-pass" v-model="oldPassword" type="text" class="user-edit__input-group-input" required>
+        <label for="old-pass" class="user-edit__input-group-label">
+          Введите {{ type === 'password' ? 'старый' : "" }} пароль
+        </label>
+        <input
+          id="old-pass"
+          v-model="oldPassword"
+          type="text"
+          class="user-edit__input-group-input"
+          required
+        >
       </div>
       <h2 v-if="step === 2" class="user-edit__subheader">
         Код подтверждения
       </h2>
       <div v-if="step === 2" class="user-edit__input-group">
-        <label for="confirmation" class="user-edit__input-group-label">Введите код подтверждения. Вам было отправлено письмо с кодом подтверждения на новую почту</label>
+        <label for="confirmation" class="user-edit__input-group-label">
+          Введите код подтверждения. Вам было отправлено письмо с кодом подтверждения на новую почту
+        </label>
         <input
           id="confirmation"
           v-model="code"
@@ -57,15 +79,15 @@ async function changeData () {
   isLoading.value = true
   if (step.value === 1) {
     if (type.value === "password") {
-      await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value })
+      const response = await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value })
       isLoading.value = false
-      step.value = 2
+      step.value = response ? 2 : 1
       return
     }
     if (type.value === "email") {
-      await userStore.changeLogin({ newLogin: login.value, password: oldPassword.value })
+      const response = await userStore.changeLogin({ newLogin: login.value, password: oldPassword.value })
       isLoading.value = false
-      step.value = 2
+      step.value = response ? 2 : 1
       return
     }
   }

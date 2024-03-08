@@ -6,7 +6,7 @@
         Добавить пользователя
       </div>
       <div class="modal-close" @click="emit('modal-close')">
-        <icon name="close" />
+        <ui-icon name="close" />
       </div>
     </div>
     <form action="" method="post" class="add-roommate-modal__form">
@@ -22,16 +22,16 @@
           class="add-roommate-modal__input-group-input"
         >
         <button class="add-roommate-modal__add-button" @click.prevent="addToLoginsArray()">
-          <icon name="plus" />
+          <ui-icon name="plus" />
         </button>
       </div>
       <div class="add-roommate-modal__users">
-        <div v-if="logins.length === 0" class="add-roommate-modal__users-user--placeholder">
+        <div v-if="logins?.length === 0" class="add-roommate-modal__users-user--placeholder">
           Здесь будет отображен список пользователей
         </div>
         <div v-for="login in logins" :key="login" class="add-roommate-modal__users-user">
           {{ login }}
-          <icon
+          <ui-icon
             name="delete"
             color="#D15151"
             size="20"
@@ -44,7 +44,7 @@
         <label for="house" class="add-roommate-modal__input-group-label">
           Выберите дом, доступный пользователю
         </label>
-        <custom-select
+        <ui-select
           v-if="uppperGroups"
           style="width: 100%"
           :options="selectDataHouses"
@@ -54,22 +54,25 @@
         />
       </div>
       <div class="add-roommate-modal__groups">
+        <div class="" v-show="selectDataGroups.length">
+          Выбрать все
+          <ui-checkbox @check="e=>selectGroups(e,'all')" :checked="selectDataGroups.length === groupIds.length" />
+        </div>
+
         <label for="groups" class="add-roommate-modal__input-group-label">
           Выберите группы, доступные пользователю
         </label>
+
         <div
           v-for="group in selectDataGroups"
           :key="group.id"
           class="add-roommate-modal__groups-item"
         >
           <span>{{ group.name }}</span>
-          <div class="add-roommate-modal__groups-item-checkbox">
-            <input :id="group.id" type="checkbox" name="group-id" @change="e=>selectGroups(e,group.id)">
-            <icon name="check" size="20" />
-          </div>
+          <ui-checkbox @click="e=>selectGroups(e,group.id)" :checked="groupIds.includes(group.id)" />
         </div>
       </div>
-      <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" :disabled="logins.length===0" @click.prevent="addRoommate()">
+      <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" :disabled="logins?.length===0" @click.prevent="addRoommate()">
     </form>
   </div>
 </template>
@@ -77,9 +80,9 @@
 <script setup lang="ts">
 
 import {useGroupsStore} from "~/store/groups"
-import CustomSelect from "~/components/shared/CustomSelect.vue"
+import UiSelect from "~/components/ui/UiSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import {useUserStore} from "~/store/user"
 
 const groupStore = useGroupsStore()
@@ -103,11 +106,11 @@ const selectDataHouses = ref(uppperGroups.value.reduce((acc:{ description:string
 const selectDataGroups = ref<{id:string, name:string}[]>([])
 await groupStore.getAll()
 function addToLoginsArray () {
-  if (logins.value.length > 0 && logins.value.find(el => el?.toLowerCase() === login.value.toLowerCase())) {
+  if (logins.value?.length > 0 && logins.value?.find(el => el?.toLowerCase() === login.value.toLowerCase())) {
     useNotification('error', 'Этот пользователь уже есть в списке')
     return false
   }
-  if (login.value.length > 0) {
+  if (login.value?.length > 0) {
     const emailRegex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gm
     if (!login.value.match(emailRegex)) {
       useNotification('error', 'Введите валидный email')
@@ -118,7 +121,7 @@ function addToLoginsArray () {
   }
 }
 function removeFromLoginsArray (login:string) {
-  if (logins.value.length > 0) {
+  if (logins.value?.length) {
     const idx = logins.value.findIndex(el => el.toLowerCase() === login.toLowerCase())
     logins.value.splice(idx, 1)
   }
@@ -128,14 +131,21 @@ async function getSubgroups () {
   selectDataGroups.value = await groupStore.getSubgroups(selectedHouse.value)
 }
 function selectGroups (e:Event, id:string) {
+  if (id === 'all'){
+    if (groupIds.value.length < selectDataGroups.value.length){
+      groupIds.value = [...selectDataGroups.value.map(el=>el.id)]
+      return;
+    }
+    groupIds.value = []
+  }
   if ((<HTMLInputElement>e.target)?.checked) {
     groupIds.value.push(id)
     return
   }
-    groupIds.value = groupIds.value.filter(el => el !== id)
+  groupIds.value = groupIds.value.filter(el => el !== id)
 }
 async function addRoommate () {
-  if (groupIds.value.length === 0 && selectedHouse.value.length === 0) {
+  if (groupIds.value?.length === 0 && selectedHouse.value?.length === 0) {
     useNotification('error', 'Выберите группу')
     return
   }

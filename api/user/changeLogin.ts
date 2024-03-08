@@ -1,3 +1,4 @@
+import { type AxiosError } from "axios"
 
 
 export interface IChangeLoginPayload {
@@ -16,8 +17,8 @@ export default async function apiUserChangeLogin (props:IChangeLoginPayload) {
             : 'На ваш email был отправлен код подтверждения',
         )
       }
-    } catch {
-      useNotification('error', 'Произошла ошибка при смене почты')
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при смене почты')
     }
   })
 }

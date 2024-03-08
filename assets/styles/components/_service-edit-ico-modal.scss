@@ -1,0 +1,71 @@
+.change-icon-modal{
+	max-height: 85dvh;
+	overflow-y: auto;
+	width: 100%;
+	background: $bg-primary;
+	padding-inline: 8px;
+	&::-webkit-scrollbar{
+		width: 8px;
+		background: $bg-accent;
+	}
+	&::-webkit-scrollbar-track{
+		background: $settings-color;
+		
+	}
+	&::-webkit-scrollbar-thumb{
+		background: $color-active;
+		border-radius: 12px;
+	}
+	&__header{
+		width: 100%;
+		display: inline-flex;
+		align-items: flex-end;
+		.header{
+			@include capabilities-modal-header;
+			color: $color-active;
+			width: calc(100% - 16px);
+			margin-inline: auto;
+			text-align: center;
+		}
+		.close-button{
+			font-size: 24px;
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+	}
+	&__subheader{
+		width: 100%;
+	}
+	&__icons{
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		align-items: center;
+		justify-content: center;
+		margin-top: 48px;
+		.ui-icon {
+			padding: 8px;
+			border: 1px solid transparent;
+			border-radius: 8px;
+			&.--selected{
+				border-color: $color-active;
+				box-shadow: 0 0 4px 0 $color-active;
+				-webkit-box-shadow: 0 0 4px 0 $color-active;
+			}
+		}
+	}
+	&__submit{
+		font-size: 24px;
+		font-weight: 600;
+		color: $bg-accent;
+		background: $color-active;
+		border: 0;
+		padding: 8px 12px ;
+		border-radius: 16px;
+		display: block;
+		margin-inline: auto;
+		margin-top: 32px;
+	}
+}

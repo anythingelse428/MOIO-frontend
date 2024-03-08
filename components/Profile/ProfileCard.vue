@@ -2,7 +2,7 @@
   <div class="profile-card">
     <loader-screen :is-loading="isLoading" />
     <div class="profile-card__avatar">
-      <img v-if="avatarUrl.length" :src="avatarUrl" width="136" height="136">
+      <img v-if="avatarUrl?.length" :src="avatarUrl" width="136" height="136">
       <div v-else class="profile-card__avatar --blank" />
     </div>
     <div class="profile-card-info">
@@ -13,13 +13,13 @@
         <span v-show="!isNameChanging" class="name">
           {{ displayedName }}
           <button class="blank" type="submit" @click="isNameChanging=!isNameChanging">
-            <icon name="pencil" size="18" />
+            <ui-icon name="pencil" size="18" />
           </button>
         </span>
         <form v-show="isNameChanging" method="post" class="profile-card-info__change-name">
           <input v-model="newName" type="text" class="profile-card-info__change-name-input" required>
           <button class="blank" @click.prevent="changeName()">
-            <icon name="check" size="18" />
+            <ui-icon name="check" size="18" />
           </button>
         </form>
       </div>
@@ -36,10 +36,10 @@
               @click="!isClientIdChanging && copyToClipBoard(clientId as string,'clientId')"
             >
             <button class="blank" @click="isClientIdChanging = !isClientIdChanging">
-              <icon name="pencil" size="18" />
+              <ui-icon name="pencil" size="18" />
             </button>
             <button v-if="isClientIdChanging" class="blank --submit" @click="changeClientId()">
-              <icon name="check" size="16" />
+              <ui-icon name="check" size="16" />
             </button>
           </div>
         </div>
@@ -52,7 +52,7 @@
               {{ login }}
             </span>
             <nuxt-link to="/user/edit?email=true">
-              <icon name="pencil" size="18" />
+              <ui-icon name="pencil" size="18" />
             </nuxt-link>
           </div>
         </div>
@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import { useUserStore } from "~/store/user"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
@@ -88,7 +88,7 @@ const isLoading = ref(false)
 const newName = ref(props.displayedName)
 const newClientId = ref(props.clientId ?? '')
 async function changeName () {
-  if (!newName.value.length) {
+  if (!newName.value?.length) {
     useNotification('error', 'Имя не может быть пустым')
     return
   }

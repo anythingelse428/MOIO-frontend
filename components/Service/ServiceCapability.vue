@@ -15,7 +15,7 @@
       <input id="" v-model="saturation" step="1" type="range" :min="0" :max="100" name="" class="service-capability__saturation" @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
     </div>
     <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
-      <toggle-switch
+      <ui-toggle
         role="button"
         :checked="capability.value"
         :ico="icon??toggleSwitchIco?.name"
@@ -31,7 +31,7 @@
       <label for="range">
         {{ $t(`${type}-${instance}`) }}
       </label>
-      <icon name="service/devices/lightbulb-variant-outline" size="24" />
+      <ui-icon name="service/devices/lightbulb-variant-outline" size="24" />
       <input
         id="range"
         v-model="capability.value"
@@ -54,7 +54,12 @@
       />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
-      <toggle-switch :checked="String(capability.value).includes('open')||String(capability.value).includes('true')" vertical-large openable :ico="icon??toggleSwitchIco?.name" @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}" />
+      <ui-toggle
+        :checked="String(capability.value).includes('open')||String(capability.value).includes('true')"
+        vertical-large openable
+        :ico="icon??toggleSwitchIco?.name"
+        @check="(e)=>{capability.value=e;updateDevice({type:instance,value:capability.value})}"
+      />
     </div>
   </div>
 </template>
@@ -62,11 +67,11 @@
 <script setup lang="ts">
 import useThrottle from "~/composables/useThrottle"
 import { useDevicesStore } from "~/store/devices"
-import ToggleSwitch from "~/components/shared/ToggleSwitch.vue"
+import UiToggle from "~/components/ui/UiToggle.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
 import { useGroupsStore } from "~/store/groups"
 import useHSVToRGB from "~/composables/useHSVToRGB"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import type { TUiIconNames } from "#build/types/ui-icon"
 
 export type ServiceCapability = {

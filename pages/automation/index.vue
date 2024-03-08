@@ -13,8 +13,8 @@
           <div class="scenarios-available__list-item-name">
             {{ scenario.name }}
           </div>
-          <div class="scenarios-available__list-item-edit">
-            <icon name="pencil" role="link" @click.stop="redirect(`automation/${scenario.id}`)" />
+          <div class="scenarios-available__list-item-edit" @click.stop="redirect(`automation/${scenario.id}`)">
+            <ui-icon name="pencil" role="link" />
           </div>
         </div>
       </div>
@@ -27,7 +27,7 @@
 import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { useAutomationStore } from "~/store/autmation"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 
 const isLoading = ref(true)
 const scenarios = ref<IAllScenariosResponse[]>([])

@@ -12,8 +12,15 @@
         <span v-for="group in groups" :key="group.id" data-end=", ">{{ group.name }}</span>
       </div>
     </div>
-    <icon name="chevron-right" class="roommates-card__chevron" size="36" />
-    <the-modal :is-shown="isSettingsModalShow" backdrop-filter="blur(3px)" transition-content-name="translate">
+    <ui-icon name="chevron-right" class="roommates-card__chevron" size="36" />
+    <ui-modal
+      ref="settings"
+      :is-shown="isSettingsModalShow"
+      backdrop-filter="blur(3px)"
+      transition-content-name="translate"
+      width="532px"
+      @click-outside="closeModal"
+    >
       <template #inner>
         <roommate-settings
           :avatar-url="avatarUrl"
@@ -22,13 +29,13 @@
           @modal-close="closeModal"
         />
       </template>
-    </the-modal>
+    </ui-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import Icon from "~/components/shared/Icon.vue"
-import TheModal from "~/components/shared/TheModal.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
+import UiModal from "~/components/ui/UiModal.vue"
 import RoommateSettings from "~/components/Profile/RoommateSettings.vue"
 import { useGroupsStore } from "~/store/groups"
 
@@ -44,9 +51,13 @@ export type ProfileRoommates = {
 const props = defineProps<ProfileRoommates>()
 const groupStore = useGroupsStore()
 const isSettingsModalShow = ref(false)
-function closeModal () {
-  isSettingsModalShow.value = false
+function closeModal (e:Event) {
+  if (isSettingsModalShow.value) {
+    e.stopPropagation()
+    isSettingsModalShow.value = false
+  }
 }
+
 </script>
 
 <style lang="scss">

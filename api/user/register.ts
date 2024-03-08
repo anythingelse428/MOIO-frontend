@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
 export interface IRegisterUserProps {
@@ -22,7 +23,7 @@ export default async function apiUserRegister (props:IRegisterUserProps):Promise
       }
     } catch (e) {
       console.log(e)
-      useNotification('error', response?.data ?? 'Ошибка регистрации')
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка регистрации')
     }
   })
 }

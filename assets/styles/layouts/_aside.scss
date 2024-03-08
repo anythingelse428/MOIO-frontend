@@ -17,7 +17,7 @@
       width: 4px;
     }
     &::-webkit-scrollbar-track {
-      background: $bg-primary;
+      background: $settings-color;
     }
     &::-webkit-scrollbar-thumb {
       background: #2a2a29;
@@ -55,7 +55,7 @@
     width: 4px;
   }
   &::-webkit-scrollbar-track {
-    background: $bg-primary;
+    background: $settings-color;
   }
   &::-webkit-scrollbar-thumb {
     background: #2a2a29;

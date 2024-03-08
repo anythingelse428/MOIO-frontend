@@ -2,18 +2,18 @@
   <div class="automation-add-condition">
     <div class="automation-add-condition__header">
       Добавить условие
-      <icon name="close" role="button" color="#fff" @click="emit('hide-modal')" />
+      <ui-icon name="close" role="button" color="#fff" @click="emit('hide-modal')" />
     </div>
     <form class="automation-add-condition__form" @submit.prevent="emit('add-condition', condition)">
       <div class="automation-add-condition__conditions">
         <div :class="`automation-add-condition__condition ${condition==='time'&&'--active'}`" @click="condition='time'">
-          <icon name="service/devices/clock-time-three-outline" size="100" />
+          <ui-icon name="service/devices/clock-time-three-outline" size="100" />
           <div class="automation-add-condition__condition-name">
             Время
           </div>
         </div>
         <div :class="`automation-add-condition__condition ${condition==='sensor'&&'--active'}`" @click="condition='sensor'">
-          <icon name="service/sensor/leak" size="100" />
+          <ui-icon name="service/sensor/leak" size="100" />
           <div class="automation-add-condition__condition-name">
             Датчик
           </div>
@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 
 const emit = defineEmits(['add-condition', 'hide-modal'])
 const condition = ref<'sensor'|'time'>('time')

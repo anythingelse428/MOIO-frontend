@@ -2,10 +2,10 @@
   <div class="header-menu">
     <nuxt-link v-for="item in items" :key="item.icon+item.name+item.id" :to="item?.url||'/'">
       <div :class="`header-menu__item ${item?.isActive?'--active':''}`">
-        <icon :name="item.icon" size="28" />
+        <ui-icon :name="item.icon" size="28" />
         <span class="header-menu__item-title">{{ item.name }}</span>
         <nuxt-link v-if="item.isEditable" :to="`/user/group/edit/house/${item.id}`" class="header-menu__item-edit">
-          <icon name="pencil" :size="28" />
+          <ui-icon name="pencil" :size="28" />
         </nuxt-link>
       </div>
     </nuxt-link>
@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import type { TUiIconNames } from "#build/types/ui-icon"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 
 export interface HeaderMenuProps {
   items:{

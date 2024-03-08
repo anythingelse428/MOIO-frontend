@@ -4,7 +4,7 @@
       {{ name }}
     </h1>
     <h1 v-if="hideEmpty && (devices?.length>0||inverseParent?.length)" class="group-list__header" @click="isCollapsed = !isCollapsed">
-      <icon v-if="!isScenarios" :name="isCollapsed?'minus-thick':'plus-thick'" :size="28" />
+      <ui-icon v-if="!isScenarios" :name="isCollapsed?'minus-thick':'plus-thick'" :size="28" />
       {{ name }}
     </h1>
     <div v-if="filteredDevices()?.length&&isScenarios" class="subgroup-item__service-list">
@@ -61,7 +61,7 @@
 import type { IAllDevicesResponse } from "~/api/device/getAll"
 import TheService from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 
 export interface GroupList {
   name?:string,
@@ -85,7 +85,7 @@ const filteredDevices = () => {
     temp = props.devices?.filter(el => !el.id.includes('_ch')) as IAllDevicesResponse[]
   }
   if (props.hideSensors && typeof props.hideSensors !== 'undefined') {
-    if (temp.length > 0) {
+    if (temp?.length > 0) {
       temp = temp?.filter(el => !el.id.includes('_sen')) as IAllDevicesResponse[]
       return temp
     }

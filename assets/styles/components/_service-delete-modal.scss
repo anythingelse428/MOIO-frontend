@@ -1,12 +1,11 @@
 .delete-device-modal{
-  border-radius: 25px;
-  padding: 36px 16px;
+  padding: 0 8px;
   position: relative;
   overflow-y: auto;
   background: $bg-primary;
   display: flex;
   flex-direction: column;
-  max-width: min(95%,395px);
+  max-width: 100%;
   &__header {
     @include capabilities-modal-header;
     text-align: center;

@@ -18,12 +18,12 @@
           class="automation-condition__sensor"
           @click="editable&&emit('select-option',{type:'sensor',value:sensor.id})"
         >
-          <icon :name="useIcoByDeviceType(sensor.type).name" size="28" />
+          <ui-icon :name="useIcoByDeviceType(sensor.type).name" size="28" />
           <span :class="`mask ${sensor.id === currSensor.id&&' --active'}`" />
           {{ sensor.name }}
         </div>
         <div v-if="currSensor?.id&&!editable" class="automation-condition__sensor">
-          <icon :name="useIcoByDeviceType(currSensor.type).name" size="28" />
+          <ui-icon :name="useIcoByDeviceType(currSensor.type).name" size="28" />
           <span class="mask --active" />
           {{ currSensor.name }}
         </div>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 
 export interface AutomationConditionProps {
   idx:number|string

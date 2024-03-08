@@ -171,7 +171,7 @@ function getRoomsName (data:IGroupResponseItem) {
 getRoomsName(data.value)
 
 async function createScenario () {
-  if (!scenarioName.value.length) {
+  if (!scenarioName.value?.length) {
     useNotification('error', 'Введите название сценария')
     return
   }

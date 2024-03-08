@@ -31,7 +31,7 @@ export const useCategoriesStore = defineStore('categories', {
   actions: {
     async getAll () {
       const data = await apiCategoryGetAll()
-      if (data.length) {
+      if (data?.length) {
         this.categories = data
       }
     },

@@ -26,7 +26,7 @@
             }}
           </h2>
           <div class="add-group__preview-wrapper">
-            <div v-if="previewData.name.length" class="add-group__preview">
+            <div v-if="previewData.name?.length" class="add-group__preview">
               <div class="add-group__preview-section">
                 <div class="add-group__preview-section-title">
                   Название дома
@@ -49,7 +49,7 @@
                         users.splice(users.findIndex(el=>el.id === user.id),1)
                       }"
                     >
-                      <Icon
+                      <ui-icon
                         v-if="user.id !== groupStore.currentGroup.groupCreatorId"
                         name="delete"
                         color="#D15151"
@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 
 let oldName = ''
 const isLoading = ref(false)
@@ -135,10 +135,10 @@ async function editGroup () {
   if (name.value !== oldName) {
     await groupStore.changeName(id, name.value)
   }
-  if (existingDevices.value.length > 0) {
+  if (existingDevices.value?.length > 0) {
     await groupStore.changeDevices(groupStore.currentHome, existingDevices.value.map(el => el.id))
   }
-  if (devices.value.length > 0) {
+  if (devices.value?.length > 0) {
     await groupStore.changeDevices(id, devices.value.map(el => el.id))
   }
   if (usersForRemove.value?.length > 0) {

@@ -26,25 +26,25 @@
         />
       </div>
       <button class="profile-roommates-section__add-section" title="Добавить пользователя в дом" @click="isAddRoommatesModalShow = true">
-        <icon name="plus" />
+        <ui-icon name="plus" />
       </button>
-      <the-modal
+      <ui-modal
+        ref="addRoommateModal"
         :is-shown="isAddRoommatesModalShow"
         backdrop-filter="blur(3px)"
         transition-fade-name="fade"
         transition-content-name="translate"
-        bg-color=""
         place=".layout"
+        width="528px"
+        @click-outside="isAddRoommatesModalShow = false"
       >
         <template #inner>
-          <div ref="addRoommateModal" class="">
-            <add-roommate-modal @modal-close="isAddRoommatesModalShow = false" />
-          </div>
+          <add-roommate-modal @modal-close="isAddRoommatesModalShow = false" />
         </template>
-      </the-modal>
+      </ui-modal>
     </div>
     <!--    <profile-settings />-->
-    <div v-if="invitedHouses.length" class="invited-house-section">
+    <div v-if="invitedHouses?.length" class="invited-house-section">
       <h2 class="invited-house-section__header">
         Дома, в которые меня пригласили
       </h2>
@@ -62,10 +62,10 @@
 import { useUserStore } from '~/store/user'
 import { useGroupsStore } from "~/store/groups"
 import { useDevicesStore } from "~/store/devices"
-import TheModal from "~/components/shared/TheModal.vue"
+import UiModal from "~/components/ui/UiModal.vue"
 import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import InvitationForm from "~/components/Profile/InvitationForm.vue"
 import type { IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
 import InvitedHouse from "~/components/Profile/InvitedHouse.vue"

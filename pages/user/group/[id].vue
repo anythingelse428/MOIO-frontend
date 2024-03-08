@@ -7,6 +7,7 @@
       :name="currentGroup?.name"
       :devices="currentGroup?.devices"
       :inverse-parent="currentGroup?.inverseParent"
+      :hide-empty="true"
     />
   </div>
 </template>
@@ -28,7 +29,6 @@ const groupStore = useGroupsStore()
 const { currentGroup } = storeToRefs(groupStore)
 const route = useRoute()
 const groupId = route.params.id as string
-const groupData = ref<IGroupData>({ name: '', devices: [], inverseParent: [] })
 const isLoading = ref(true)
 
 async function fetchGroups () {

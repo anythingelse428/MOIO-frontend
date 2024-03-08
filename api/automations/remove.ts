@@ -8,7 +8,7 @@ export default async function apiAutomationsRemove (props:string[]) {
       if (response?.status === 200) {
         useNotification('info', 'Автоматизация успешно удалена')
         setTimeout(() => {
-          window.history.back()
+          useRouter().push('/automation')
         }, 1000)
       }
       return response

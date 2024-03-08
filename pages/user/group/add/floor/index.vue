@@ -1,94 +1,91 @@
 <template>
   <div class="add-group">
-    <loader-screen :is-loading="isLoading"></loader-screen>
+    <loader-screen :is-loading="isLoading" />
     <h1 class="add-group__header">
       Добавить этаж
     </h1>
     <form method="post" class="add-group__form" @submit.prevent="addGroup()">
       <div class="add-group__input-group">
         <label for="group" class="add-group__label">Введите название этажа</label>
-        <input id="group" v-model="name"  type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
+        <input id="group" v-model="name" type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
       </div>
-      <div v-if="existingHouses.length" class="add-group__input-group">
+      <div v-if="existingHouses?.length" class="add-group__input-group">
         <label for="house" class="add-group__label">Выберите дом </label>
-        <custom-select :options="selectData" :current-value="house" @custom-select="(e)=>house = e" select-name="Выберите дом"></custom-select>
+        <ui-select
+          :options="selectData"
+          :current-value="house"
+          select-name="Выберите дом"
+          @custom-select="(e)=>house = e"
+        />
       </div>
-      <div v-if="house?.length>10 && name.length" class="add-group-available-devices">
-          <h2 class="add-group-available-devices__header">
-            {{existingDevices?.length?
-              'Доступные устройства':
-              'Устройства уже распределены по группам или не найдены'
-            }}
-          </h2>
-          <div class="add-group-available-devices__list" v-if="existingDevices?.length>0">
-            <div
-                v-for="device in existingDevices"
-                :key="device.id"
-                class="add-group-available-devices__list-item"
-            >
-              <label for="device">{{ device?.name }}</label>
-              <div class="add-group-available-devices__list-item-checkbox-wrapper">
-                <input
-                    id="device"
-                    type="checkbox"
-                    name="device"
-                    @change="(e)=>setItem(e, devices, {id:device.id,name:device.name})"
-                    :checked="devices.findIndex(el=>el.id === device.id)>-1">
-                <span class="add-group-available-devices__list-item-checkbox-mask">
-                   <icon name="check" size="24"/>
-                </span>
-              </div>
-            </div>
-          </div>
-      </div>
-      <div v-if="house?.length>10 && previewData.name.length" class="add-group-available-devices">
+      <div v-if="house?.length>10 && name?.length" class="add-group-available-devices">
         <h2 class="add-group-available-devices__header">
-          {{existingRooms?.length?
+          {{ existingDevices?.length?
+            'Доступные устройства':
+            'Устройства уже распределены по группам или не найдены'
+          }}
+        </h2>
+        <div v-if="existingDevices?.length>0" class="add-group-available-devices__list">
+          <div
+            v-for="device in existingDevices"
+            :key="device.id"
+            class="add-group-available-devices__list-item"
+          >
+            <label for="device">{{ device?.name }}</label>
+            <ui-checkbox
+              :checked="devices.findIndex(el=>el.id === device.id)>-1"
+              @check="(e)=>setItem(e, devices, {id:device.id,name:device.name})"
+            />
+          </div>
+        </div>
+      </div>
+      <div v-if="house?.length>10 && previewData.name?.length" class="add-group-available-devices">
+        <h2 class="add-group-available-devices__header">
+          {{ existingRooms?.length?
             'Доступные комнаты':
             'Комнаты уже распределены по этажам или не найдены'
           }}
         </h2>
-       <div class="add-group-available-devices__list" v-if="existingRooms?.length>0">
-        <div
+        <div v-if="existingRooms?.length>0" class="add-group-available-devices__list">
+          <div
             v-for="room in existingRooms"
             :key="room.id"
             class="add-group-available-devices__list-item"
-        >
-          <label for="device">{{ room?.name }}</label>
-          <div class="add-group-available-devices__list-item-checkbox-wrapper">
-            <input id="device" type="checkbox" name="device" @change="(e)=>setItem(e, rooms,{id:room.id,name:room.name})" :checked="rooms.findIndex(el=>el.id === room.id)>-1">
-            <span class="add-group-available-devices__list-item-checkbox-mask">
-              <icon name="check" size="24"/>
-            </span>
+          >
+            <label for="device">{{ room?.name }}</label>
+            <ui-checkbox
+              :checked="rooms.findIndex(el=>el.id === room.id)>-1"
+              @check="(e)=>setItem(e, rooms,{id:room.id,name:room.name})"
+            />
           </div>
         </div>
       </div>
-      </div>
       <div class="add-group__preview-wrapper">
-        <div class="add-group__preview" v-if="previewData.name.length">
+        <div v-if="previewData.name?.length" class="add-group__preview">
           <div class="add-group__preview-section">
             <div class="add-group__preview-section-title">
               Название комнаты
             </div>
             <div class="add-group__preview-section-value">
-            {{previewData.name}}
+              {{ previewData.name }}
             </div>
           </div>
           <div class="add-group__preview-section">
             <div class="add-group__preview-section-title">
               Устройства этажа
             </div>
-            <div class="add-group__preview-section-value" v-if="previewData.devices?.length">
-              <div class="add-group__preview-section-device" v-for="item in previewData.devices" :key="item.id">
-                {{item?.name}}
-                <icon
-                    name="delete"
-                    color="#D15151"
-                    size="20"
-                    @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"/>
+            <div v-if="previewData.devices?.length" class="add-group__preview-section-value">
+              <div v-for="item in previewData.devices" :key="item.id" class="add-group__preview-section-device">
+                {{ item?.name }}
+                <ui-icon
+                  name="delete"
+                  color="#D15151"
+                  size="20"
+                  @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"
+                />
               </div>
             </div>
-            <div class="add-group__preview-section-value" v-else>
+            <div v-else class="add-group__preview-section-value">
               Нет выбранных устройств
             </div>
           </div>
@@ -96,17 +93,18 @@
             <div class="add-group__preview-section-title">
               Комнаты на этаже
             </div>
-            <div class="add-group__preview-section-value" v-if="previewData.rooms?.length">
-              <div class="add-group__preview-section-device" v-for="item in previewData.rooms" :key="item.id">
-                {{item?.name}}
-                <icon
-                    name="delete"
-                    color="#D15151"
-                    size="20"
-                    @click="(e)=>setItem(e,rooms,{id:item.id,name:item.name})"/>
+            <div v-if="previewData.rooms?.length" class="add-group__preview-section-value">
+              <div v-for="item in previewData.rooms" :key="item.id" class="add-group__preview-section-device">
+                {{ item?.name }}
+                <ui-icon
+                  name="delete"
+                  color="#D15151"
+                  size="20"
+                  @click="(e)=>setItem(e,rooms,{id:item.id,name:item.name})"
+                />
               </div>
             </div>
-            <div class="add-group__preview-section-value" v-else>
+            <div v-else class="add-group__preview-section-value">
               Нет выбранных комнат
             </div>
           </div>
@@ -121,11 +119,11 @@
 
 
 <script setup lang="ts">
-import {useGroupsStore} from "~/store/groups"
-import {useUserStore} from "~/store/user"
-import CustomSelect from "~/components/shared/CustomSelect.vue"
+import { useGroupsStore } from "~/store/groups"
+import { useUserStore } from "~/store/user"
+import UiSelect from "~/components/ui/UiSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)
@@ -133,37 +131,37 @@ const name = ref('')
 const house = ref(groupStore.currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
 const rooms = ref<{ id: string, name:string }[]>([])
-const existingRooms = ref<{id:string,name:string}[]>()
+const existingRooms = ref<{id:string, name:string}[]>()
 const existingHouses = ref()
 const existingDevices = ref()
 const upperGroups = ref(groupStore.uppperGroups)
-existingHouses.value =  upperGroups.value.filter(el=>el.groupCreatorId === useUserStore().id)
-const selectData = ref(existingHouses.value.reduce((acc:{description:string,value:string}[], curr:{name:string,id:string})=>[...acc,{description:curr.name,value:curr.id}],[]))
+existingHouses.value = upperGroups.value.filter(el => el.groupCreatorId === useUserStore().id)
+const selectData = ref(existingHouses.value.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], []))
 const previewData = ref({
-  name: name,
-  devices: devices,
-  rooms: rooms
+  name,
+  devices,
+  rooms,
 })
-async function getRoomsByHomeId(){
+async function getRoomsByHomeId () {
   isLoading.value = true
   await groupStore.getAll(house.value)
   isLoading.value = false
-  existingRooms.value = groupStore.groups.filter(el => el.typeId===3 && el.parentId===house.value).map(el=>{
+  existingRooms.value = groupStore.groups.filter(el => el.typeId === 3 && el.parentId === house.value).map((el) => {
     return {
       id: el.id,
       name: el.name ?? '',
-  }})
+    }
+  })
 }
 getRoomsByHomeId()
-function setItem (e:Event, target:{ id: string, name:string }[], data:{ id: string, name:string }) {
-  const isChecked = (<HTMLInputElement>e.target)?.checked
+function setItem (isChecked:boolean, target:{ id: string, name:string }[], data:{ id: string, name:string }) {
   const isSelected = target?.find(el => el?.id === data.id)
-  if (isChecked && !isSelected){
+  if (isChecked && !isSelected) {
     target?.push(data)
   }
-  if (!isChecked && isSelected){
+  if (!isChecked && isSelected) {
     const idx = target.findIndex(el => el.id === data.id)
-    target?.splice(idx,1)
+    target?.splice(idx, 1)
   }
 }
 async function getDevicesByGroupId () {
@@ -176,15 +174,15 @@ async function getDevicesByGroupId () {
 getDevicesByGroupId()
 async function addGroup () {
   isLoading.value = true
-  const devicesArrayId = devices.value.map(el=>el.id)
-  const roomsArrayId = rooms.value.map(el=>el.id)
-  await groupStore.addRoom(name.value,2, house.value,devicesArrayId.length>0?devicesArrayId:undefined,roomsArrayId.length>0?roomsArrayId:undefined)
+  const devicesArrayId = devices.value.map(el => el.id)
+  const roomsArrayId = rooms.value.map(el => el.id)
+  await groupStore.addRoom(name.value, 2, house.value, devicesArrayId?.length > 0 ? devicesArrayId : undefined, roomsArrayId.length > 0 ? roomsArrayId : undefined)
   isLoading.value = false
 //   TODO отправить пользователя в свежесозаднную комнату. Будет сделано после рефакторинга бека
 }
 watch(house, () => {
   getDevicesByGroupId()
-  selectData.value = existingHouses.value.reduce((acc:{description:string,value:string}[], curr:{name:string,id:string})=>[...acc,{description:curr.name,value:curr.id}],[])
+  selectData.value = existingHouses.value.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], [])
 })
 </script>
 <style lang="scss">

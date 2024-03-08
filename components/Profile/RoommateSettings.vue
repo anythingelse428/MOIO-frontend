@@ -5,8 +5,8 @@
       <h1 class="header">
         Настройки пользователя
       </h1>
-      <button class="blank" @click.stop="emit('modal-close')">
-        <icon name="close" size="18" />
+      <button class="blank" @click="(e)=>emit('modal-close',e)">
+        <ui-icon name="close" size="24" />
       </button>
     </div>
     <div class="roommate-settings__user-info">
@@ -20,13 +20,13 @@
       <h2 class="roommate-settings__groups-header">
         Доступы
       </h2>
-      <div v-if="existingGroups.length" class="roommate-settings__groups-container">
+      <div v-if="existingGroups?.length" class="roommate-settings__groups-container">
         <div v-for="group in existingGroups" :key="group.id" class="roommate-settings__groups-item">
           <span>
             {{ group.name }}
           </span>
           <button class="blank" @click="prepareGroupsForRemove(group.id)">
-            <icon name="delete" size="20" color="#D15151" />
+            <ui-icon name="delete" size="20" color="#D15151" />
           </button>
         </div>
       </div>
@@ -34,7 +34,7 @@
         У пользователя нет доступа к группам этого дома
       </div>
     </div>
-    <button class="roommate-settings__submit" @click="removeUserFromGroups()">
+    <button class="roommate-settings__submit" @click="e=>removeUserFromGroups(e)">
       Сохранить
     </button>
   </div>
@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { useGroupsStore } from "~/store/groups"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 export interface IRoommateSettingsProps {
@@ -65,11 +65,11 @@ function prepareGroupsForRemove (id:string) {
   groupsForRemove.value.push(id)
   existingGroups.value = existingGroups.value.filter(el => el.id !== id)
 }
-async function removeUserFromGroups () {
+async function removeUserFromGroups (e:Event) {
   isLoading.value = true
   await groupStore.removeUsersFromGroup(groupsForRemove.value, [props.email], [])
   isLoading.value = false
-  emit('modal-close')
+  emit('modal-close', e)
 }
 </script>
 

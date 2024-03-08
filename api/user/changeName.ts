@@ -1,3 +1,4 @@
+import type { AxiosError } from "axios"
 
 export default async function apiUserChangeName (newName:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -6,8 +7,8 @@ export default async function apiUserChangeName (newName:string) {
       if (response.status === 200) {
         useNotification('info', 'Имя успешно изменено')
       }
-    } catch {
-      useNotification('error', 'Произошла ошибка при смене имени')
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при смене имени')
     }
   })
 }

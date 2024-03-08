@@ -2,7 +2,7 @@
   <div ref="service" :class="`service --scenario ${selected&&'--active'}`" role="button">
     <div class="service-info" @mousedown.left="handleLeftMouse()">
       <div class="service-ico-wrapper">
-        <icon :name="ico" size="30" />
+        <ui-icon :name="ico" size="30" />
       </div>
       <div class="service-name">
         <span>
@@ -11,7 +11,7 @@
       </div>
     </div>
     <div v-if="isMounted && capabilities?.length >= 1 && !isPreview" class="service-capabilities-list-wrapper">
-      <the-modal
+      <ui-modal
         v-if="isMounted"
         :is-shown="isCapabilitiesShow"
         transition-fade-name="fade"
@@ -52,9 +52,9 @@
             </div>
           </div>
         </template>
-      </the-modal>
+      </ui-modal>
     </div>
-    <icon
+    <ui-icon
       v-if="!isPreview"
       name="delete"
       color="#D15151"
@@ -68,10 +68,10 @@
 <script setup lang="ts">
 import { onLongPress } from '@vueuse/core'
 import ScenarioServiceCapability from './ScenarioServiceCapability.vue'
-import TheModal from "~/components/shared/TheModal.vue"
+import UiModal from "~/components/ui/UiModal.vue"
 import useIcoByDeviceType from "~/composables/useIcoByDeviceType"
 import { useGroupsStore } from "~/store/groups"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import type { ServiceProps } from "~/components/Service/TheService.vue"
 
 export type ScenarioService = {

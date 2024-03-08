@@ -1,3 +1,5 @@
+import { type AxiosError } from "axios"
+
 export interface IAutomationCreateProps {
   name: string,
   value: string[]
@@ -16,8 +18,8 @@ export default async function apiAutomationsCreate (props:IAutomationCreateProps
         useNotification('info', 'Автоматизация успешно создана')
       }
       return response
-    } catch {
-
+    } catch (e) {
+      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Что-то пошло не так')
     }
   })
 }

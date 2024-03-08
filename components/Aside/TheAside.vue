@@ -1,6 +1,6 @@
 <template>
   <div class="aside">
-    <icon
+    <ui-icon
       :class="`aside-trigger ${isAsideCollapsed? '--collapsed':' '}`"
       :name="isAsideCollapsed? 'close':'aside/menu'"
       size="40"
@@ -19,22 +19,22 @@
           :category-items="categories"
         />
         <aside-category
-          v-if="typeof rooms !== 'undefined' && rooms.length"
+          v-if="typeof rooms !== 'undefined' && rooms?.length"
           category-header="Комнаты"
           :category-items="rooms"
         />
         <aside-category
-          v-if="typeof floors !== 'undefined' && floors.length"
+          v-if="typeof floors !== 'undefined' && floors?.length"
           category-header="Этажи"
           :category-items="floors"
         />
       </div>
       <div class="aside-footer">
         <button class="aside-footer__item" @click="colorMode?.changeColorScheme()">
-          <icon name="aside/theme" size="28" />{{ colorMode?.currentScheme.value === 'scheme-dark'?"Светлая тема":"Темная тема" }}
+          <ui-icon name="aside/theme" size="28" />{{ colorMode?.currentScheme.value === 'scheme-dark'?"Светлая тема":"Темная тема" }}
         </button>
         <button class="aside-footer__item" @click="logout()">
-          <icon name="aside/logout" size="26" />
+          <ui-icon name="aside/logout" size="26" />
           Выйти
         </button>
       </div>
@@ -47,7 +47,7 @@ import AsideCategory from '~/components/Aside/AsideCategory.vue'
 import { useUserStore } from "~/store/user"
 import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
-import Icon from "~/components/shared/Icon.vue"
+import UiIcon from "~/components/ui/UiIcon.vue"
 import type { TUiIconNames } from "#build/types/ui-icon"
 
 export interface IAsideContent {
