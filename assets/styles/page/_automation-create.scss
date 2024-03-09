@@ -115,22 +115,7 @@
 		}
 	}
 	&__add-condition{
-		display: block;
-		font-size: 25px;
-		font-weight: 600;
-		color: $color-accent;
-		background: $color-active;
-		border-radius: 16px;
-		padding: 8px 12px;
-		text-align: center;
 		margin-top: 40px;
-		margin-inline: auto;
-		border: 0;
-		outline: 0;
-		cursor: pointer;
-		@media screen and (max-width:768px) {
-			font-size: 20px;
-		}
 	}
 	&__conditions{
 		display: flex;
@@ -140,24 +125,8 @@
 			flex-direction: column;
 		}
 		&-delete{
-			font-size: 24px;
-			font-weight: 600;
-			color: #D15151;
-			border: 2px solid #D15151;
-			padding: 8px 24px;
-			background: transparent;
-			border-radius: 12px;
+			min-width: min(148px, 100%);
 			margin-top: 32px;
-			cursor: pointer;
-			transition: color, background .2s;
-			min-width: 150px;
-			@media screen and (max-width:768px) {
-				font-size: 20px;
-			}
-			&:hover{
-				background: #D15151;
-				color: $color-primary;
-			}
 		}
 	}
 	.scenarios {
@@ -166,15 +135,12 @@
 		justify-content: center;
 		gap: 12px;
 		align-items: center;
+		width: min(95%, 438px);
+		margin-inline: auto;
 		.scenario-item {
-			border-radius: 16px;
 			cursor: pointer;
-			width: min(95%, 438px);
-			padding: 14px 16px;
 			font-size: 20px;
 			font-weight: 400;
-			background: $settings-color;
-			color: $color-primary;
 			@media screen and (max-width:768px) {
 				font-size: 16px;
 			}
@@ -184,31 +150,7 @@
 			}
 		}
 	}
-	&__submit{
-		font-size: 24px;
-		font-weight: 600;
-		color: $bg-accent;
-		background: $color-active;
-		border: 0;
-		padding: 8px 12px ;
-		border-radius: 16px;
-		@media screen and (max-width:768px) {
-			font-size: 20px;
-		}
-	}
-	&__delete{
-		font-size: 24px;
-		font-weight: 600;
-		border: 0;
-		background: $device-action;
-		color: #D15151;
-		border-radius: 16px;
-		padding: 12px 8px;
-		cursor: pointer;
-		@media screen and (max-width:768px) {
-			font-size: 20px;
-		}
-	}
+
 	&__submit-container {
 		margin-top: 32px;
 		display: flex;

@@ -19,7 +19,9 @@
           </div>
         </div>
       </div>
-      <input type="submit" value="Добавить" class="automation-add-condition__submit">
+      <ui-button type="submit" rounded="16px" class="automation-add-condition__submit" padding="8px 12px">
+        Добавить
+      </ui-button>
     </form>
   </div>
 </template>

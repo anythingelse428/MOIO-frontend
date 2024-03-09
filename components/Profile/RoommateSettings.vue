@@ -20,23 +20,33 @@
       <h2 class="roommate-settings__groups-header">
         Доступы
       </h2>
+
       <div v-if="existingGroups?.length" class="roommate-settings__groups-container">
-        <div v-for="group in existingGroups" :key="group.id" class="roommate-settings__groups-item">
-          <span>
-            {{ group.name }}
-          </span>
-          <button class="blank" @click="prepareGroupsForRemove(group.id)">
-            <ui-icon name="delete" size="20" color="#D15151" />
-          </button>
-        </div>
+        <ui-any-list-item v-for="group in existingGroups" :key="group.id">
+          <template #title>
+            <span>
+              {{ group.name }}
+            </span>
+          </template>
+          <template #action>
+            <ui-button
+              padding="0"
+              class-name="blank"
+              margin-inline="0"
+              @click="prepareGroupsForRemove(group.id)"
+            >
+              <ui-icon name="delete" size="20" color="#D15151" />
+            </ui-button>
+          </template>
+        </ui-any-list-item>
       </div>
       <div v-else class="roommate-settings__groups-container --empty">
         У пользователя нет доступа к группам этого дома
       </div>
     </div>
-    <button class="roommate-settings__submit" @click="e=>removeUserFromGroups(e)">
+    <ui-button class="roommate-settings__submit" rounded="16px" padding="4px 14px" @click="e=>removeUserFromGroups(e)">
       Сохранить
-    </button>
+    </ui-button>
   </div>
 </template>
 
@@ -66,9 +76,11 @@ function prepareGroupsForRemove (id:string) {
   existingGroups.value = existingGroups.value.filter(el => el.id !== id)
 }
 async function removeUserFromGroups (e:Event) {
-  isLoading.value = true
-  await groupStore.removeUsersFromGroup(groupsForRemove.value, [props.email], [])
-  isLoading.value = false
+  if (props.email.length && groupsForRemove.value.length) {
+    isLoading.value = true
+    await groupStore.removeUsersFromGroup(groupsForRemove.value, [props.email], [])
+    isLoading.value = false
+  }
   emit('modal-close', e)
 }
 </script>

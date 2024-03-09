@@ -1,6 +1,6 @@
 <template>
   <div ref="service" :class="`service --scenario ${selected&&'--active'}`" role="button">
-    <div class="service-info" @mousedown.left="handleLeftMouse()">
+    <div ref="info" class="service-info" @mousedown.left.stop="handleLeftMouse()">
       <div class="service-ico-wrapper">
         <ui-icon :name="ico" size="30" />
       </div>
@@ -10,7 +10,10 @@
         </span>
       </div>
     </div>
-    <div v-if="isMounted && capabilities?.length >= 1 && !isPreview" class="service-capabilities-list-wrapper">
+    <div
+      v-if="isMounted && capabilities?.length >= 1 && !isPreview"
+      class="service-capabilities-list-wrapper"
+    >
       <ui-modal
         v-if="isMounted"
         :is-shown="isCapabilitiesShow"
@@ -86,15 +89,13 @@ const service = ref<HTMLDivElement | null>(null)
 const isCapabilitiesShow = ref(false)
 const target = ref(null)
 const ico = props.deviceIcon?.name ?? useIcoByDeviceType(props.type).name
-const isDeleteModalShow = ref(false)
 const groupStore = useGroupsStore()
+const info = ref()
 
-onClickOutside(target, (event) => {
-  if (event.target instanceof HTMLElement && event.target?.classList?.value?.includes('modal__content')) {
-    isCapabilitiesShow.value = false
-    isDeleteModalShow.value = false
-  }
-})
+onClickOutside(target, () => {
+  isCapabilitiesShow.value = false
+}, { ignore: [info] })
+
 function handleLeftMouse () {
   if (props.isPreview) {
     emit('left-mouse-click', props)

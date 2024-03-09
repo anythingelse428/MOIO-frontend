@@ -25,9 +25,10 @@
           :groups="item.groups"
         />
       </div>
-      <button class="profile-roommates-section__add-section" title="Добавить пользователя в дом" @click="isAddRoommatesModalShow = true">
+      <ui-button class="profile-roommates-section__add-section" centered rounded="100%" style="width: 52px; height: 52px" @click="isAddRoommatesModalShow = true">
         <ui-icon name="plus" />
-      </button>
+      </ui-button>
+
       <ui-modal
         ref="addRoommateModal"
         :is-shown="isAddRoommatesModalShow"
@@ -52,9 +53,14 @@
         <invited-house v-for="house in invitedHouses" :id="house.id" :key="house.id" :group-creator-id="house.groupCreatorId" :name="house.name" />
       </div>
     </div>
-    <button v-if="isHouseOwner?.id||!groupStore.uppperGroups?.length" class="profile__sync-device" @click="aliceSync()">
+    <ui-button
+      v-if="isHouseOwner?.id||!groupStore.uppperGroups?.length"
+      rounded="16px"
+      class="profile__sync-device"
+      @click="aliceSync()"
+    >
       Синхронизировать с Алисой
-    </button>
+    </ui-button>
   </div>
 </template>
 

@@ -22,20 +22,7 @@
     z-index: 101;
     cursor: pointer;
   }
-  &__submit-name{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: $color-active;
-    border-radius: 100%;
-    width: 20px;
-    height: 20px;
-    border: 0;
-    cursor: pointer;
-    .ui-icon{
-      font-size: 16px!important;
-    }
-  }
+
   &__header{
     width: calc(100% - 24px);
     margin-inline: auto;
@@ -77,13 +64,6 @@
         width: calc(100% - 50px);
         @media screen and (max-width:768px) {
           font-size: 16px;
-        }
-        &[type="submit"]{
-          background: $color-active;
-          padding-inline: 12px;
-          border-radius: 8px;
-          border: 0;
-          margin-left: 12px;
         }
       }
     }
@@ -134,18 +114,12 @@
     flex: 1;
     gap: 12px;
     border-top: 2px solid $settings-color;
-  }
-
-  &__action {
-    background: $device-action;
-    width: 100%;
-    border: none;
-    outline: none;
-    text-align: center;
-    @include carousel-category-item;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
+    .ui-button{
+      width: 100%;
+      @include carousel-category-item;
+      font-weight: 600;
+      color: $color-primary;
+      text-align: center;
+    }
   }
 }

@@ -31,7 +31,13 @@
           </div>
         </div>
 
-        <ui-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
+        <ui-modal
+          :is-shown="showConditionModal"
+          transition-content-name="translate"
+          backdrop-filter="blur(5px)"
+          width="536px"
+          @click-outside="showConditionModal=false"
+        >
           <template #inner>
             <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{addCondition(newConditions.length + oldConditions.length + 1,e,undefined);showConditionModal = false}" />
           </template>
@@ -44,9 +50,15 @@
             :editable="false"
             :idx="i+1"
           />
-          <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
+          <ui-button
+            class-name="delete-outline"
+            class="automation__conditions-delete"
+            rounded="12px"
+            margin-inline="0"
+            @click.prevent="deleteCondition(item.id)"
+          >
             Удалить
-          </button>
+          </ui-button>
         </div>
         <div v-for="(item,i) in newConditions" :key="item.id+i" class="automation__conditions">
           <automation-condition
@@ -58,28 +70,53 @@
             :idx="i+oldConditions.length+1"
             @select-option="e=>addCondition(item.id, e?.type, e.value)"
           />
-          <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
+          <ui-button
+            class-name="delete-outline"
+            class="automation__conditions-delete"
+            rounded="12px"
+            margin-inline="0"
+            @click.prevent="deleteCondition(item.id)"
+          >
             Удалить
-          </button>
+          </ui-button>
         </div>
       </div>
-
-      <button class="automation__add-condition" @click.prevent="setConditionalModal()">
+      <ui-button rounded="16px" @click.prevent="setConditionalModal()">
         Добавить условие
-      </button>
+      </ui-button>
+
       <div class="scenarios">
         <h2 class="automation__subheader">
           Сценарий
         </h2>
-        <div v-for="scenario in existingScenarios" :key="scenario.id" :class="`scenario-item ${scenarios.findIndex(el=>el===scenario.id)>-1?'--active':''}`" @click="selectScenarios(scenario.id)">
-          {{ scenario.name }}
-        </div>
+        <ui-any-list-item
+          v-for="scenario in existingScenarios"
+          :key="scenario.id"
+          :class="`scenario-item ${scenarios.findIndex(el=>el===scenario.id)>-1?'--active':''}`"
+          @click="selectScenarios(scenario.id)"
+        >
+          <template #title>
+            {{ scenario.name }}
+          </template>
+        </ui-any-list-item>
       </div>
       <div class="automation__submit-container">
-        <button class="automation__delete" @click.prevent="deleteAutomation()">
+        <ui-button
+          margin-inline="0"
+          class="automation__delete"
+          rounded="16px"
+          class-name="delete"
+          @click.prevent="deleteAutomation()"
+        >
           Удалить
-        </button>
-        <input type="submit" value="Сохранить" class="automation__submit">
+        </ui-button>
+        <ui-button
+          type="submit"
+          rounded="16px"
+          margin-inline="0"
+        >
+          Сохранить
+        </ui-button>
       </div>
     </form>
   </div>

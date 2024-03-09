@@ -8,9 +8,15 @@
         {{ ownerName?.name ?? groupCreatorId }}
       </div>
     </div>
-    <button class="invited-house__leave-from-house-button" @click="leaveFromHouse">
+    <ui-button
+      class="invited-house__leave-from-house-button"
+      fill="var(--settings-color)"
+      rounded="16px"
+      margin-inline="0"
+      @click="leaveFromHouse"
+    >
       Покинуть дом
-    </button>
+    </ui-button>
   </div>
 </template>
 

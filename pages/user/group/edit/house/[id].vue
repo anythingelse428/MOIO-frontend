@@ -20,7 +20,7 @@
         </div>
         <div v-if="house?.length>1" class="add-group-available-devices">
           <h2 class="add-group-available-devices__header">
-            {{ existingDevices?.length?
+            {{ existingDevices?.length ?
               'Доступные устройства':
               'Устройства уже распределены по группам или не найдены'
             }}
@@ -40,23 +40,28 @@
                   Гости дома
                 </div>
                 <div v-if="previewData.users?.length" class="add-group__preview-section-value">
-                  <div v-for="user in previewData.users" :key="user.id" class="add-group__preview-section-device">
-                    {{ user?.name }}
-                    <button
-                      class="blank"
-                      @click="(e)=>{
-                        usersForRemove.push({id:user.id,name:user.name});
-                        users.splice(users.findIndex(el=>el.id === user.id),1)
-                      }"
-                    >
-                      <ui-icon
-                        v-if="user.id !== groupStore.currentGroup.groupCreatorId"
-                        name="delete"
-                        color="#D15151"
-                        size="20"
-                      />
-                    </button>
-                  </div>
+                  <ui-any-list-item v-for="user in previewData.users" :key="user.id">
+                    <template #title>
+                      {{ user?.name }}
+                    </template>
+                    <template #action>
+                      <ui-button
+                        class-name="blank"
+                        padding="0"
+                        @click="(e)=>{
+                          usersForRemove.push({id:user.id,name:user.name});
+                          users.splice(users.findIndex(el=>el.id === user.id),1)
+                        }"
+                      >
+                        <ui-icon
+                          v-if="user.id !== groupStore.currentGroup.groupCreatorId"
+                          name="delete"
+                          color="#D15151"
+                          size="20"
+                        />
+                      </ui-button>
+                    </template>
+                  </ui-any-list-item>
                 </div>
                 <div v-else class="add-group__preview-section-value">
                   Нет приглашенных пользователей
@@ -65,12 +70,16 @@
             </div>
           </div>
           <div class="add-group__submit-wrapper">
-            <input type="submit" class="add-group__submit" value="Сохранить">
+            <ui-button type="submit">
+              Сохранить
+            </ui-button>
           </div>
         </div>
       </form>
       <form method="post" class="add-group__form --delete" @submit.prevent="deleteGroup()">
-        <input type="submit" value="Удалить группу" class="add-group__submit">
+        <ui-button type="submit" class-name="delete">
+          Удалить группу
+        </ui-button>
       </form>
     </div>
   </div>

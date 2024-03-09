@@ -1,4 +1,4 @@
-фывфыв<template>
+<template>
   <div class="scenarios-create">
     <loader-screen :is-loading="isLoading" />
     <h1 class="scenarios-create__header">
@@ -59,12 +59,21 @@
       </div>
     </div>
     <div class="scenarios-create__save">
-      <button class="scenarios-create__submit" @click="updateScenario()">
+      <ui-button
+        rounded="16px"
+        margin-inline="0"
+        @click="updateScenario"
+      >
         Сохранить
-      </button>
-      <button class="scenarios-create__submit --delete" @click="deleteScenario()">
+      </ui-button>
+      <ui-button
+        class-name="delete"
+        rounded="16px"
+        margin-inline="0"
+        @click="deleteScenario()"
+      >
         Удалить
-      </button>
+      </ui-button>
     </div>
   </div>
 </template>

@@ -63,7 +63,7 @@
 			right: 16px;
 			font-size: 16px!important;
 			color: #D15151;
-			z-index: 10;
+			z-index: 9;
 		}
 	}
 	.scenarios-create__header{
@@ -157,20 +157,5 @@
 		justify-content: center;
 		flex-wrap: wrap;
 		gap:32px;
-		.scenarios-create__submit{
-			display: block;
-			width: fit-content;
-			font-size: 24px;
-			font-weight: 600;
-			color: $color-accent;
-			background: $color-active;
-			padding: 4px 14px;
-			border-radius: 16px;
-			border: 0;
-			cursor: pointer;
-			&.--delete{
-				background: #D15151;
-			}
-		}
 	}
 }

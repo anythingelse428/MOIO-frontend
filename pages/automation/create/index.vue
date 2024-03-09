@@ -31,7 +31,7 @@
           </div>
         </div>
 
-        <ui-modal :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
+        <ui-modal width="536px" :is-shown="showConditionModal" transition-content-name="translate" backdrop-filter="blur(5px)">
           <template #inner>
             <automation-add-condition @hide-modal="showConditionModal=false" @add-condition="e=>{addCondition(conditions.length + 1,e,undefined); showConditionModal = false}" />
           </template>
@@ -45,24 +45,28 @@
             :idx="item.id ?? conditions.length + 1"
             @select-option="e=>addCondition(item.id, item.type, e.value)"
           />
-          <button class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
+          <ui-button margin-inline="0" class-name="delete-outline" rounded="12px" class="automation__conditions-delete" @click.prevent="deleteCondition(item.id)">
             Удалить
-          </button>
+          </ui-button>
         </div>
       </div>
-      <button class="automation__add-condition" @click.prevent="setShowConditionalModal()">
+      <ui-button rounded="16px" class="automation__add-condition" @click.prevent="setShowConditionalModal()">
         Добавить условие
-      </button>
+      </ui-button>
       <div class="scenarios">
         <h2 class="automation__subheader">
           Сценарий
         </h2>
-        <div v-for="scenario in existingScenarios" :key="scenario.id" :class="`scenario-item ${scenarios.findIndex(el=>el===scenario.id)>-1?'--active':''}`" @click="selectScenarios(scenario.id)">
-          {{ scenario.name }}
-        </div>
+        <ui-any-list-item v-for="scenario in existingScenarios" :key="scenario.id" :class="`scenario-item ${scenarios.findIndex(el=>el===scenario.id)>-1?'--active':''}`" @click="selectScenarios(scenario.id)">
+          <template #title>
+            {{ scenario.name }}
+          </template>
+        </ui-any-list-item>
       </div>
       <div class="automation__submit-container">
-        <input class="automation__submit" type="submit" value="Сохранить">
+        <ui-button type="submit" rounded="16px">
+          Сохранить
+        </ui-button>
       </div>
     </form>
   </div>

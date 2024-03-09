@@ -26,17 +26,19 @@
             }}
           </h2>
           <div v-if="existingDevices?.length>0" class="add-group-available-devices__list">
-            <div
-              v-for="device in existingDevices"
-              :key="device.id"
-              class="add-group-available-devices__list-item"
+            <ui-any-list-item
+              v-for="item in existingDevices" :key="item.id"
             >
-              <label for="device">{{ device?.name }}</label>
-              <ui-checkbox
-                :checked="devices.findIndex(el=>el.id == device.id)>-1"
-                @check="setItem(devices,{id:device.id,name:device.name})"
-              />
-            </div>
+              <template #title>
+                {{ item?.name }}
+              </template>
+              <template #action>
+                <ui-checkbox
+                  :checked="devices.findIndex(el=>el.id === item.id)>-1"
+                  @check="setItem(devices,{id:item.id,name:item.name})"
+                />
+              </template>
+            </ui-any-list-item>
           </div>
         </div>
         <div class="add-group__preview-wrapper">
@@ -54,22 +56,30 @@
                 Устройства комнаты
               </div>
               <div v-if="devices?.length" class="add-group__preview-section-value">
-                <div v-for="item in devices" :key="item.id" class="add-group__preview-section-device">
-                  {{ item?.name }}
-                  <button
-                    class="blank"
-                    @click="(e)=>{
-                      setItem(devices,{id:item.id,name:item.name});
-                      setItem(existingDevices,{id:item.id,name:item.name});
-                    }"
-                  >
-                    <ui-icon
-                      name="delete"
-                      color="#D15151"
-                      size="20"
-                    />
-                  </button>
-                </div>
+                <ui-any-list-item
+                  v-for="item in devices"
+                  :key="item.id"
+                >
+                  <template #title>
+                    {{ item?.name }}
+                  </template>
+                  <template #action>
+                    <ui-button
+                      padding="0"
+                      class-name="blank"
+                      @click="(e)=>{
+                        setItem(devices,{id:item.id,name:item.name});
+                        setItem(existingDevices,{id:item.id,name:item.name});
+                      }"
+                    >
+                      <ui-icon
+                        name="delete"
+                        color="#D15151"
+                        size="20"
+                      />
+                    </ui-button>
+                  </template>
+                </ui-any-list-item>
               </div>
               <div v-else class="add-group__preview-section-value">
                 Нет выбранных устройств
@@ -80,23 +90,30 @@
                 Гости комнаты
               </div>
               <div v-if="previewData.users?.length" class="add-group__preview-section-value">
-                <div v-for="user in previewData.users" :key="user.id" class="add-group__preview-section-device">
-                  {{ user?.name }}
-                  <button
-                    class="blank"
-                    @click="(e)=>{
-                      usersForRemove.push({id:user.id,name:user.name});
-                      users.splice(users.findIndex(el=>el.id === user.id),1)
-                    }"
-                  >
-                    <ui-icon
-                      v-if="user.id !== groupStore.currentGroup.groupCreatorId"
-                      name="delete"
-                      color="#D15151"
-                      size="20"
-                    />
-                  </button>
-                </div>
+                <ui-any-list-item
+                  v-for="user in previewData.users" :key="user.id"
+                >
+                  <template #title>
+                    {{ user?.name }}
+                  </template>
+                  <template #action>
+                    <ui-button
+                      padding="0"
+                      class-name="blank"
+                      @click="(e)=>{
+                        usersForRemove.push({id:user.id,name:user.name});
+                        users.splice(users.findIndex(el=>el.id === user.id),1)
+                      }"
+                    >
+                      <ui-icon
+                        v-if="user.id !== groupStore.currentGroup.groupCreatorId"
+                        name="delete"
+                        color="#D15151"
+                        size="20"
+                      />
+                    </ui-button>
+                  </template>
+                </ui-any-list-item>
               </div>
               <div v-else class="add-group__preview-section-value">
                 Нет приглашенных пользователей
@@ -105,11 +122,20 @@
           </div>
         </div>
         <div class="add-group__submit-wrapper">
-          <input type="submit" class="add-group__submit" value="Сохранить">
+          <ui-button type="submit" rounded="16px">
+            Сохранить
+          </ui-button>
         </div>
       </form>
       <form method="post" class="add-group__form --delete" @submit.prevent="deleteGroup()">
-        <input type="submit" value="Удалить группу" class="add-group__submit">
+        <ui-button
+          type="submit"
+          class-name="delete"
+          rounded="16px"
+          margin-inline="0"
+        >
+          Удалить группу
+        </ui-button>
       </form>
     </div>
   </div>
@@ -120,6 +146,7 @@
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
+import UiAnyListItem from "~/components/ui/UiAnyListItem.vue"
 
 let oldName = ''
 const isLoading = ref(false)

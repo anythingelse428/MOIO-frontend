@@ -56,7 +56,14 @@
           required
         >
       </div>
-      <input type="submit" value="Сохранить">
+      <ui-button
+        type="submit"
+        rounded="16px"
+        padding="4px 12px"
+        margin-inline="0"
+      >
+        Сохранить
+      </ui-button>
     </form>
   </div>
 </template>

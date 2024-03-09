@@ -45,9 +45,15 @@
             <div class="service-capabilities-modal__header">
               <form v-if="isEdit" class="service-capabilities-modal__header --edited" @submit.prevent="setNewDeviceName()">
                 <input v-model="newDeviceName" type="text">
-                <button type="submit" class="service-capabilities-modal__submit-name">
-                  <ui-icon name="check" />
-                </button>
+                <ui-button
+                  type="submit"
+                  rounded="100%"
+                  fill="var(--color-active)"
+                  class-name="blank"
+                  padding="2px"
+                >
+                  <ui-icon name="check" size="16" />
+                </ui-button>
               </form>
               <span v-show="!isEdit">
                 {{ name }}
@@ -78,13 +84,22 @@
                 </template>
               </service-capabilities-structure>
               <div class="service-capabilities-modal__footer">
-                <button class="service-capabilities-modal__action" @click="isDeleteModalShow = true">
+                <ui-button
+                  padding="8px 16px"
+                  rounded="20px"
+                  fill="var(--device-action)"
+                  @click="isDeleteModalShow = true"
+                >
                   Удалить устройство
-                </button>
-
-                <button class="service-capabilities-modal__action" @click="isIconModalShow = true">
+                </ui-button>
+                <ui-button
+                  padding="8px 16px"
+                  rounded="20px"
+                  fill="var(--device-action)"
+                  @click="isIconModalShow = true"
+                >
                   Изменить иконку
-                </button>
+                </ui-button>
               </div>
             </div>
           </div>
@@ -153,9 +168,9 @@
               />
             </span>
           </div>
-          <button class="change-icon-modal__submit" @click="setNewIcon()">
+          <ui-button class="change-icon-modal__submit" rounded="16px" @click="setNewIcon()">
             Сохранить
-          </button>
+          </ui-button>
         </div>
       </template>
     </ui-modal>

@@ -26,17 +26,20 @@
           }}
         </h2>
         <div v-if="existingDevices?.length>0" class="add-group-available-devices__list">
-          <div
+          <ui-any-list-item
             v-for="device in existingDevices"
             :key="device.id"
-            class="add-group-available-devices__list-item"
           >
-            <label for="device">{{ device?.name }}</label>
-            <ui-checkbox
-              :checked="devices.findIndex(el=>el.id === device.id)>-1"
-              @check="(e)=>setItem(e, devices, {id:device.id,name:device.name})"
-            />
-          </div>
+            <template #title>
+              {{ device?.name }}
+            </template>
+            <template #action>
+              <ui-checkbox
+                :checked="devices.findIndex(el=>el.id === device.id)>-1"
+                @check="(e)=>setItem(e, devices, {id:device.id,name:device.name})"
+              />
+            </template>
+          </ui-any-list-item>
         </div>
       </div>
       <div v-if="house?.length>10 && previewData.name?.length" class="add-group-available-devices">
@@ -47,17 +50,20 @@
           }}
         </h2>
         <div v-if="existingRooms?.length>0" class="add-group-available-devices__list">
-          <div
+          <ui-any-list-item
             v-for="room in existingRooms"
             :key="room.id"
-            class="add-group-available-devices__list-item"
           >
-            <label for="device">{{ room?.name }}</label>
-            <ui-checkbox
-              :checked="rooms.findIndex(el=>el.id === room.id)>-1"
-              @check="(e)=>setItem(e, rooms,{id:room.id,name:room.name})"
-            />
-          </div>
+            <template #title>
+              {{ room.name }}
+            </template>
+            <template #action>
+              <ui-checkbox
+                :checked="rooms.findIndex(el=>el.id === room.id)>-1"
+                @check="(e)=>setItem(e, rooms,{id:room.id,name:room.name})"
+              />
+            </template>
+          </ui-any-list-item>
         </div>
       </div>
       <div class="add-group__preview-wrapper">
@@ -75,15 +81,25 @@
               Устройства этажа
             </div>
             <div v-if="previewData.devices?.length" class="add-group__preview-section-value">
-              <div v-for="item in previewData.devices" :key="item.id" class="add-group__preview-section-device">
-                {{ item?.name }}
-                <ui-icon
-                  name="delete"
-                  color="#D15151"
-                  size="20"
-                  @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"
-                />
-              </div>
+              <ui-any-list-item v-for="item in previewData.devices" :key="item.id">
+                <template #title>
+                  {{ item?.name }}
+                </template>
+                <template #action>
+                  <ui-button
+                    class-name="blank"
+                    padding="0"
+                    margin-inline="0"
+                    @click="setItem(false,devices,{id:item.id,name:item.name})"
+                  >
+                    <ui-icon
+                      name="delete"
+                      color="#D15151"
+                      size="20"
+                    />
+                  </ui-button>
+                </template>
+              </ui-any-list-item>
             </div>
             <div v-else class="add-group__preview-section-value">
               Нет выбранных устройств
@@ -94,15 +110,25 @@
               Комнаты на этаже
             </div>
             <div v-if="previewData.rooms?.length" class="add-group__preview-section-value">
-              <div v-for="item in previewData.rooms" :key="item.id" class="add-group__preview-section-device">
-                {{ item?.name }}
-                <ui-icon
-                  name="delete"
-                  color="#D15151"
-                  size="20"
-                  @click="(e)=>setItem(e,rooms,{id:item.id,name:item.name})"
-                />
-              </div>
+              <ui-any-list-item v-for="item in previewData.rooms" :key="item.id">
+                <template #title>
+                  {{ item?.name }}
+                </template>
+                <template #action>
+                  <ui-button
+                    class-name="blank"
+                    padding="0"
+                    margin-inline="0"
+                    @click="setItem(false,rooms,{id:item.id,name:item.name})"
+                  >
+                    <ui-icon
+                      name="delete"
+                      color="#D15151"
+                      size="20"
+                    />
+                  </ui-button>
+                </template>
+              </ui-any-list-item>
             </div>
             <div v-else class="add-group__preview-section-value">
               Нет выбранных комнат
@@ -111,7 +137,9 @@
         </div>
       </div>
       <div class="add-group__submit-wrapper">
-        <input type="submit" class="add-group__submit" value="Добавить">
+        <ui-button type="submit" rounded="16px">
+          Добавить
+        </ui-button>
       </div>
     </form>
   </div>

@@ -74,16 +74,10 @@
       align-items: flex-end;
       &-group{
         width: min(312px, 95%);
+        
         &.--password{
-          background: $color-active;
-          padding: 8px 12px ;
-          border-radius: 16px;
-          color: $color-accent;
-          width: fit-content;
-          font-size: 24px;
-          font-weight: 600;
-          @media screen and (max-width:768px) {
-            font-size: 20px;
+          a{
+            color: $color-accent;
           }
         }
         &-label{
@@ -98,7 +92,7 @@
           background: $settings-color;
           padding: 8px 11px;
           border-radius: 12px;
-            font-size: 20px;
+          font-size: 20px;
           input{
             background: transparent;
             width: calc(100% - 20px);
@@ -108,19 +102,6 @@
               outline: 0;
             }
           }
-          button.blank.--submit{
-            position: absolute;
-            right: calc(-30px - 12px);
-            top: 4px;
-            width: 30px;
-            background: $color-active;
-            color: $settings-color;
-            border-radius: 100%;
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
           a{
             color: $color-active;
           }
@@ -128,8 +109,21 @@
       }
     }
   }
-    button.blank{
+    button.--blank{
     color: $color-active;
+      &.--submit{
+        top: calc(50% - 16px);
+        position: absolute;
+        right: calc(-30px - 12px);
+        width: 30px;
+        background: $color-active;
+        color: $settings-color;
+        border-radius: 100%;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
   }
   
 }

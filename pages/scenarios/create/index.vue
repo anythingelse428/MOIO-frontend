@@ -66,9 +66,9 @@
       </div>
     </div>
     <div class="scenarios-create__save">
-      <button class="scenarios-create__submit" @click="createScenario()">
+      <ui-button rounded="16px" @click="createScenario()">
         Сохранить
-      </button>
+      </ui-button>
     </div>
   </div>
 </template>

@@ -10,16 +10,10 @@
 	}
 	&__container{
 		padding-inline: 24px;
-		input[type="submit"]{
-			color: $color-accent;
-			background: $color-active;
-			font-size: 24px;
-			font-weight: 600;
-			padding: 4px 12px;
-			border: 0;
-			border-radius: 16px;
+		.ui-button{
 			margin-top: 36px;
 		}
+
 	}
 	&__input-group{
 		display: flex;

@@ -11,7 +11,6 @@ export default async function apiDevicesChangeDevices (groupId:string, devicesId
         },
       )
       if (response.status === 200) {
-        useNotification('info', 'Девайсы в группе успешно изменены')
         return response
       }
     } catch (e) {

@@ -32,17 +32,20 @@
           }}
         </h2>
         <div v-if="existingDevices?.length>0" class="add-group-available-devices__list">
-          <div
+          <ui-any-list-item
             v-for="device in existingDevices"
             :key="device.id"
-            class="add-group-available-devices__list-item"
           >
-            <label for="device">{{ device?.name }}</label>
-            <ui-checkbox
-              :checked="devices.findIndex(el=>el.id === device.id)>-1"
-              @check="(e)=>setItem(e,devices,{id:device.id,name:device.name})"
-            />
-          </div>
+            <template #title>
+              {{ device?.name }}
+            </template>
+            <template #action>
+              <ui-checkbox
+                :checked="devices.findIndex(el=>el.id === device.id)>-1"
+                @check="(e)=>setItem(e,devices,{id:device.id,name:device.name})"
+              />
+            </template>
+          </ui-any-list-item>
         </div>
       </div>
       <div class="add-group__preview-wrapper">
@@ -60,15 +63,25 @@
               Устройства комнаты
             </div>
             <div v-if="previewData.devices?.length" class="add-group__preview-section-value">
-              <div v-for="item in previewData.devices" :key="item.id" class="add-group__preview-section-device">
-                {{ item?.name }}
-                <ui-icon
-                  name="delete"
-                  color="#D15151"
-                  size="20"
-                  @click="(e)=>setItem(e,devices,{id:item.id,name:item.name})"
-                />
-              </div>
+              <ui-any-list-item v-for="item in previewData.devices" :key="item.id">
+                <template #title>
+                  {{ item?.name }}
+                </template>
+                <template #action>
+                  <ui-button
+                    padding="0"
+                    class-name="blank"
+                    margin-inline="0"
+                    @click="setItem(false,devices,{id:item.id,name:item.name})"
+                  >
+                    <ui-icon
+                      name="delete"
+                      color="#D15151"
+                      size="20"
+                    />
+                  </ui-button>
+                </template>
+              </ui-any-list-item>
             </div>
             <div v-else class="add-group__preview-section-value">
               Нет выбранных устройств
@@ -77,7 +90,9 @@
         </div>
       </div>
       <div class="add-group__submit-wrapper">
-        <input type="submit" class="add-group__submit" value="Добавить">
+        <ui-button type="submit" rounded="16px">
+          Добавить
+        </ui-button>
       </div>
     </form>
   </div>

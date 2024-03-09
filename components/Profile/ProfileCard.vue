@@ -12,15 +12,26 @@
       <div v-if="displayedName" class="profile-card-info__name">
         <span v-show="!isNameChanging" class="name">
           {{ displayedName }}
-          <button class="blank" type="submit" @click="isNameChanging=!isNameChanging">
-            <ui-icon name="pencil" size="18" />
-          </button>
+          <ui-button
+            class-name="blank"
+            type="submit"
+            padding="0"
+            @click="isNameChanging=!isNameChanging"
+          >
+            <ui-icon name="pencil" size="18" color="var(--color-active)" />
+          </ui-button>
         </span>
         <form v-show="isNameChanging" method="post" class="profile-card-info__change-name">
           <input v-model="newName" type="text" class="profile-card-info__change-name-input" required>
-          <button class="blank" @click.prevent="changeName()">
-            <ui-icon name="check" size="18" />
-          </button>
+          <ui-button
+            padding="4px"
+            fill="var(--color-active)"
+            rounded="100%"
+            class-name="blank"
+            @click.prevent="changeName()"
+          >
+            <ui-icon name="check" size="18" color="var(--settings-color)" />
+          </ui-button>
         </form>
       </div>
       <hr class="profile__divider">
@@ -35,12 +46,24 @@
               :disabled="!isClientIdChanging"
               @click="!isClientIdChanging && copyToClipBoard(clientId as string,'clientId')"
             >
-            <button class="blank" @click="isClientIdChanging = !isClientIdChanging">
-              <ui-icon name="pencil" size="18" />
-            </button>
-            <button v-if="isClientIdChanging" class="blank --submit" @click="changeClientId()">
-              <ui-icon name="check" size="16" />
-            </button>
+            <ui-button
+              class-name="blank"
+              padding="0"
+              @click="isClientIdChanging = !isClientIdChanging"
+            >
+              <ui-icon name="pencil" size="18" color="var(--color-active)" />
+            </ui-button>
+            <ui-button
+              v-if="isClientIdChanging"
+              padding="4px"
+              fill="var(--color-active)"
+              rounded="100%"
+              class-name="blank"
+              class="--submit"
+              @click.prevent="changeClientId()"
+            >
+              <ui-icon name="check" size="18" color="var(--settings-color)" />
+            </ui-button>
           </div>
         </div>
         <div class="profile-card-info__data-group">
@@ -56,9 +79,11 @@
             </nuxt-link>
           </div>
         </div>
-        <nuxt-link to="/user/edit?password=true" class="profile-card-info__data-group --password">
-          Сменить пароль
-        </nuxt-link>
+        <ui-button padding="8px 12px" rounded="16px" class="profile-card-info__data-group --password">
+          <nuxt-link to="/user/edit?password=true">
+            Сменить пароль
+          </nuxt-link>
+        </ui-button>
       </div>
     </div>
     <!--    <button class="add-fg-print" @click="getCredential()">-->

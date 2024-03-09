@@ -12,7 +12,9 @@
           <input id="invite-code" v-model="code" placeholder="Код" type="text" class="profile-invitation__input" required>
         </div>
       </div>
-      <input type="submit" value="Подтвердить">
+      <ui-button type="submit" rounded="16px" padding="3px 12px">
+        Подтвердить
+      </ui-button>
     </form>
   </div>
 </template>

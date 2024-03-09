@@ -11,7 +11,9 @@
       </div>
 
       <div class="add-group__submit-wrapper">
-        <input type="submit" class="add-group__submit" value="Добавить">
+        <ui-button type="submit" rounded="16px">
+          Добавить
+        </ui-button>
       </div>
     </form>
   </div>

@@ -16,11 +16,11 @@
 		}
 	}
 	&__leave-from-house-button{
-		border: 1px solid $color-active;
-		color: $color-active;
-		@include action-item;
-		padding: 8px 12px;
-		border-radius: 16px;
-		background: $settings-color;
+		&.ui-button{
+			border: 1px solid $color-active;
+			color: $color-active;
+			@include action-item;
+			background: $settings-color;
+		}
 	}
 }

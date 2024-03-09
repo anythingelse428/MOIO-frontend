@@ -9,20 +9,7 @@
   }
 }
 .profile__sync-device{
-  display: block;
-  cursor: pointer;
-  margin-inline: auto;
   margin-top: 52px;
-  padding: 8px 12px;
-  font-size: 25px;
-  font-weight: 600;
-  background: $color-active;
-  border-radius: 16px;
-  color: $color-accent;
-  border: 0;
-  @media screen and (max-width:768px) {
-    font-size: 21px;
-  }
 }
 .invited-house-section{
   margin-top: 48px;
@@ -47,25 +34,9 @@
     }
   }
   &__add-section{
-    border: none;
-    outline: none;
-    background: $color-active;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-top: 24px;
     width: 52px;
     height: 52px;
-    border-radius: 100%;
-    margin-inline:auto;
-    margin-top: 16px;
-    cursor: pointer;
-    .ui-icon{
-      color: $color-accent!important;
-      font-size: 28px!important;
-      @media screen and (max-width:768px) {
-        font-size: 24px;
-      }
-    }
   }
   &__list {
     margin-top: 20px;

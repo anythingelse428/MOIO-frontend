@@ -1,17 +1,27 @@
 <template>
   <div class="header-content">
     <div class="header-content__menu-container">
-      <button ref="addMenuTrigger" class="header-button" @click="isAddMenuShow = !isAddMenuShow">
+      <ui-button
+        ref="addMenuTrigger"
+        class-name="blank"
+        padding="0"
+        @click="isAddMenuShow = !isAddMenuShow"
+      >
         <ui-icon name="header/plus-circle-outline" size="40" />
-      </button>
+      </ui-button>
       <transition name="fade">
         <header-menu v-show="isAddMenuShow" ref="addMenu" :items="isHouseEditable ? [...addMenuItems, ...ownerAddMenuItems] : [...addMenuItems]" @click="isAddMenuShow=false" />
       </transition>
     </div>
     <div class="header-content__menu-container">
-      <button ref="settingsMenuTrigger" class="header-button" @click="isSettingsMenuShow = !isSettingsMenuShow">
+      <ui-button
+        ref="settingsMenuTrigger"
+        class-name="blank"
+        padding="0"
+        @click="isSettingsMenuShow = !isSettingsMenuShow"
+      >
         <ui-icon name="header/dots-horizontal" size="40" />
-      </button>
+      </ui-button>
       <transition name="fade">
         <header-menu v-show="isSettingsMenuShow" ref="settingsMenu" :items="[...settingsMenuItems,...houses]" @click="isSettingsMenuShow=false" />
       </transition>

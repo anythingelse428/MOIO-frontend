@@ -15,42 +15,49 @@
           Email нового пользователя
         </label>
         <input
-          id="email"
-          v-model="login"
-          type="email"
-          name="email"
-          class="add-roommate-modal__input-group-input"
+            id="email"
+            v-model="login"
+            type="email"
+            name="email"
+            class="add-roommate-modal__input-group-input"
         >
-        <button class="add-roommate-modal__add-button" @click.prevent="addToLoginsArray()">
+        <ui-button class-name="default" rounded="100%" padding="8px" margin-inline="0" @click="addToLoginsArray">
           <ui-icon name="plus" />
-        </button>
+        </ui-button>
+
       </div>
       <div class="add-roommate-modal__users">
-        <div v-if="logins?.length === 0" class="add-roommate-modal__users-user--placeholder">
+        <div v-if="logins?.length === 0" class="add-roommate-modal__users-user --placeholder">
           Здесь будет отображен список пользователей
         </div>
-        <div v-for="login in logins" :key="login" class="add-roommate-modal__users-user">
-          {{ login }}
-          <ui-icon
-            name="delete"
-            color="#D15151"
-            size="20"
-            role="button"
-            @click.prevent="removeFromLoginsArray(login)"
-          />
-        </div>
+        <ui-any-list-item v-for="login in logins" :key="login" class="add-roommate-modal__users-user">
+          <template #title>
+            {{login}}
+          </template>
+          <template #action>
+            <ui-button class-name="blank" padding="0" margin-inline="0">
+            <ui-icon
+                name="delete"
+                color="#D15151"
+                size="20"
+                role="button"
+                @click.prevent="removeFromLoginsArray(login)"
+            />
+            </ui-button>
+          </template>
+        </ui-any-list-item>
       </div>
       <div class="add-roommate-modal__input-group">
         <label for="house" class="add-roommate-modal__input-group-label">
           Выберите дом, доступный пользователю
         </label>
         <ui-select
-          v-if="uppperGroups"
-          style="width: 100%"
-          :options="selectDataHouses"
-          select-name="Дом не выбран"
-          :current-value="selectedHouse"
-          @custom-select="(e)=>{ selectedHouse = e;getSubgroups() }"
+            v-if="uppperGroups"
+            style="width: 100%"
+            :options="selectDataHouses"
+            select-name="Дом не выбран"
+            :current-value="selectedHouse"
+            @custom-select="(e)=>{ selectedHouse = e;getSubgroups() }"
         />
       </div>
       <div class="add-roommate-modal__groups">
@@ -62,17 +69,20 @@
         <label for="groups" class="add-roommate-modal__input-group-label">
           Выберите группы, доступные пользователю
         </label>
-
-        <div
-          v-for="group in selectDataGroups"
-          :key="group.id"
-          class="add-roommate-modal__groups-item"
-        >
-          <span>{{ group.name }}</span>
-          <ui-checkbox @click="e=>selectGroups(e,group.id)" :checked="groupIds.includes(group.id)" />
-        </div>
+        <ui-any-list-item
+            v-for="group in selectDataGroups"
+            :key="group.id">
+          <template #title>
+            {{group.name}}
+          </template>
+          <template #action>
+            <ui-checkbox @click="e=>selectGroups(e,group.id)" :checked="groupIds.includes(group.id)" />
+          </template>
+        </ui-any-list-item>
       </div>
-      <input type="submit" value="Отправить приглашение" class="add-roommate-modal__form-submit" :disabled="logins?.length===0" @click.prevent="addRoommate()">
+      <ui-button :disabled="logins?.length===0 || selectedHouse.length === 0" @click="addRoommate()" rounded="16px">
+        Отправить приглашение
+      </ui-button>
     </form>
   </div>
 </template>
@@ -149,13 +159,10 @@ async function addRoommate () {
     useNotification('error', 'Выберите группу')
     return
   }
-  try {
-    isLoading.value = true
-    await groupStore.addUserToGroup(logins.value, [selectedHouse.value, ...groupIds.value])
-    isLoading.value = false
-  } catch {
+  isLoading.value = true
+  await groupStore.addUserToGroup(logins.value, [selectedHouse.value, ...groupIds.value])
+  isLoading.value = false
 
-  }
 }
 watch(groups, (newValue) => {
   selectDataHouses.value = newValue.reduce((acc:{ description:string, value:any }[], curr) => {

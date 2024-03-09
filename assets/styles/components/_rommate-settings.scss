@@ -66,32 +66,15 @@
 		&-container {
 			margin-top: 16px;
 			margin-inline: auto;
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
 			@media screen and (max-width: 768px) {
 				padding-inline: 0;
 			}
 		}
-		&-item{
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			background: $settings-color;
-			border-radius: 12px;
-			padding: 20px 12px;
-			font-size: 20px;
-			font-weight: 600;
-			margin-top: 12px;
-		}
 	}
 	&__submit{
-		display: block;
 		margin-top: 36px;
-		margin-inline: auto;
-		background: $color-active;
-		color: $bg-primary;
-		font-size: 24px;
-		font-weight: 600;
-		padding: 4px 14px;
-		border-radius: 16px;
-		border: 0;
 	}
 }

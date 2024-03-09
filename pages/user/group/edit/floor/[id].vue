@@ -18,17 +18,20 @@
             }}
           </h2>
           <div v-if="existingDevices?.length>0" class="add-group-available-devices__list">
-            <div
+            <ui-any-list-item
               v-for="device in existingDevices"
               :key="device.id"
-              class="add-group-available-devices__list-item"
             >
-              <label for="device">{{ device?.name }}</label>
-              <ui-checkbox
-                :checked="devices.findIndex(el=>el.id === device.id)>-1"
-                @check="setItem(devices,{id:device.id,name:device.name})"
-              />
-            </div>
+              <template #title>
+                {{ device?.name }}
+              </template>
+              <template #action>
+                <ui-checkbox
+                  :checked="devices.findIndex(el=>el.id === device.id)>-1"
+                  @check="setItem(devices,{id:device.id,name:device.name})"
+                />
+              </template>
+            </ui-any-list-item>
           </div>
         </div>
         <div class="add-group__preview-wrapper">
@@ -46,21 +49,27 @@
                 Гости этажа
               </div>
               <div v-if="previewData.users?.length" class="add-group__preview-section-value">
-                <div v-for="user in previewData.users" :key="user.id" class="add-group__preview-section-device">
-                  {{ user?.name }}
-                  <button
-                    class="blank"
-                    @click="(e)=>{
-                      usersForRemove.push({id:user.id,name:user.name})
-                      setItem(users,{id:user.id,name:user.name})}"
-                  >
-                    <ui-icon
-                      v-if="user.id !== groupStore.currentGroup.groupCreatorId"
-                      name="delete"
-                      color="#D15151"
-                    />
-                  </button>
-                </div>
+                <ui-any-list-item v-for="user in previewData.users" :key="user.id">
+                  <template #title>
+                    {{ user?.name }}
+                  </template>
+                  <template #action>
+                    <ui-button
+                      class-name="blank"
+                      padding="0"
+                      @click="(e)=>{
+                        usersForRemove.push({id:user.id,name:user.name})
+                        users = users.filter(el=>el.id !== user.id)}"
+                    >
+                      <ui-icon
+                        v-if="user.id !== groupStore.currentGroup.groupCreatorId"
+                        name="delete"
+                        color="#D15151"
+                        size="20"
+                      />
+                    </ui-button>
+                  </template>
+                </ui-any-list-item>
               </div>
               <div v-else class="add-group__preview-section-value">
                 Нет приглашенных пользователей
@@ -71,19 +80,24 @@
                 Устройства этажа
               </div>
               <div v-if="previewData.devices?.length" class="add-group__preview-section-value">
-                <div v-for="item in previewData.devices" :key="item.id" class="add-group__preview-section-device">
-                  {{ item?.name }}
-                  <button
-                    class="blank"
-                    @click="(e)=>setItem(devices,{id:item.id,name:item.name})"
-                  >
-                    <ui-icon
-                      name="delete"
-                      color="#D15151"
-                      size="20"
-                    />
-                  </button>
-                </div>
+                <ui-any-list-item v-for="item in previewData.devices" :key="item.id">
+                  <template #title>
+                    {{ item?.name }}
+                  </template>
+                  <template #action>
+                    <ui-button
+                      class-name="blank"
+                      padding="0"
+                      @click="(e)=>setItem(devices,{id:item.id,name:item.name})"
+                    >
+                      <ui-icon
+                        name="delete"
+                        color="#D15151"
+                        size="20"
+                      />
+                    </ui-button>
+                  </template>
+                </ui-any-list-item>
               </div>
               <div v-else class="add-group__preview-section-value">
                 Нет выбранных устройств
@@ -92,11 +106,15 @@
           </div>
         </div>
         <div class="add-group__submit-wrapper">
-          <input type="submit" class="add-group__submit" value="Сохранить">
+          <ui-button class-name="default" type="submit" rounded="16px">
+            Сохранить
+          </ui-button>
         </div>
       </form>
       <form method="post" class="add-group__form --delete" @submit.prevent="deleteGroup()">
-        <input type="submit" value="Удалить группу" class="add-group__submit">
+        <ui-button class-name="delete" type="submit" rounded="16px">
+          Удалить группу
+        </ui-button>
       </form>
     </div>
   </div>
@@ -107,6 +125,8 @@
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
+import UiButton from "~/components/ui/UiButton.vue"
+import UiAnyListItem from "~/components/ui/UiAnyListItem.vue"
 
 let oldName = ''
 const isLoading = ref(false)
@@ -116,9 +136,9 @@ const name = ref('')
 const house = ref(currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
 const existingDevices = ref<{id:string, name:string}[]>([])
-const users = ref<{id:number, name:string}[]>()
+const users = ref<{id:string|number, name:string}[]>([])
 const id = useRoute().params.id as string
-const usersForRemove = ref<{id:number, name:string}[]>([])
+const usersForRemove = ref<{id:number|string, name:string}[]>([])
 const router = useRouter()
 const rooms = ref<{ id: string, name:string }[]>([])
 const previewData = ref({
@@ -128,7 +148,7 @@ const previewData = ref({
   users,
 })
 
-function setItem (target:{ id: string, name:string }[], data:{ id: string, name:string }) {
+function setItem (target:{ id: string|number, name:string }[], data:{ id: string|number, name:string }) {
   const isSelected = target?.findIndex(el => el?.id === data.id)
   if (isSelected === -1) {
     target?.push(unref(data))
@@ -174,8 +194,6 @@ async function editGroup () {
   }
   if (devices.value?.length > 0) {
     await groupStore.changeDevices(id, devices.value.map(el => el.id))
-  }
-  if (rooms.value?.length > 0) {
   }
   if (usersForRemove.value?.length > 0) {
     await groupStore.removeUsersFromGroup([id], [], usersForRemove.value?.map(el => el.id))
