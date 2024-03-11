@@ -1,4 +1,4 @@
-.scheme-light{
+[data-theme='theme-light']{
   --toastify-color-light:#EDF5FF;
   --toastify-text-color-light:#15161C;
   --toastify-font-family:Jura, sans-serif;
@@ -19,7 +19,4 @@
   --service-shadow-color:147 186 255;
   --thumb-color:#D8E9FF;
   --settings-color:#EDF5FF;
-  svg{
-    transition: unset;
-  }
 }

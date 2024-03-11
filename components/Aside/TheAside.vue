@@ -30,8 +30,8 @@
         />
       </div>
       <div class="aside-footer">
-        <button class="aside-footer__item" @click="colorMode?.changeColorScheme()">
-          <ui-icon name="aside/theme" size="28" />{{ colorMode?.currentScheme.value === 'scheme-dark'?"Светлая тема":"Темная тема" }}
+        <button class="aside-footer__item" @click="colorMode.toggle()">
+          <ui-icon name="aside/theme" size="28" />{{ colorMode?.name.value.includes('dark') ?"Светлая тема":"Темная тема" }}
         </button>
         <button class="aside-footer__item" @click="logout()">
           <ui-icon name="aside/logout" size="26" />
@@ -49,6 +49,7 @@ import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
 import UiIcon from "~/components/ui/UiIcon.vue"
 import type { TUiIconNames } from "#build/types/ui-icon"
+import useColorTheme from "~/composables/useColorTheme"
 
 export interface IAsideContent {
   categoryTitle:string
@@ -98,6 +99,7 @@ const categories = ref<{
 }[]>()
 const asideRooms = ref()
 const asideFloors = ref()
+const colorMode = useColorTheme()
 
 async function getCategories () {
   await categoriesStore.getAll()
@@ -107,7 +109,6 @@ async function getCategories () {
   asideFloors.value = floors
 }
 getCategories()
-const colorMode = useColorScheme()
 
 function logout () {
   const userStore = useUserStore()
@@ -126,11 +127,7 @@ watch(floors, (newValue) => {
   asideFloors.value = newValue
 })
 
-onMounted(() => {
-  colorMode?.colorSchemeInit()
-})
 </script>
 
 <style lang="scss">
-
 </style>

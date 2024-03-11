@@ -70,16 +70,16 @@
             </div>
           </div>
           <div class="add-group__submit-wrapper">
-            <ui-button type="submit">
+            <ui-button type="submit" margin-inline="0" rounded="16px">
               Сохранить
             </ui-button>
+            <form method="post" @submit.prevent="deleteGroup()">
+              <ui-button type="submit" margin-inline="0" rounded="16px" class-name="delete">
+                Удалить
+              </ui-button>
+            </form>
           </div>
         </div>
-      </form>
-      <form method="post" class="add-group__form --delete" @submit.prevent="deleteGroup()">
-        <ui-button type="submit" class-name="delete">
-          Удалить группу
-        </ui-button>
       </form>
     </div>
   </div>

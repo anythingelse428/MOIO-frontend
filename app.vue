@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout>
+  <NuxtLayout v-bind="colorMode.bind.value">
     <NuxtPage />
   </NuxtLayout>
 </template>
@@ -7,12 +7,11 @@
 <script setup lang="ts">
 
 import { useUserStore } from '~/store/user'
+import useColorTheme from "~/composables/useColorTheme"
 
 const user = useUserStore()
-const colorMode = useColorScheme()
-onMounted(() => {
-  colorMode?.colorSchemeInit()
-})
+const colorMode = useColorTheme()
+
 if (user.accessToken) {
   await user.init()
 }

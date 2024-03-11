@@ -9,7 +9,15 @@
       </div>
       <div v-if="type==='time'" class="automation-condition__value" @click="openTimeSelect">
         {{ Date().match(/GMT.\d\d?\d\d/gm)[0] }}
-        <input ref="timeInput" v-model="time" type="time" name="" :disabled="Number(editable) === 0"> часов
+        <input
+          ref="timeInput"
+          v-model="time"
+          type="time"
+          name=""
+          :disabled="Number(editable) === 0"
+          @keydown.enter.stop="false"
+          @keydown.enter.prevent="false"
+        > часов
       </div>
       <div v-if="type==='sensor'" class="automation-condition__sensors">
         <div

@@ -106,15 +106,15 @@
           </div>
         </div>
         <div class="add-group__submit-wrapper">
-          <ui-button class-name="default" type="submit" rounded="16px">
+          <ui-button class-name="default" margin-inline="0" type="submit" rounded="16px">
             Сохранить
           </ui-button>
+          <form method="post" @submit.prevent="deleteGroup()">
+            <ui-button class-name="delete" margin-inline="0" type="submit" rounded="16px">
+              Удалить
+            </ui-button>
+          </form>
         </div>
-      </form>
-      <form method="post" class="add-group__form --delete" @submit.prevent="deleteGroup()">
-        <ui-button class-name="delete" type="submit" rounded="16px">
-          Удалить группу
-        </ui-button>
       </form>
     </div>
   </div>

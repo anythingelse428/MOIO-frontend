@@ -77,6 +77,10 @@
   &__submit-wrapper{
     margin-top: 40px;
     width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 60px;
   }
 
   .add-group-available-devices{

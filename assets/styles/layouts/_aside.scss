@@ -35,11 +35,11 @@
       }
     }
     .aside-trigger{
-      display: block;
+      display: flex;
       position: relative;
       z-index: 11;
       font-size: 40px;
-      top: -59px;
+      top: -55px;
       right: -24px;
       width: fit-content;
       cursor: pointer;
