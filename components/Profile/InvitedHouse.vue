@@ -36,6 +36,7 @@ const ownerName = await userStore.getUserById(props.groupCreatorId)
 
 async function leaveFromHouse () {
   const response = await groupStore.removeUsersFromGroup([props.id], [], [userStore.id])
+  await groupStore.getHouses()
   // console.log(response)
 }
 </script>

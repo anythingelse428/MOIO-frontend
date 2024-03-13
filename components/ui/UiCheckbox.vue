@@ -1,5 +1,5 @@
 <template>
-  <div class="checkbox" @click="emit('check', !checked)">
+  <div class="ui-checkbox" @click="emit('check', !checked)">
     <input type="checkbox" name="checkbox" :checked="checked">
     <ui-icon name="check" size="20" />
   </div>
@@ -11,13 +11,15 @@ import UiIcon from "~/components/ui/UiIcon.vue"
 export interface ICheckboxProps{
   size?:number,
   checked?:boolean
+  initialBg?:string
+  checkedBg?:string
 }
-const props = withDefaults(defineProps<ICheckboxProps>(), { size: 20, checked: false })
+const props = withDefaults(defineProps<ICheckboxProps>(), { size: 20, checked: false, checkedBg: 'var(--color-active)', initialBg: 'var(--bg-primary)' })
 const emit = defineEmits(['check'])
 </script>
 
 <style lang="scss">
-.checkbox{
+.ui-checkbox{
   position: relative;
   color: $settings-color;
   display: flex;
@@ -33,8 +35,8 @@ const emit = defineEmits(['check'])
     z-index: 5;
     cursor: pointer;
     &:checked ~ .ui-icon {
-      background: $color-active;
-      border-color: $color-active;
+      background: v-bind(checkedBg);
+      border-color: v-bind(checkedBg);
       svg {
         opacity: 1;
       }
@@ -43,9 +45,9 @@ const emit = defineEmits(['check'])
   .ui-icon{
     width: 24px;
     height: 24px;
-    background: $bg-primary;
+    background: v-bind(initialBg);
     border-radius: 3px;
-    border: 2px solid $bg-primary;
+    border: 2px solid v-bind(initialBg);
     svg {
       opacity: 0;
     }

@@ -35,7 +35,7 @@
               <template #action>
                 <ui-checkbox
                   :checked="devices.findIndex(el=>el.id === item.id)>-1"
-                  @check="setItem(devices,{id:item.id,name:item.name})"
+                  @check="(e)=>useSetItemOnCheckbox(e,devices,{id:item.id,name:item.name})"
                 />
               </template>
             </ui-any-list-item>
@@ -68,8 +68,8 @@
                       padding="0"
                       class-name="blank"
                       @click="(e)=>{
-                        setItem(devices,{id:item.id,name:item.name});
-                        setItem(existingDevices,{id:item.id,name:item.name});
+                        useSetItemOnCheckbox(false,devices,{id:item.id,name:item.name});
+                        useSetItemOnCheckbox(true,existingDevices,{id:item.id,name:item.name});
                       }"
                     >
                       <ui-icon
@@ -147,17 +147,18 @@ import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
 import UiAnyListItem from "~/components/ui/UiAnyListItem.vue"
+import useDataForGroupEdit from "~/composables/useDataForGroupEdit"
+import useEditGroup from "~/composables/useEditGroup"
 
 let oldName = ''
 const isLoading = ref(false)
 const id = useRoute().params.id as string
 const name = ref('')
-const house = ref("")
+const house = ref('')
 const devices = ref<{ id: string, name:string }[]>([])
 const users = ref<{id:number, name:string}[]>([])
 const usersForRemove = ref<{id:number, name:string}[]>([])
 const existingDevices = ref<{id:string, name:string}[]>([])
-// const existingUsers = ref<IUsersByGroupResponse[]>()
 const groupStore = useGroupsStore()
 const router = useRouter()
 const previewData = ref({
@@ -166,67 +167,29 @@ const previewData = ref({
   users,
 })
 
-function setItem (target:{ id: string, name:string }[], data:{ id: string, name:string }) {
-  const isSelected = target?.findIndex(el => el?.id === data.id)
-  if (isSelected === -1) {
-    target?.push(unref(data))
-  }
-  if (isSelected > -1 && devices.value.findIndex(el => el.id === data.id) > -1) {
-    target?.splice(isSelected, 1)
-    if (existingDevices.value.findIndex(el => el.id === data.id) === -1) {
-      existingDevices.value.push(data)
-    }
-  }
-}
 
 async function getGroupData () {
   isLoading.value = true
-  const data = await groupStore.getGroupById(id)
-  const parentData = data?.parentId && await groupStore.getGroupById(data?.parentId)
-  users.value = await groupStore.getUsersByGroupId(id)
-  if (parentData && parentData?.typeId === 2) {
-    // если этаж, то ставим дому ид родителя этажа
-    house.value = parentData.parentId ?? groupStore.currentHome
-  } else {
-    house.value = data?.parentId ?? groupStore.currentHome
-  }
-  await getDevicesByGroupId(id, devices)
-  await getDevicesByGroupId(house.value, existingDevices)
+  const { inGroupDevices, inHouseDevices, groupName, inGroupUsers, groupHouse } = await useDataForGroupEdit(id)
   isLoading.value = false
-  users.value = users.value?.filter(el => el.id !== groupStore.currentGroup.groupCreatorId)
-  name.value = data.name as string
-  oldName = unref(name.value)
+  name.value = groupName
+  oldName = groupName
+  devices.value = inGroupDevices
+  existingDevices.value = inHouseDevices
+  users.value = inGroupUsers
+  house.value = groupHouse
 }
 getGroupData()
-async function getDevicesByGroupId (id:string, deviceRef:globalThis.Ref<any>) {
-  deviceRef.value = []
-  const devices = await groupStore.getDevicesByGroupId(id)
-  if (devices) {
-    for (const val of Object.values(devices)) {
-      deviceRef.value.push(...val.map((el) => {
-        return { id: el.id, name: el.name }
-      }))
-    }
-  }
-}
+
 async function editGroup () {
   isLoading.value = true
-  if (name.value !== oldName) {
-    await groupStore.changeName(id, name.value)
-  }
-  if (existingDevices.value?.length > 0) {
-    await groupStore.changeDevices(groupStore.currentHome, existingDevices.value.map(el => el.id))
-  }
-  if (devices.value?.length > 0) {
-    await groupStore.changeDevices(id, devices.value.map(el => el.id))
-  }
-  if (usersForRemove.value?.length > 0) {
-    await groupStore.removeUsersFromGroup([id], [], usersForRemove.value?.map(el => el.id))
-  }
+  const isSuccess = await useEditGroup(id, name.value, oldName, usersForRemove.value, existingDevices.value, devices.value)
   isLoading.value = false
-  setTimeout(() => {
-    useRouter().push({ path: '/user/group/' + id })
-  }, 1500)
+  if (isSuccess) {
+    setTimeout(() => {
+      useRouter().push({ path: '/user/group/' + id })
+    }, 900)
+  }
 }
 async function deleteGroup () {
   await groupStore.deleteGroup(id)

@@ -42,7 +42,7 @@
             <template #action>
               <ui-checkbox
                 :checked="devices.findIndex(el=>el.id === device.id)>-1"
-                @check="(e)=>setItem(e,devices,{id:device.id,name:device.name})"
+                @check="(e)=>useSetItemOnCheckbox(e,devices,{id:device.id,name:device.name})"
               />
             </template>
           </ui-any-list-item>
@@ -72,7 +72,7 @@
                     padding="0"
                     class-name="blank"
                     margin-inline="0"
-                    @click="setItem(false,devices,{id:item.id,name:item.name})"
+                    @click="useSetItemOnCheckbox(false,devices,{id:item.id,name:item.name})"
                   >
                     <ui-icon
                       name="delete"
@@ -105,6 +105,7 @@ import { useUserStore } from "~/store/user"
 import UiSelect, { type ISelectProps } from "~/components/ui/UiSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
+import useSetItemOnCheckbox from "~/composables/useSetItemOnCheckbox"
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)
@@ -125,16 +126,16 @@ const previewData = ref({
 
 const selectData = ref<ISelectProps['options']>(existingHouses.value.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], []))
 
-function setItem (isChecked:boolean, target: { id:string, name:string }[], data:{ id: string, name:string }) {
-  const isSelected = target?.find(el => el?.id === data.id)
-  if (isChecked && !isSelected) {
-    target?.push(data)
-  }
-  if (!isChecked && isSelected) {
-    const idx = target.findIndex(el => el.id === data.id)
-    target?.splice(idx, 1)
-  }
-}
+// function setItem (isChecked:boolean, target: { id:string, name:string }[], data:{ id: string, name:string }) {
+//   const isSelected = target?.find(el => el?.id === data.id)
+//   if (isChecked && !isSelected) {
+//     target?.push(data)
+//   }
+//   if (!isChecked && isSelected) {
+//     const idx = target.findIndex(el => el.id === data.id)
+//     target?.splice(idx, 1)
+//   }
+// }
 async function getDevicesByGroupId () {
   isLoading.value = true
   existingDevices.value = []
@@ -146,6 +147,14 @@ async function getDevicesByGroupId () {
 }
 getDevicesByGroupId()
 async function addGroup () {
+  if (!name.value?.length) {
+    useNotification("error", "Введите название группы")
+    return
+  }
+  if (name.value.length > 30) {
+    useNotification("error", "Название группы не должно превышать 30 символов")
+    return
+  }
   isLoading.value = true
   const devicesArrayId = devices.value.map(el => el.id)
   const parent = floor.value || house.value

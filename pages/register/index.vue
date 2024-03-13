@@ -82,6 +82,10 @@ const confirmationCode = ref('')
 
 async function register () {
   isLoading.value = true
+  if (name.value.length >= 50) {
+    useNotification('error', 'Имя не должно превышать 50 символов')
+    return
+  }
   const registrationData:IRegisterUserProps = {
     name: name.value,
     login: email.value,

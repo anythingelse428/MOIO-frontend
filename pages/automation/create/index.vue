@@ -160,6 +160,10 @@ async function create () {
     useNotification("error", "Введите название автоматизации")
     return
   }
+  if (name.value.length > 30) {
+    useNotification("error", "Название автоматизации не должно превышать 30 символов")
+    return
+  }
   if (!conditions.value?.length) {
     useNotification("error", "Не выбрано условие активации")
     return

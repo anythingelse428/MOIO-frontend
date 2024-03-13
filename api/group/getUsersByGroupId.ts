@@ -5,10 +5,8 @@ export interface IUsersByGroupResponse {
   id: number,
   name: string,
   login: string,
-  clientId: string|any,
-  password: any,
-  role: number|any,
-  groups:{id:string, name:string}[]
+  isPending:boolean,
+  groupsIsPending:{id:string, name:string, isPending:boolean}[]
 }
 export default async function apiGroupGetUserByGroupId (id:string):Promise<IUsersByGroupResponse[]> {
   return await useAsyncQuery(async ({ axios, path }) => {

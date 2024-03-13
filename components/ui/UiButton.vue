@@ -19,7 +19,16 @@ export interface IUiButton{
   centered?:false
   bgColor?:string
 }
-const props = withDefaults(defineProps<IUiButton>(), { className: 'default', type: 'button', marginInline: 'auto', fill: '', rounded: '0', padding: '8px 12px', centred: false, bgColor: '' })
+const props = withDefaults(defineProps<IUiButton>(), {
+  className: 'default',
+  type: 'button',
+  marginInline: 'auto',
+  fill: '',
+  rounded: '0',
+  padding: '8px 12px',
+  centred: false,
+  bgColor: '',
+})
 </script>
 
 <style lang="scss">

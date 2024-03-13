@@ -61,9 +61,13 @@
         />
       </div>
       <div class="add-roommate-modal__groups">
-        <div class="" v-show="selectDataGroups.length">
-          Выбрать все
-          <ui-checkbox @check="e=>selectGroups(e,'all')" :checked="selectDataGroups.length === groupIds.length" />
+        <div class="add-roommate-modal__groups-select-all" v-show="selectDataGroups.length">
+          <ui-checkbox
+              :initial-bg="'var(--settings-color)'"
+              :checked="selectDataGroups.length === groupIds.length"
+              @check="e=>selectGroups(e,'all')"
+          />
+          Выбрать всё
         </div>
 
         <label for="groups" class="add-roommate-modal__input-group-label">
@@ -103,7 +107,7 @@ const selectedHouse = ref('')
 const userId = useUserStore().id
 const logins = ref<string[]>([])
 const { groups, uppperGroups } = storeToRefs(groupStore)
-const emit = defineEmits(['modal-close'])
+const emit = defineEmits(['modal-close', 'add-roommate'])
 const selectDataHouses = ref(uppperGroups.value.reduce((acc:{ description:string, value:any }[], curr) => {
   if (!acc?.length) {
     acc = []
@@ -144,7 +148,7 @@ function selectGroups (e:Event, id:string) {
   if (id === 'all'){
     if (groupIds.value.length < selectDataGroups.value.length){
       groupIds.value = [...selectDataGroups.value.map(el=>el.id)]
-      return;
+      return
     }
     groupIds.value = []
   }
@@ -162,7 +166,7 @@ async function addRoommate () {
   isLoading.value = true
   await groupStore.addUserToGroup(logins.value, [selectedHouse.value, ...groupIds.value])
   isLoading.value = false
-
+  emit('add-roommate')
 }
 watch(groups, (newValue) => {
   selectDataHouses.value = newValue.reduce((acc:{ description:string, value:any }[], curr) => {

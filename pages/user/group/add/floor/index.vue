@@ -36,7 +36,7 @@
             <template #action>
               <ui-checkbox
                 :checked="devices.findIndex(el=>el.id === device.id)>-1"
-                @check="(e)=>setItem(e, devices, {id:device.id,name:device.name})"
+                @check="(e)=>useSetItemOnCheckbox(e, devices, {id:device.id,name:device.name})"
               />
             </template>
           </ui-any-list-item>
@@ -60,7 +60,7 @@
             <template #action>
               <ui-checkbox
                 :checked="rooms.findIndex(el=>el.id === room.id)>-1"
-                @check="(e)=>setItem(e, rooms,{id:room.id,name:room.name})"
+                @check="(e)=>useSetItemOnCheckbox(e, rooms,{id:room.id,name:room.name})"
               />
             </template>
           </ui-any-list-item>
@@ -90,7 +90,7 @@
                     class-name="blank"
                     padding="0"
                     margin-inline="0"
-                    @click="setItem(false,devices,{id:item.id,name:item.name})"
+                    @click="useSetItemOnCheckbox(false,devices,{id:item.id,name:item.name})"
                   >
                     <ui-icon
                       name="delete"
@@ -119,7 +119,7 @@
                     class-name="blank"
                     padding="0"
                     margin-inline="0"
-                    @click="setItem(false,rooms,{id:item.id,name:item.name})"
+                    @click="useSetItemOnCheckbox(false,rooms,{id:item.id,name:item.name})"
                   >
                     <ui-icon
                       name="delete"
@@ -182,16 +182,7 @@ async function getRoomsByHomeId () {
   })
 }
 getRoomsByHomeId()
-function setItem (isChecked:boolean, target:{ id: string, name:string }[], data:{ id: string, name:string }) {
-  const isSelected = target?.find(el => el?.id === data.id)
-  if (isChecked && !isSelected) {
-    target?.push(data)
-  }
-  if (!isChecked && isSelected) {
-    const idx = target.findIndex(el => el.id === data.id)
-    target?.splice(idx, 1)
-  }
-}
+
 async function getDevicesByGroupId () {
   isLoading.value = true
   existingDevices.value = []
@@ -202,6 +193,14 @@ async function getDevicesByGroupId () {
 getDevicesByGroupId()
 async function addGroup () {
   isLoading.value = true
+  if (!name.value?.length) {
+    useNotification("error", "Введите название группы")
+    return
+  }
+  if (name.value.length > 30) {
+    useNotification("error", "Название группы не должно превышать 30 символов")
+    return
+  }
   const devicesArrayId = devices.value.map(el => el.id)
   const roomsArrayId = rooms.value.map(el => el.id)
   await groupStore.addRoom(name.value, 2, house.value, devicesArrayId?.length > 0 ? devicesArrayId : undefined, roomsArrayId.length > 0 ? roomsArrayId : undefined)

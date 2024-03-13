@@ -223,6 +223,10 @@ async function update () {
     useNotification("error", "Введите название автоматизации")
     return
   }
+  if (name.value.length > 30) {
+    useNotification("error", "Название автоматизации не должно превышать 30 символов")
+    return
+  }
   if (!newConditions.value.length && !oldConditions.value.length) {
     useNotification("error", "Не выбрано условие активации")
     return
