@@ -72,6 +72,14 @@
 			@media screen and (max-width: 768px) {
 				padding-inline: 0;
 			}
+			&-remove-item{
+				@include carousel-category-item;
+				gap: 12px;
+				display: flex;
+				align-items: center;
+				min-width: 168px;
+				justify-content: flex-end;
+			}
 		}
 	}
 	&__submit{

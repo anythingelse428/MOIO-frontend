@@ -7,18 +7,25 @@
 	&__description{
 		margin-top: 24px;
 	}
-	&__value{
+	&__time{
 		margin-top: 20px;
-		width: 212px;
+		min-width: min(212px, 100%);
+		max-width: min(326px,100%);
 		border-radius: 16px;
 		border: 1px solid $color-active;
 		padding: 20px 24px;
-		input[type="time"]{
-			background: $color-active;
-			border-radius: 16px;
-			padding: 10px 8px;
-			color: $color-accent;
-			border: 0;
+		&-value{
+			display: flex;
+			align-items: center;
+			gap:12px;
+			margin-top: 12px;
+			input[type="time"]{
+				background: $color-active;
+				border-radius: 16px;
+				padding: 10px 8px;
+				color: $color-accent;
+				border: 0;
+			}
 		}
 	}
 	&__sensors{
@@ -36,12 +43,34 @@
 		min-height: 76px;
 		gap: 14px;
 		position: relative;
-		input[type="radio"] {
+		cursor: not-allowed;
+		&.--editable {
 			cursor: pointer;
+		}
+		&-info{
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+		}
+		&-condition{
 			position: absolute;
-			inset: 0;
-			opacity: 0.5;
-			z-index: 10;
+			right: -8px;
+			bottom: -5px;
+			padding: 8px;
+			border-radius: 8px;
+			border: 1px solid $color-active;
+			box-shadow: 0 0 4px $color-active;
+			background: $settings-color;
+			color: $color-active;
+			font-size: 40px;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		&-value{
+		
 		}
 		.mask {
 			position: absolute;

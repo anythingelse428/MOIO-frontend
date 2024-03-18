@@ -16,6 +16,8 @@ export interface IGroupResponseItem{
     name: string|null,
     devices: IAllDevicesResponse[],
     groupCreatorId:number
+    isPending?:boolean
+    canAutomate?:boolean
 }
 
 export default async function apiGroupGetAll (homeId:string):Promise<IGroupResponseItem[]> {

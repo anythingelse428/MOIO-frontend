@@ -11,7 +11,7 @@ import apiGroupChangeName from "~/api/group/changeName"
 import apiDevicesChangeDevices from "~/api/device/changeGroup"
 import apiGroupDelete from "~/api/group/delete"
 import { useUserStore } from "~/store/user"
-import apiGroupAddUser from "~/api/group/addUser"
+import apiGroupAddUser, { IAddUserToGroupProps } from "~/api/group/addUser"
 import apiGroupGetUserByGroupId from "~/api/group/getUsersByGroupId"
 import apiGroupRemoveUsers from "~/api/group/removeUsers"
 import apiGroupsGetSubgroups from "~/api/group/getSubgroups"
@@ -47,6 +47,7 @@ export const useGroupsStore = defineStore('groups', {
                   isEditable: curr.groupCreatorId === id,
                   typeId: curr.typeId,
                   isActive: curr.id === state.currentHome,
+                  isPending: curr?.isPending,
                 },
               )
             }
@@ -66,7 +67,7 @@ export const useGroupsStore = defineStore('groups', {
   },
   actions: {
     async getAll (groupId?:string) {
-      const id = groupId ?? this.currentHome
+      const id = groupId ?? unref(this.currentHome)
       if (id?.length > 0) {
         const data = await apiGroupGetAll(id)
         if (data?.length) {
@@ -156,8 +157,8 @@ export const useGroupsStore = defineStore('groups', {
         useNotification('error', "Произошла ошибка при удалении")
       }
     },
-    async addUserToGroup (logins:string[], groupId:string[]) {
-      await apiGroupAddUser(logins, groupId)
+    async addUserToGroup (data:IAddUserToGroupProps) {
+      await apiGroupAddUser(data)
     },
     async removeUsersFromGroup (groupIds:string[], logins:string[], ids:number[]) {
       await apiGroupRemoveUsers(groupIds, logins, ids)

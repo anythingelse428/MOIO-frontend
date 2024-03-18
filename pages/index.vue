@@ -2,12 +2,13 @@
   <div class="group">
     <loader-screen :is-loading="isLoading" />
     <group-list
-      v-if="currentGroup?.name"
+      v-if="group?.name"
       :id="groupStore.currentHome"
-      :name="currentGroup?.name"
-      :devices="currentGroup.devices"
-      :inverse-parent="currentGroup?.inverseParent"
+      :name="group?.name"
+      :devices="group.devices"
+      :inverse-parent="group?.inverseParent"
       :hide-empty="true"
+      :type-id="1"
     />
   </div>
 </template>
@@ -28,11 +29,12 @@ export interface IGroupData {
 
 const isLoading = ref(true)
 const groupStore = useGroupsStore()
-const { currentGroup } = storeToRefs(groupStore)
+const { group } = storeToRefs(groupStore)
 
 onMounted(async () => {
   try {
     isLoading.value = true
+    await groupStore.getAll()
     await groupStore.getGroupById(groupStore.currentHome)
     isLoading.value = false
   } catch {

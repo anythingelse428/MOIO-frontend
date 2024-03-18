@@ -100,13 +100,13 @@ async function changeData () {
   }
   if (step.value === 2) {
     if (type.value === "password") {
-      return await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value, confirmationCode: code.value })
+      await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value, confirmationCode: code.value })
     }
     if (type.value === "email") {
-      return await userStore.changeLogin({ newLogin: login.value, password: oldPassword.value, confirmationCode: code.value })
+      await userStore.changeLogin({ newLogin: login.value, password: oldPassword.value, confirmationCode: code.value })
     }
-    isLoading.value = false
   }
+  isLoading.value = false
 }
 </script>
 

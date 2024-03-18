@@ -72,6 +72,11 @@
       background: $settings-color;
       border-radius: 12px;
     }
+    &-select-all{
+      display: flex;
+      align-items: center;
+      gap:16px;
+    }
   }
   &__input-group {
     display: flex;

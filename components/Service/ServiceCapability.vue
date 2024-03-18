@@ -36,9 +36,9 @@
         id="range"
         v-model="capability.value"
         type="range"
-        :min="range.min"
-        :max="range.max"
-        :step="range.precision"
+        :min="range?.min"
+        :max="range?.max"
+        :step="range?.precision"
         :class="`${instance?.includes('temperature') && '--temperature'}`"
         @input="updateDevice({type,value:capability.value})"
       >
@@ -73,32 +73,18 @@ import { useGroupsStore } from "~/store/groups"
 import useHSVToRGB from "~/composables/useHSVToRGB"
 import UiIcon from "~/components/ui/UiIcon.vue"
 import type { TUiIconNames } from "#build/types/ui-icon"
+import type { ICapability } from "~/components/Service/TheService.vue"
 
-export type ServiceCapability = {
-    deviceType:string
-    deviceId:string
-    chanel:string
-    type: string
-    retrievable: boolean
-    reportable: boolean
-    instance: string|null
-    range: {
-      min: number
-      max: number
-      precision: number
-    },
-    hsv:{
-      h:number,
-      s:number,
-      v:number
-    },
-  value:any
+export interface ServiceCapability {
+  deviceType:string
+  deviceId:string
+  chanel:string
   float?:number
   icon?:TUiIconNames
   type:string
 }
 
-const props = defineProps<ServiceCapability>()
+const props = defineProps<ServiceCapability & ICapability>()
 const emit = defineEmits(['update-bool-val'])
 const devicesStore = useDevicesStore()
 const groupStore = useGroupsStore()

@@ -117,6 +117,10 @@ async function changeName () {
     useNotification('error', 'Имя не может быть пустым')
     return
   }
+  if (newName.value.length > 50) {
+    useNotification('error', 'Имя не может превышать 50 символов')
+    return
+  }
   if (props.displayedName !== newName.value) {
     isLoading.value = true
     await userStore.changeName(newName.value)
@@ -126,12 +130,13 @@ async function changeName () {
   isNameChanging.value = false
 }
 async function changeClientId () {
-  if (props.clientId !== newClientId.value) {
+  if (props.clientId !== newClientId.value && newClientId.value.length) {
     isLoading.value = true
     await userStore.changeClientId(newClientId.value)
     await userStore.init()
     isLoading.value = false
   }
+  newClientId.value = userStore.clientId
   isClientIdChanging.value = false
 }
 async function copyToClipBoard (text:string, type:'clientId'|'email') {

@@ -1,13 +1,19 @@
 import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
 
-export default async function apiGroupAddUser (usersLogins:string[], groupsIds:string[]) {
+export interface IGroupUser {
+  userLogin:string
+  canAutomate: boolean
+}
+export interface IAddUserToGroupProps {
+  groupsIds:string[]
+  userPendingAutomationPermission:IGroupUser[]
+}
+
+export default async function apiGroupAddUser (data:IAddUserToGroupProps) {
   return await useAsyncQuery(async ({ axios, path }) => {
     try {
-      const response = await axios.post(path + '/v1/groups/addUsersToGroup', {
-        usersLogins,
-        groupsIds,
-      })
+      const response = await axios.post(path + '/v1/groups/addUsersToGroup', { ...data })
       if (response?.status === 200) {
         useNotification('info', 'Пользователям был отправлен пригласительный код')
         return response

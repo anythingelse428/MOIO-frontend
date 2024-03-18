@@ -69,13 +69,13 @@
                   <service-capability
                     :device-id="id"
                     :chanel="id.replace(/^[a-zA-Z0-9_.-]*_ch/gm,'')"
-                    :instance="item.instance"
-                    :range="item.range"
-                    :reportable="item.reportable"
-                    :retrievable="item.retrievable"
+                    :instance="item?.instance"
+                    :range="item?.range"
+                    :reportable="item?.reportable"
+                    :retrievable="item?.retrievable"
                     :type="item.type"
                     :device-type="type"
-                    :hsv="item.hsv"
+                    :hsv="item?.hsv"
                     :value="item.value"
                     :icon="deviceIcon?.name"
                     :float="floatValue?.value"
@@ -191,16 +191,16 @@ import type { TUiIconNames } from "#build/types/ui-icon"
 
 export interface ICapability {
   type: string
-  retrievable: boolean
-  reportable: boolean
-  value: string
-  instance: string
-  range: {
+  retrievable?: boolean
+  reportable?: boolean
+  value?: any
+  instance?: string
+  range?: {
     min: number
     max: number
     precision: number
   }
-  hsv: {
+  hsv?: {
     h: number
     s: number
     v: number

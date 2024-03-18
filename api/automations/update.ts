@@ -1,4 +1,5 @@
 import { type AxiosError } from "axios"
+import type { IAutomationValue } from "~/api/automations/create"
 
 export interface IAutomationUpdateProps {
   id: string,
@@ -7,8 +8,8 @@ export interface IAutomationUpdateProps {
      scenarioId: string,
      orderId: number
    }[]
-  newTrigger: string[]
-  removeTriggersIdList: string[]
+  newTriggers: IAutomationValue[]
+  removeTriggersIds: string[]
   allConditions: boolean
 }
 
@@ -21,7 +22,14 @@ export default async function apiAutomationsUpdate (props:IAutomationUpdateProps
       }
       return response
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Что-то пошло не так')
+      if ((e as any)?.response?.data?.length) {
+        useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Что-то пошло не так')
+      }
+      if ((e as any)?.response?.data?.errors?.NewTrigger?.length) {
+        e.response.data.errors.NewTrigger.forEach((el) => {
+          useNotification('error', el)
+        })
+      }
     }
   })
 }

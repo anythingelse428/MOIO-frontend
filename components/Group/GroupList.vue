@@ -3,8 +3,12 @@
     <h1 v-if="!hideEmpty" class="group-list__header">
       {{ name }}
     </h1>
-    <h1 v-if="hideEmpty && (devices?.length>0||inverseParent?.length)" class="group-list__header" @click="isCollapsed = !isCollapsed">
-      <ui-icon v-if="!isScenarios" :name="isCollapsed?'minus-thick':'plus-thick'" :size="28" />
+    <h1 v-if="hideEmpty && (isNotEmpty || isGroupPage)" class="group-list__header" @click="isCollapsed = !isCollapsed">
+      <ui-icon
+        v-if="!isScenarios && isNotEmpty"
+        :name="isCollapsed?'minus-thick':'plus-thick'"
+        :size="28"
+      />
       {{ name }}
     </h1>
     <div v-if="filteredDevices()?.length&&isScenarios" class="subgroup-item__service-list">
@@ -66,30 +70,40 @@ import UiIcon from "~/components/ui/UiIcon.vue"
 export interface GroupList {
   name?:string,
   id:string|number
-  devices?:IAllDevicesResponse[],
+  devices?: Array<IAllDevicesResponse & { selected: boolean }>,
   inverseParent?: GroupList[],
   hideEmpty?:boolean
   hideSensors?:boolean
   hideDevices?:boolean
   isScenarios?:boolean
   childDepth?:number
+  isGroupPage?:boolean
+  typeId?:number
 }
 
 const props = defineProps<GroupList>()
 const emit = defineEmits(['get-data'])
 const isCollapsed = ref(true)
+
+const isNotEmpty = computed(() => {
+  if (props.typeId === 1) {
+    return true
+  }
+  const devicesInChilds = props.inverseParent?.reduce((acc, curr) => acc + Number(curr.devices?.length ?? 0), 0)
+  return Boolean(props.devices?.length || (props.inverseParent?.length && devicesInChilds))
+})
 const filteredDevices = () => {
-  let temp: IAllDevicesResponse[] = []
+  let temp: Array<IAllDevicesResponse & { selected: boolean }> = []
   if (!props.hideDevices && !props.hideSensors) { return props.devices }
   if (props.hideDevices && typeof props.hideDevices !== 'undefined') {
-    temp = props.devices?.filter(el => !el.id.includes('_ch')) as IAllDevicesResponse[]
+    temp = props.devices?.filter(el => !el.id.includes('_ch')) || []
   }
   if (props.hideSensors && typeof props.hideSensors !== 'undefined') {
-    if (temp?.length > 0) {
-      temp = temp?.filter(el => !el.id.includes('_sen')) as IAllDevicesResponse[]
+    if (temp?.length) {
+      temp = temp?.filter(el => !el.id?.includes('_sen'))
       return temp
     }
-    temp = props.devices?.filter(el => !el.id.includes('_sen')) as IAllDevicesResponse[]
+    temp = props.devices?.filter(el => !el.id.includes('_sen')) || []
   }
   return temp
 }
