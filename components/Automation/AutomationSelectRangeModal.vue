@@ -1,7 +1,9 @@
 <template>
   <div class="automation-select-range">
     <div class="automation-select-range__header">
-      Состояние устройства
+      <span class="automation-select-range__header-text">
+        Состояние устройства
+      </span>
       <ui-button
         class-name="blank"
         margin-inline="0"
@@ -200,6 +202,10 @@ watch(props, () => {
     text-align: center;
     position: relative;
     @include action-item;
+    &-text{
+      width: calc(100% - 18px);
+      text-align: center;
+    }
     .ui-button{
       position: absolute;
       right: 0;
@@ -236,6 +242,7 @@ watch(props, () => {
     &-items{
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 16px;
       margin-top: 24px;
     }

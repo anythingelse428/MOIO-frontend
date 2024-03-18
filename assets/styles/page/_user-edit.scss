@@ -1,5 +1,8 @@
 .user-edit{
 	padding-inline: 48px;
+	@media screen and (max-width: 560px){
+		padding-inline: 20px;
+	}
 	&__header{
 		font-size: 30px;
 		font-weight: 700;
@@ -10,6 +13,9 @@
 	}
 	&__container{
 		padding-inline: 24px;
+		@media screen and (max-width: 560px){
+			padding-inline: 0;
+		}
 		.ui-button{
 			margin-top: 36px;
 		}
@@ -21,6 +27,9 @@
 		margin-top: 28px;
 		padding-inline: 24px;
 		width: min(360px, 100%);
+		@media screen and (max-width: 560px){
+			padding-inline: 12px;
+		}
 		&-label{
 			@include carousel-category-item;
 		}

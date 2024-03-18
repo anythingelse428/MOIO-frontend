@@ -72,9 +72,12 @@
       flex-wrap: wrap;
       justify-content: space-around;
       align-items: flex-end;
+ 
       &-group{
         width: min(312px, 95%);
-        
+        &.ui-button {
+          width: fit-content;
+        }
         &.--password{
           a{
             color: $color-accent;

@@ -1,7 +1,9 @@
 <template>
   <div class="automation-add-condition">
     <div class="automation-add-condition__header">
-      Добавить условие
+      <span class="automation-add-condition__header-text">
+        Добавить условие
+      </span>
       <ui-icon name="close" role="button" color="#fff" @click="emit('hide-modal')" />
     </div>
     <form class="automation-add-condition__form" @submit.prevent="emit('add-condition', condition)">

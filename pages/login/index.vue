@@ -4,7 +4,7 @@
     <h1 class="auth__header">
       Вход
     </h1>
-    <form method="get" class="auth__form" @submit.prevent="auth()">
+    <form method="post" class="auth__form" @submit.prevent="auth()">
       <auth-form-input
         :value="login"
         name="login"
