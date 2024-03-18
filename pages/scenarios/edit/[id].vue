@@ -91,19 +91,6 @@ import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import useScenarioExpandGroups from "~/composables/useScenarioExpandGroups"
 import useScenarioToggleSelected from "~/composables/useScenarioToggleSelectedState"
 
-export interface ICapability {
-  deviceId: string;
-  chanel:string
-  id:string
-  deviceType:null | string
-  hsv?: { h:any, s:any, v:any }
-  instance:string
-  range?:{min: number|null, max: number|null, precision: number|null}
-  reportable:boolean
-  retrievable:boolean
-  type: string
-  value:any
-}
 const isLoading = ref(true)
 const groupStore = useGroupsStore()
 const data = ref(await groupStore.getGroupById(groupStore.currentHome))

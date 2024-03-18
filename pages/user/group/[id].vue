@@ -4,10 +4,12 @@
     <group-list
       v-if="currentGroup?.name"
       :id="groupId"
+      :is-group-page="true"
       :name="currentGroup?.name"
       :devices="currentGroup?.devices"
       :inverse-parent="currentGroup?.inverseParent"
       :hide-empty="true"
+      :type-id="currentGroup?.typeId"
     />
   </div>
 </template>
@@ -29,7 +31,7 @@ const groupStore = useGroupsStore()
 const { currentGroup } = storeToRefs(groupStore)
 const route = useRoute()
 const groupId = route.params.id as string
-const isLoading = ref(true)
+const isLoading = ref(false)
 
 async function fetchGroups () {
   isLoading.value = true

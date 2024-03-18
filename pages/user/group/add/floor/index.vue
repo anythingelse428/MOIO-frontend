@@ -209,6 +209,7 @@ async function addGroup () {
 }
 watch(house, () => {
   getDevicesByGroupId()
+  getRoomsByHomeId()
   selectData.value = existingHouses.value.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], [])
 })
 </script>

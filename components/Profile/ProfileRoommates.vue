@@ -24,7 +24,7 @@
       rounded="10px"
       class-name="delete-outline"
       margin-inline="0"
-      @click="removeUserFromGroup()"
+      @click="removeUserFromGroup(true)"
     >
       {{ isPending?'Отменить':'Удалить' }}
     </ui-button>
@@ -75,8 +75,9 @@ const props = defineProps<ProfileRoommates>()
 const emit = defineEmits(['remove-user'])
 const groupStore = useGroupsStore()
 const isSettingsModalShow = ref(false)
-async function removeUserFromGroup () {
-  await groupStore.removeUsersFromGroup([...props.groups.map(el => el.id), groupStore.currentHome], [], [props.id])
+async function removeUserFromGroup (isHome?:boolean) {
+  const groups = isHome ? [groupStore.currentHome] : props.groups.map(el => el.id)
+  await groupStore.removeUsersFromGroup(groups, [], [props.id])
   emit('remove-user')
 }
 function closeModal (e:Event) {

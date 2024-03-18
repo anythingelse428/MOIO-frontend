@@ -11,7 +11,9 @@
       <div class="aside-main">
         <aside-category
           category-header="Основное"
-          :category-items="asideContent.categoryContent"
+          :category-items="currentGroup?.canAutomate || currentGroup.groupCreatorId === userId ?
+            [...asideContent.categoryContent,...automateLinks]
+            : asideContent.categoryContent"
         />
         <aside-category
           v-if="typeof categories !== 'undefined'"
@@ -59,37 +61,13 @@ export interface IAsideContent {
     url:string
   }[]
 }
-const categoriesStore = useCategoriesStore()
 const groupsStore = useGroupsStore()
-const { rooms, floors } = storeToRefs(groupsStore)
+const categoriesStore = useCategoriesStore()
+const colorMode = useColorTheme()
 const route = useRoute()
+const { rooms, floors, currentGroup } = storeToRefs(groupsStore)
+const userId = useUserStore().userInfo.id
 const isAsideCollapsed = ref(false)
-const asideContent:IAsideContent =
-    {
-      categoryTitle: 'Основное',
-      categoryContent: [
-        {
-          icon: 'aside/home',
-          name: 'дом',
-          url: '/',
-        },
-        {
-          icon: 'aside/automation',
-          name: 'автоматизации',
-          url: '/automation',
-        },
-        {
-          icon: 'aside/profile',
-          name: 'профиль',
-          url: '/user',
-        },
-        {
-          icon: 'aside/scenarios',
-          name: 'сценарии',
-          url: '/scenarios',
-        },
-      ],
-    }
 const categories = ref<{
   icon: TUiIconNames,
   name:string,
@@ -97,16 +75,37 @@ const categories = ref<{
   editable?:boolean
   id?:number|string
 }[]>()
-const asideRooms = ref()
-const asideFloors = ref()
-const colorMode = useColorTheme()
+const asideContent:IAsideContent =
+  {
+    categoryTitle: 'Основное',
+    categoryContent: [
+      {
+        icon: 'aside/home',
+        name: 'дом',
+        url: '/',
+      },
+      {
+        icon: 'aside/profile',
+        name: 'профиль',
+        url: '/user',
+      },
+    ],
+  }
+const automateLinks:IAsideContent["categoryContent"] = [{
+  icon: 'aside/automation',
+  name: 'автоматизации',
+  url: '/automation',
+},
+{
+  icon: 'aside/scenarios',
+  name: 'сценарии',
+  url: '/scenarios',
+}]
 
 async function getCategories () {
   await categoriesStore.getAll()
   categories.value = categoriesStore.allCategories()
   await groupsStore.getAll()
-  asideRooms.value = rooms
-  asideFloors.value = floors
 }
 getCategories()
 
@@ -120,13 +119,6 @@ watch(() => route.fullPath, () => {
     isAsideCollapsed.value = false
   }
 })
-watch(rooms, (newValue) => {
-  asideRooms.value = newValue
-})
-watch(floors, (newValue) => {
-  asideFloors.value = newValue
-})
-
 </script>
 
 <style lang="scss">

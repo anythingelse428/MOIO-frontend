@@ -9,11 +9,11 @@
         Список доступных автоматизаций
       </h2>
       <div class="scenarios-available__list">
-        <div v-for="scenario in scenarios" :key="scenario.id" class="scenarios-available__list-item" @click.stop="redirect(`automation/${scenario.id}`)">
+        <div v-for="scenario in scenarios" :key="scenario.id" class="scenarios-available__list-item" @click.stop="redirect(`automation/edit/${scenario.id}`)">
           <div class="scenarios-available__list-item-name">
             {{ scenario.name }}
           </div>
-          <div class="scenarios-available__list-item-edit" @click.stop="redirect(`automation/${scenario.id}`)">
+          <div class="scenarios-available__list-item-edit" @click.stop="redirect(`automation/edit/${scenario.id}`)">
             <ui-icon name="pencil" role="link" />
           </div>
         </div>

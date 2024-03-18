@@ -5,11 +5,23 @@
   padding: 18px;
   padding-inline-end: 30px;
   border-radius: 16px;
+  @media screen and (max-width: 768px){
+    flex-wrap:wrap;
+    .ui-button{
+      margin-top: 16px;
+      &.--delete-outline{
+        width: calc(100% - 40px);
+      }
+    }
+  }
   &__avatar{
     width: 48px;
     height: 48px;
     border-radius: 100%;
     display: block;
+    @media screen and (max-width: 768px){
+      margin-inline: auto;
+    }
     &.--blank{
       background: linear-gradient(180deg, $avatar-bg-gradient-start 0%, $avatar-bg-gradient-end 100%);
     }
@@ -25,6 +37,10 @@
     margin-left: 18px;
     width: 50%;
     margin-inline-end: auto;
+    @media screen and (max-width: 768px){
+      width: 100%;
+      margin-inline: 0;
+    }
     &__is-pending{
       @include carousel-category-item;
       color: $color-active;

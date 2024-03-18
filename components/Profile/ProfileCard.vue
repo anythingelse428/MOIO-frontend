@@ -86,9 +86,9 @@
         </ui-button>
       </div>
     </div>
-    <button class="add-fg-print" @click="getCredential()">
-      add fg print
-    </button>
+    <!--    <button class="add-fg-print" @click="getCredential()">-->
+    <!--      add fg print-->
+    <!--    </button>-->
   </div>
 </template>
 

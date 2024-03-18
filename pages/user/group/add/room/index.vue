@@ -20,11 +20,17 @@
       </div>
       <div v-if="floors?.length>0" class="add-group__input-group">
         <label for="floor" class="add-group__label">Выберите этаж</label>
-        <div v-for="floors in floors" :key="floors.id" class="add-group__input-wrapper">
-          <span class="floor-label" role="radio" @click="floor = floors.id">{{ floors.name }}</span>
+        <div v-for="item in floors" :key="item.id" class="add-group__input-wrapper">
+          <span
+            :class="`floor-label ${item.id === floor?'--active':''}`"
+            role="radio"
+            @click="floor = item.id"
+          >
+            {{ item.name }}
+          </span>
         </div>
       </div>
-      <div v-if="house?.length>1 && name?.length" class="add-group-available-devices">
+      <div v-if="name?.length" class="add-group-available-devices">
         <h2 class="add-group-available-devices__header">
           {{ existingDevices?.length?
             'Доступные устройства':
@@ -111,12 +117,13 @@ const groupStore = useGroupsStore()
 const isLoading = ref(false)
 const { floors, uppperGroups } = storeToRefs(groupStore)
 const name = ref('')
-const floor = ref()
-const house = ref(groupStore.currentHome)
+const floor = ref('')
+const house = ref('')
 const devices = ref<{ id: string, name:string }[]>([])
 
 const existingHouses = ref()
 const existingDevices = ref()
+const selectData = computed(() => existingHouses.value?.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], []))
 existingHouses.value = uppperGroups.value.filter(el => el.groupCreatorId === useUserStore().id)
 
 const previewData = ref({
@@ -124,22 +131,11 @@ const previewData = ref({
   devices,
 })
 
-const selectData = ref<ISelectProps['options']>(existingHouses.value.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], []))
 
-// function setItem (isChecked:boolean, target: { id:string, name:string }[], data:{ id: string, name:string }) {
-//   const isSelected = target?.find(el => el?.id === data.id)
-//   if (isChecked && !isSelected) {
-//     target?.push(data)
-//   }
-//   if (!isChecked && isSelected) {
-//     const idx = target.findIndex(el => el.id === data.id)
-//     target?.splice(idx, 1)
-//   }
-// }
 async function getDevicesByGroupId () {
   isLoading.value = true
   existingDevices.value = []
-  await groupStore.getDevicesByGroupId(house.value)
+  await groupStore.getDevicesByGroupId(house.value.length ? house.value : groupStore.currentHome)
   isLoading.value = false
   for (const category of Object.values(groupStore.devices)) {
     existingDevices.value.push(...category)
@@ -157,15 +153,16 @@ async function addGroup () {
   }
   isLoading.value = true
   const devicesArrayId = devices.value.map(el => el.id)
-  const parent = floor.value || house.value
+  const parent = floor.value.length ? floor.value : house.value
   await groupStore.addRoom(name.value, 3, parent, devicesArrayId, undefined)
   isLoading.value = false
 //   TODO отправить пользователя в свежесозаднную комнату. Будет сделано после рефакторинга бека
 }
 watch(house, () => {
   getDevicesByGroupId()
-  selectData.value = existingHouses.value.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], [])
+  groupStore.getAll(house.value)
 })
+
 </script>
 <style lang="scss">
 @import "assets/styles/page/_user-add-room";

@@ -29,9 +29,10 @@ export type AsideCategory = {
         icon: TUiIconNames,
         name: string,
         url: string
-        isEditable?:boolean
         id?:number|string
         typeId?:number
+        isEditable?:boolean
+        isPending?:boolean
       }[]
 }
 

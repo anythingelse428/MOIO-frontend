@@ -2,6 +2,7 @@
   <div class="header-content">
     <div class="header-content__menu-container">
       <ui-button
+        v-if="currentGroup?.canAutomate || currentGroup.groupCreatorId === id"
         ref="addMenuTrigger"
         class-name="blank"
         padding="0"
@@ -10,7 +11,12 @@
         <ui-icon name="header/plus-circle-outline" size="40" />
       </ui-button>
       <transition name="fade">
-        <header-menu v-show="isAddMenuShow" ref="addMenu" :items="isHouseEditable ? [...addMenuItems, ...ownerAddMenuItems] : [...addMenuItems]" @click="isAddMenuShow=false" />
+        <header-menu
+          v-show="isAddMenuShow"
+          ref="addMenu"
+          :items="isHouseEditable ? [...addMenuItems, ...ownerAddMenuItems] : [...addMenuItems]"
+          @click="isAddMenuShow=false"
+        />
       </transition>
     </div>
     <div class="header-content__menu-container">
@@ -23,7 +29,12 @@
         <ui-icon name="header/dots-horizontal" size="40" />
       </ui-button>
       <transition name="fade">
-        <header-menu v-show="isSettingsMenuShow" ref="settingsMenu" :items="[...settingsMenuItems,...houses]" @click="isSettingsMenuShow=false" />
+        <header-menu
+          v-show="isSettingsMenuShow"
+          ref="settingsMenu"
+          :items="houses.filter(el=>!el?.isPending)"
+          @click="isSettingsMenuShow=false"
+        />
       </transition>
     </div>
   </div>
@@ -36,7 +47,7 @@ import { useUserStore } from "~/store/user"
 
 const groupsStore = useGroupsStore()
 const { id } = useUserStore()
-const { houses } = storeToRefs(groupsStore)
+const { houses, currentGroup } = storeToRefs(groupsStore)
 const route = useRoute()
 const isHouseEditable = ref(groupsStore.uppperGroups.find(el => el.id === groupsStore.currentHome)?.groupCreatorId === id)
 const addMenuItems = [
@@ -67,7 +78,6 @@ const ownerAddMenuItems = [
     name: "Добавить дом",
     url: '/user/group/add/house',
   }]
-const settingsMenuItems = []
 const isAddMenuShow = ref(false)
 const isSettingsMenuShow = ref(false)
 const addMenu = ref(null)
@@ -93,6 +103,7 @@ watch(() => route.fullPath, () => {
 watch(() => groupsStore.currentHome, () => {
   isHouseEditable.value = groupsStore.uppperGroups.find(el => el.id === groupsStore.currentHome)?.groupCreatorId === id
 })
+
 </script>
 
 <style lang="scss">

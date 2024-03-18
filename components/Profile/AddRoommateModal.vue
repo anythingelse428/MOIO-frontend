@@ -30,12 +30,18 @@
         <div v-if="logins?.length === 0" class="add-roommate-modal__users-user --placeholder">
           Здесь будет отображен список пользователей
         </div>
-        <ui-any-list-item v-for="login in logins" :key="login" class="add-roommate-modal__users-user">
+        <ui-any-list-item
+            v-for="login in logins"
+            :key="login"
+            class="add-roommate-modal__users-user">
           <template #title>
-            {{login}}
+            {{login.userLogin}}
           </template>
           <template #action>
-            <ui-button class-name="blank" padding="0" margin-inline="0">
+            <ui-button
+                class-name="blank"
+                padding="0"
+                margin-inline="0">
             <ui-icon
                 name="delete"
                 color="#D15151"
@@ -60,8 +66,11 @@
             @custom-select="(e)=>{ selectedHouse = e;getSubgroups() }"
         />
       </div>
-      <div class="add-roommate-modal__groups">
-        <div class="add-roommate-modal__groups-select-all" v-show="selectDataGroups.length">
+      <div class="add-roommate-modal__groups" v-show="logins.length && selectDataGroups.length">
+        <label for="groups" class="add-roommate-modal__input-group-label">
+          Выберите группы, доступные пользователю
+        </label>
+        <div class="add-roommate-modal__groups-select-all" >
           <ui-checkbox
               :initial-bg="'var(--settings-color)'"
               :checked="selectDataGroups.length === groupIds.length"
@@ -70,9 +79,6 @@
           Выбрать всё
         </div>
 
-        <label for="groups" class="add-roommate-modal__input-group-label">
-          Выберите группы, доступные пользователю
-        </label>
         <ui-any-list-item
             v-for="group in selectDataGroups"
             :key="group.id">
@@ -81,6 +87,33 @@
           </template>
           <template #action>
             <ui-checkbox @click="e=>selectGroups(e,group.id)" :checked="groupIds.includes(group.id)" />
+          </template>
+        </ui-any-list-item>
+      </div>
+      <div class="add-roommate-modal__groups" v-show="logins.length && selectDataGroups.length">
+        <label for="groups" class="add-roommate-modal__input-group-label">
+          Предоставить доступ к сценариям и автоматизациям
+        </label>
+        <div class="add-roommate-modal__groups-select-all" v-show="selectDataGroups.length">
+          <ui-checkbox
+              :initial-bg="'var(--settings-color)'"
+              :checked="isAllCanAutomate"
+              @check="setAllUserAutomatePermission"
+          />
+          Выбрать всех
+        </div>
+
+        <ui-any-list-item
+            v-for="user in logins"
+            :key="user.userLogin">
+          <template #title>
+            {{user.userLogin}}
+          </template>
+          <template #action>
+            <ui-checkbox
+                :checked="user.canAutomate"
+                @check="e=>user.canAutomate = e"
+            />
           </template>
         </ui-any-list-item>
       </div>
@@ -98,6 +131,7 @@ import UiSelect from "~/components/ui/UiSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
 import {useUserStore} from "~/store/user"
+import type {IGroupUser} from "~/api/group/addUser";
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)
@@ -105,7 +139,7 @@ const login = ref('')
 const groupIds = ref<string[]>([])
 const selectedHouse = ref('')
 const userId = useUserStore().id
-const logins = ref<string[]>([])
+const logins = ref<IGroupUser[]>([])
 const { groups, uppperGroups } = storeToRefs(groupStore)
 const emit = defineEmits(['modal-close', 'add-roommate'])
 const selectDataHouses = ref(uppperGroups.value.reduce((acc:{ description:string, value:any }[], curr) => {
@@ -118,9 +152,11 @@ const selectDataHouses = ref(uppperGroups.value.reduce((acc:{ description:string
   return acc
 }, []))
 const selectDataGroups = ref<{id:string, name:string}[]>([])
+const isAllCanAutomate = computed(()=>!logins.value.find(el=>el.canAutomate === false))
 await groupStore.getAll()
+
 function addToLoginsArray () {
-  if (logins.value?.length > 0 && logins.value?.find(el => el?.toLowerCase() === login.value.toLowerCase())) {
+  if (logins.value?.length > 0 && logins.value?.find(el => el?.userLogin?.toLowerCase() === login.value.toLowerCase())) {
     useNotification('error', 'Этот пользователь уже есть в списке')
     return false
   }
@@ -130,19 +166,24 @@ function addToLoginsArray () {
       useNotification('error', 'Введите валидный email')
       return false
     }
-    logins.value.push(login.value)
+    logins.value.push({userLogin:login.value,canAutomate:false})
     login.value = ''
   }
 }
 function removeFromLoginsArray (login:string) {
   if (logins.value?.length) {
-    const idx = logins.value.findIndex(el => el.toLowerCase() === login.toLowerCase())
+    const idx = logins.value.findIndex(el => el.userLogin?.toLowerCase() === login.toLowerCase())
     logins.value.splice(idx, 1)
   }
 }
 
 async function getSubgroups () {
   selectDataGroups.value = await groupStore.getSubgroups(selectedHouse.value)
+}
+function setAllUserAutomatePermission(){
+  const canAutomate = unref(isAllCanAutomate.value)
+     logins.value.map(el=>el.canAutomate = !canAutomate)
+
 }
 function selectGroups (e:Event, id:string) {
   if (id === 'all'){
@@ -164,7 +205,7 @@ async function addRoommate () {
     return
   }
   isLoading.value = true
-  await groupStore.addUserToGroup(logins.value, [selectedHouse.value, ...groupIds.value])
+  await groupStore.addUserToGroup({userPendingAutomationPermission:logins.value, groupsIds:[selectedHouse.value, ...groupIds.value]})
   isLoading.value = false
   emit('add-roommate')
 }

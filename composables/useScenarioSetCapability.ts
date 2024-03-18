@@ -1,17 +1,6 @@
-import type { ServiceProps } from "~/components/Service/TheService.vue"
+import type { ICapability, ServiceProps } from "~/components/Service/TheService.vue"
 
-export interface ICapability {
-    chanel:string
-    deviceId:string
-    deviceType:null | string
-    hsv?: { h:any, s:any, v:any }
-    instance:string
-    range?:{min: number|null, max: number|null, precision: number|null}
-    reportable:boolean
-    retrievable:boolean
-    type: string
-    value:any
-}
+
 export default function useScenarioSetCapability (data:ICapability, capabilities:{[p: string]: ServiceProps[]}) {
   const capabilityIdx = capabilities[data.deviceId + '_ch' + data.chanel].findIndex(el => el.type === data.type)
   capabilities[data.deviceId + '_ch' + data.chanel][capabilityIdx] = {

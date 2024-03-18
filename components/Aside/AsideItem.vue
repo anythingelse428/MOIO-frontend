@@ -1,5 +1,5 @@
 <template>
-  <div v-if="title?.length>1 && url?.length" class="aside-item">
+  <div v-if="title?.length && url?.length" class="aside-item">
     <NuxtLink class="aside-item__link" :to="url">
       <ui-icon :name="icon" size="28" />
       <h2 class="aside-item__title">

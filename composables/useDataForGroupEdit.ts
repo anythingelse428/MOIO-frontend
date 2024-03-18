@@ -22,7 +22,7 @@ export default async function useDataForGroupEdit (id:string) {
   let groupHouse = ''
   let groupName = ''
   inGroupUsers = await groupStore.getUsersByGroupId(id)
-  groupHouse = data.parentId ?? groupStore.currentHome
+  groupHouse = groupStore.currentHome
   groupName = data.name ?? ''
   inGroupUsers = inGroupUsers?.filter(el => el.id !== groupStore.currentGroup.groupCreatorId)
 
