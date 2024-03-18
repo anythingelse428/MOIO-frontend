@@ -1,3 +1,5 @@
+import type { IAutomationValue } from "~/api/automations/create"
+
 export interface IAutomationByIdResponse {
   id:string,
   name:string
@@ -10,14 +12,20 @@ export interface IAutomationByIdResponse {
       automationTriggerId: string,
       time: string
     }[]
-    sensors:{
+    sensors?:{
       automationTriggerId: string,
       id: string
       name: string
       type: string
+      condition: IAutomationValue['automationCondition'],
+      temperatureRange: IAutomationValue['temperatureRange']
+    }[]
+    rangeTime?:{
+      automationTriggerId: string,
+      startTime:string
+      endTime:string
     }[]
   }
-  allConditions:boolean
 }
 export default async function apiAutomationsGetById (id:string):Promise<IAutomationByIdResponse> {
   return await useAsyncQuery(async ({ axios, path }) => {

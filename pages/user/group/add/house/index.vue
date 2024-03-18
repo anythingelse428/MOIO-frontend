@@ -29,8 +29,15 @@ const groupStore = useGroupsStore()
 const isLoading = ref(false)
 const name = ref('')
 async function addGroup () {
+  if (!name.value?.length) {
+    useNotification("error", "Введите название группы")
+    return
+  }
+  if (name.value.length > 30) {
+    useNotification("error", "Название группы не должно превышать 30 символов")
+    return
+  }
   isLoading.value = true
-
   await groupStore.addRoom(name.value, 1)
   isLoading.value = false
 }

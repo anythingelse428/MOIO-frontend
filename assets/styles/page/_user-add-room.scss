@@ -27,7 +27,7 @@
   &__input{
     width: 100%;
     &[type="text"]{
-      @include tool-item;
+      @include action-item;
       font-weight: 600;
       border: none;
       outline: none;
@@ -50,22 +50,16 @@
         -webkit-box-shadow: 0px 0px 6px 0px $color-active;
         background-color: $settings-color;
         inset: 0;
+        cursor: pointer;
+        &.--active{
+          background: $color-active;
+        }
         @media screen and (max-width:768px) {
           font-size: 20px;
         }
       }
     }
-    &[type="radio"]{
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      z-index: 1;
-      cursor: pointer;
 
-    }
-    &[type="radio"]:checked ~ .floor-label{
-      background: $color-active;
-    }
   }
   &__select{
     background: $settings-color;

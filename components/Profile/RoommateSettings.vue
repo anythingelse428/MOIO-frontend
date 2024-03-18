@@ -29,14 +29,17 @@
             </span>
           </template>
           <template #action>
-            <ui-button
-              padding="0"
-              class-name="blank"
-              margin-inline="0"
-              @click="prepareGroupsForRemove(group.id)"
-            >
-              <ui-icon name="delete" size="20" color="#D15151" />
-            </ui-button>
+            <div class="roommate-settings__groups-container-remove-item">
+              {{ group.isPending?'Ожидание ответа':'Есть доступ' }}
+              <ui-button
+                padding="0"
+                class-name="blank"
+                margin-inline="0"
+                @click="prepareGroupsForRemove(group.id)"
+              >
+                <ui-icon name="delete" size="20" color="#D15151" />
+              </ui-button>
+            </div>
           </template>
         </ui-any-list-item>
       </div>
@@ -44,7 +47,12 @@
         У пользователя нет доступа к группам этого дома
       </div>
     </div>
-    <ui-button class="roommate-settings__submit" rounded="16px" padding="4px 14px" @click="e=>removeUserFromGroups(e)">
+    <ui-button
+      class="roommate-settings__submit"
+      rounded="16px"
+      padding="4px 14px"
+      @click="e=>removeUserFromGroups(e)"
+    >
       Сохранить
     </ui-button>
   </div>
@@ -61,11 +69,12 @@ export interface IRoommateSettingsProps {
   groups:{
     id:string,
     name:string
+    isPending:boolean,
   }[]
 }
 
 const props = defineProps<IRoommateSettingsProps>()
-const emit = defineEmits(['modal-close'])
+const emit = defineEmits(['modal-close', 'remove-user'])
 const groupStore = useGroupsStore()
 const existingGroups = ref<IRoommateSettingsProps["groups"]>(props.groups)
 const groupsForRemove = ref<string[]>([])
@@ -79,6 +88,7 @@ async function removeUserFromGroups (e:Event) {
   if (props.email.length && groupsForRemove.value.length) {
     isLoading.value = true
     await groupStore.removeUsersFromGroup(groupsForRemove.value, [props.email], [])
+    emit('remove-user')
     isLoading.value = false
   }
   emit('modal-close', e)

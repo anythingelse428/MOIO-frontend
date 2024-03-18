@@ -1,36 +1,60 @@
 <template>
-  <div class="roommates-card" @click="isSettingsModalShow = true">
+  <div class="roommates-card">
     <div class="roommates-card__avatar">
-      <img v-if="avatarUrl?.length" :src="avatarUrl" alt="" width="76" height="76">
-      <div v-else class="roommates-card__avatar --blank" />
+      <div class="roommates-card__avatar --blank" />
     </div>
     <div class="roommates-card-info">
       <div class="roommates-card-info__name">
         {{ name }}
       </div>
+      <div :class="`roommates-card-info__is-pending ${isPending?'--pending':''}`">
+        {{ isPending?'Ожидаение ответа на приглашение':'Приглашение принято' }}
+      </div>
       <div class="roommates-card-info__role">
-        <span v-for="group in groups" :key="group.id" data-end=", ">{{ group.name }}</span>
+        <div v-if="groups.length">
+          <span v-for="group in groups" :key="group.id" data-end=", ">{{ group.name }}</span>
+        </div>
+        <span v-else>
+          Доступ к дому без вложенных групп
+        </span>
       </div>
     </div>
-    <ui-icon name="chevron-right" class="roommates-card__chevron" size="36" />
-    <ui-modal
-      ref="settings"
-      :is-shown="isSettingsModalShow"
-      backdrop-filter="blur(3px)"
-      transition-content-name="translate"
-      width="532px"
-      @click-outside="closeModal"
+    <ui-button
+      padding="20px 6px"
+      rounded="10px"
+      class-name="delete-outline"
+      margin-inline="0"
+      @click="removeUserFromGroup(true)"
     >
-      <template #inner>
-        <roommate-settings
-          :avatar-url="avatarUrl"
-          :groups="groups"
-          :email="login"
-          @modal-close="closeModal"
-        />
-      </template>
-    </ui-modal>
+      {{ isPending?'Отменить':'Удалить' }}
+    </ui-button>
+    <ui-button
+      class-name="blank"
+      padding="0"
+      margin-inline="0"
+      @click="isSettingsModalShow = true"
+    >
+      <ui-icon name="chevron-right" class="roommates-card__chevron" size="36" />
+    </ui-button>
   </div>
+  <ui-modal
+    ref="settings"
+    :is-shown="isSettingsModalShow"
+    backdrop-filter="blur(3px)"
+    transition-content-name="translate"
+    width="532px"
+    @click-outside="closeModal"
+  >
+    <template #inner>
+      <roommate-settings
+        :avatar-url="''"
+        :groups="groups"
+        :email="login"
+        @modal-close="closeModal"
+        @remove-user="emit('remove-user')"
+      />
+    </template>
+  </ui-modal>
 </template>
 
 <script setup lang="ts">
@@ -40,17 +64,22 @@ import RoommateSettings from "~/components/Profile/RoommateSettings.vue"
 import { useGroupsStore } from "~/store/groups"
 
 export type ProfileRoommates = {
-  id:string|number
-  avatarUrl?:string
+  id:number
   name:string
-  role:string
   login:string,
-  groups:{id:string, name:string}[]
+  groups:{id:string, name:string, isPending:boolean}[]
+  isPending:boolean
 }
 
 const props = defineProps<ProfileRoommates>()
+const emit = defineEmits(['remove-user'])
 const groupStore = useGroupsStore()
 const isSettingsModalShow = ref(false)
+async function removeUserFromGroup (isHome?:boolean) {
+  const groups = isHome ? [groupStore.currentHome] : props.groups.map(el => el.id)
+  await groupStore.removeUsersFromGroup(groups, [], [props.id])
+  emit('remove-user')
+}
 function closeModal (e:Event) {
   if (isSettingsModalShow.value) {
     e.stopPropagation()

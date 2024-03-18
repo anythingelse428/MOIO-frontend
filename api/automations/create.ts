@@ -1,15 +1,29 @@
 import { type AxiosError } from "axios"
 
+export interface IAutomationValue {
+  timeRange?:{
+    startTime:string
+    endTime:string
+  },
+  deviceId?:string
+  temperatureRange?: {
+    min: number,
+    max: number
+  },
+  automationCondition?: {
+    value: number,
+    condition: 0 | 1 | 2
+  },
+  time?: string
+}
 export interface IAutomationCreateProps {
   name: string,
-  value: string[]
+  value: IAutomationValue[]
   scenariosOrder: {
      scenarioId: string,
      orderId: number
    }[]
-  allConditions: boolean
 }
-
 export default async function apiAutomationsCreate (props:IAutomationCreateProps) {
   return await useAsyncQuery(async ({ axios, path }) => {
     try {
