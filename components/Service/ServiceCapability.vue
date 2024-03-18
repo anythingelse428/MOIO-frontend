@@ -95,6 +95,7 @@ export type ServiceCapability = {
   value:any
   float?:number
   icon?:TUiIconNames
+  type:string
 }
 
 const props = defineProps<ServiceCapability>()
