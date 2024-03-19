@@ -1,5 +1,5 @@
-import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IRegisterUserProps {
     name: string,
@@ -22,8 +22,7 @@ export default async function apiUserRegister (props:IRegisterUserProps):Promise
         return response
       }
     } catch (e) {
-      console.log(e)
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка регистрации')
+      useValidationBackendError(e, 'Произошла ошибка при смене регистрации')
     }
   })
 }

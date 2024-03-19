@@ -1,4 +1,4 @@
-import { type AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 
 export interface IChangePasswordPayload {
@@ -19,7 +19,8 @@ export default async function apiUserChangePassword (props:IChangePasswordPayloa
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при смене пароля')
+      useValidationBackendError(e, 'Произошла ошибка при смене пароля')
+
       return response
     }
   })

@@ -1,5 +1,6 @@
 import useAsyncQuery from '~/composables/useAsyncQuery'
 import type { IAllDevicesResponse } from "~/api/device/getAll"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IGroupResponseItem{
     id: string,
@@ -28,8 +29,8 @@ export default async function apiGroupGetAll (homeId:string):Promise<IGroupRespo
       if (response.status === 200) {
         return response
       }
-    } catch {
-      useNotification('error', "Произошла ошибка в получении групп")
+    } catch (e) {
+      useValidationBackendError(e, 'Произошла ошибка при получении групп')
     }
   })
 }

@@ -1,4 +1,4 @@
-import { type AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiAutomationsRemove (props:string[]) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -13,8 +13,7 @@ export default async function apiAutomationsRemove (props:string[]) {
       }
       return response
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка в удалении автоматизации')
-      console.log(e)
+      useValidationBackendError(e, 'Произошла ошибка при удалении автоматизации')
     }
   })
 }

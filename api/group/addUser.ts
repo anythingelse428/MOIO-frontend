@@ -1,5 +1,5 @@
-import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IGroupUser {
   userLogin:string
@@ -19,7 +19,7 @@ export default async function apiGroupAddUser (data:IAddUserToGroupProps) {
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка, проверьте введенные данные')
+      useValidationBackendError(e, 'Произошла ошибка при добавлении пользователя')
     }
   })
 }

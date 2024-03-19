@@ -1,5 +1,5 @@
-import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IAddGroupPayload {
   name: string,
@@ -20,7 +20,7 @@ export default async function apiGroupAddRoom ({ name, typeId, parentId, devices
       })
       return response.status === 200 && response
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при создании группы')
+      useValidationBackendError(e, 'Произошла ошибка при создании группы')
     }
   })
 }

@@ -1,5 +1,5 @@
-import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IGetAllResponseItem {
     id: number|string,
@@ -13,7 +13,7 @@ export default async function apiCategoryGetAll ():Promise<IGetAllResponseItem[]
       const response = await axios.get(path + '/v1/categories')
       return response.status === 200 && response
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Что-то пошло не так с получением категорий')
+      useValidationBackendError(e, 'Произошла ошибка при получении категорий')
     }
   })
 }

@@ -3,6 +3,7 @@ import { consola } from 'consola'
 
 import { useUserStore } from '~/store/user'
 import useNotification from "~/composables/useNotification"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 
 interface IArgs {
@@ -70,16 +71,6 @@ export default async function (queryCallback = async ({ axios }: IArgs): Promise
     const e = err as AxiosError
     config.public.APP_DEBUG && consola.error('[useAsyncQuery]: Catch', e)
     config.public.APP_DEBUG && useNotification('error', `Произошла ошибка при обработке запроса ${e?.config?.url}`)
-    console.log(err)
-    if (e?.response?.status === 400) {
-      if (e.request.response?.length) {
-        useNotification('error', e.request.response)
-      }
-      if (e.request.response?.errors?.newTrigger?.length) {
-        e.request.response?.errors?.newTrigger.forEach((el) => {
-          useNotification('error', e.request.response)
-        })
-      }
-    }
+    useValidationBackendError(err)
   }
 }

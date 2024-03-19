@@ -1,4 +1,4 @@
-import { AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IAllScenariosResponse {
   id:string,
@@ -10,7 +10,7 @@ export default async function apiScenariosGetAll ():Promise<IAllScenariosRespons
       const response = await axios.get(path + '/v1/scenarios')
       return response.status === 200 && response
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка при получении сценарев')
+      useValidationBackendError(e, 'Ошибка при получении сценарев')
     }
   })
 }

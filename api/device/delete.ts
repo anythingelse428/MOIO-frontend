@@ -1,5 +1,5 @@
-import { type AxiosError } from "axios"
 import useAsyncQuery from "~/composables/useAsyncQuery"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiDeviceDelete (deviceId:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -10,8 +10,7 @@ export default async function apiDeviceDelete (deviceId:string) {
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка в удалении устройства')
-      console.log(e)
+      useValidationBackendError(e, 'Произошла ошибка при удалении устройства')
     }
   })
 }

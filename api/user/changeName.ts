@@ -1,4 +1,4 @@
-import type { AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiUserChangeName (newName:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -8,7 +8,7 @@ export default async function apiUserChangeName (newName:string) {
         useNotification('info', 'Имя успешно изменено')
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при смене имени')
+      useValidationBackendError(e, 'Произошла ошибка при смене имени')
     }
   })
 }

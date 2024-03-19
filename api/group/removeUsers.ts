@@ -1,5 +1,5 @@
-import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiGroupRemoveUsers (groupsIds:string[], usersLogins:string[] = [], usersIds:number[] = []) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -15,7 +15,7 @@ export default async function apiGroupRemoveUsers (groupsIds:string[], usersLogi
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? "Произошла ошибка")
+      useValidationBackendError(e, 'Произошла ошибка при удалении пользователя из группы')
     }
   })
 }

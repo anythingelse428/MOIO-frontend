@@ -1,4 +1,4 @@
-import { type AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IAutomationValue {
   timeRange?:{
@@ -33,7 +33,7 @@ export default async function apiAutomationsCreate (props:IAutomationCreateProps
       }
       return response
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Что-то пошло не так')
+      useValidationBackendError(e, 'Произошла ошибка при создании автоматизации')
     }
   })
 }

@@ -1,6 +1,6 @@
-import type { AxiosError } from "axios"
 import useAsyncQuery from "~/composables/useAsyncQuery"
 import type { IGroupResponseItem } from "~/api/group/getAll"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiGroupsGetUpperGroups ():Promise<IGroupResponseItem[]> {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -10,7 +10,7 @@ export default async function apiGroupsGetUpperGroups ():Promise<IGroupResponseI
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? "Произошла ошибка в получении домов")
+      useValidationBackendError(e, 'Произошла ошибка при получении домов')
     }
   })
 }

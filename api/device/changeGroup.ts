@@ -1,5 +1,5 @@
-import { type AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiDevicesChangeDevices (groupId:string, devicesIds:string[]) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -14,7 +14,7 @@ export default async function apiDevicesChangeDevices (groupId:string, devicesId
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при смене устройств')
+      useValidationBackendError(e, 'Произошла ошибка при изменении группы устройства')
     }
   })
 }

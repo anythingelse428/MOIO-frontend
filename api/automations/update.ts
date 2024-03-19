@@ -1,5 +1,5 @@
-import { type AxiosError } from "axios"
 import type { IAutomationValue } from "~/api/automations/create"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IAutomationUpdateProps {
   id: string,
@@ -22,14 +22,7 @@ export default async function apiAutomationsUpdate (props:IAutomationUpdateProps
       }
       return response
     } catch (e) {
-      if ((e as any)?.response?.data?.length) {
-        useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Что-то пошло не так')
-      }
-      if ((e as any)?.response?.data?.errors?.NewTrigger?.length) {
-        e.response.data.errors.NewTrigger.forEach((el) => {
-          useNotification('error', el)
-        })
-      }
+      useValidationBackendError(e, 'Произошла ошибка при обновлении автоматизации')
     }
   })
 }

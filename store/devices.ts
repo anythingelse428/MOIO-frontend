@@ -33,49 +33,24 @@ export const useDevicesStore = defineStore('devices', {
       }
     },
     async changeBrightness (props:IDeviceChangeBrightness) {
-      try {
-        await apiDeviceChangeBrightness(props)
-      } catch (e) {
-        useNotification('error', "Произошла ошибка при изменении яркости")
-      }
+      await apiDeviceChangeBrightness(props)
     },
     async changeRGB (props: IDeviceChangeRGBPayload) {
-      try {
-        // console.log(props)
-        await apiDeviceChangeRGB(props)
-      } catch (e) {
-        useNotification('error', "Произошла ошибка при изменении цвета")
-      }
+      await apiDeviceChangeRGB(props)
     },
     async changeOnOf (props:IDeviceChangeStatusOnOff) {
-      try {
-        await apiDeviceChangeOnOf(props)
-      } catch (e) {
-        useNotification('error', "Произошла непредвиденная ошибка")
-      }
+      await apiDeviceChangeOnOf(props)
     },
     async changeOpenClose (props:IDeviceChangeStatusOpenClose) {
-      try {
-        await apiDeviceChangeOpenClose(props)
-      } catch (e) {
-        useNotification('error', "Произошла непредвиденная ошибка")
-      }
+      await apiDeviceChangeOpenClose(props)
     },
     async changeTemperature (props:IDeviceChangeStatusTemperature) {
-      try {
-        await apiDeviceChangeTemperature(props)
-      } catch (e) {
-        useNotification('error', "Произошла ошибка при смене температуры")
-      }
+      await apiDeviceChangeTemperature(props)
     },
     async changeName (id:string, name:string) {
-      try {
-        const response = await apiDeviceChangeName(id, name)
-        if (response) {
-          useNotification('info', 'Имя устройства успешно изменено')
-        }
-      } catch {
-        useNotification('error', 'Произошла ошибка при смене названия')
+      const response = await apiDeviceChangeName(id, name)
+      if (response) {
+        useNotification('info', 'Имя устройства успешно изменено')
       }
     },
     async deleteDevice (id:string) {

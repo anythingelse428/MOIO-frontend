@@ -1,5 +1,5 @@
-import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IUserInfoResponse {
     name: string,
@@ -13,7 +13,7 @@ export default async function apiUserGetById (id:number):Promise<IUserInfoRespon
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка в получении пользователя')
+      useValidationBackendError(e, 'Произошла ошибка при получении пользователя')
     }
   })
 }

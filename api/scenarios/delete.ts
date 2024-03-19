@@ -1,4 +1,4 @@
-import router from "#app/plugins/router"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiScenariosDelete (id:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -10,7 +10,7 @@ export default async function apiScenariosDelete (id:string) {
         setTimeout(() => useRouter().back(), 1000)
       }
     } catch (e) {
-      useNotification('error', "Произошла ошибка при удалении")
+      useValidationBackendError(e, "Произошла ошибка при удалении")
     }
   })
 }

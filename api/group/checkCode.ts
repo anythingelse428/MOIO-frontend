@@ -1,4 +1,4 @@
-import { type AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiGroupCheckCode (code:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -9,7 +9,7 @@ export default async function apiGroupCheckCode (code:string) {
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Код не действителен или введен не верно')
+      useValidationBackendError(e, 'Что-то пошло не так')
     }
   })
 }

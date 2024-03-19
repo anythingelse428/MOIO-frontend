@@ -1,4 +1,4 @@
-import { type AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IScenarioUpdateProps {
   id:string,
@@ -21,7 +21,7 @@ export default async function apiScenariosUpdate (props:IScenarioUpdateProps) {
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при изменении сценария')
+      useValidationBackendError(e, 'Ошибка при получении сценария')
     }
   })
 }

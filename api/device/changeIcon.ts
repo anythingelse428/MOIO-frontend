@@ -1,4 +1,4 @@
-import type { AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiDeviceChangeIcon (deviceId:string, iconName:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -8,7 +8,7 @@ export default async function apiDeviceChangeIcon (deviceId:string, iconName:str
         useNotification('info', "Иконка успешно изменена")
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка при изменении иконки')
+      useValidationBackendError(e, 'Произошла ошибка при изменении иконки устройства')
     }
   })
 }

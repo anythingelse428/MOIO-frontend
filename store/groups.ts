@@ -96,33 +96,25 @@ export const useGroupsStore = defineStore('groups', {
       await this.getAll()
     },
     async addRoom (name:string, typeId = 3, parentId?:string, devicesIds?:string[], groupIds?:string[]) {
-      try {
-        const { response } = await apiGroupAddRoom({ name, typeId, parentId, devicesIds, groupIds })
-        if (!response?.status) {
-          useNotification('info', 'Группа успешно добавлена')
-          setTimeout(() => {
-            window.location.href = useRuntimeConfig().app.baseURL || '/'
-          }, 1000)
-          await this.getAll()
-        }
-      } catch (e) {
-        useNotification('error', 'Произошла ошибка при добавлении комнаты')
+      const { response } = await apiGroupAddRoom({ name, typeId, parentId, devicesIds, groupIds })
+      if (!response?.status) {
+        useNotification('info', 'Группа успешно добавлена')
+        setTimeout(() => {
+          window.location.href = useRuntimeConfig().app.baseURL || '/'
+        }, 1000)
+        await this.getAll()
       }
     },
     async getDevicesByGroupId (id:string) {
-      try {
-        this.devices = {}
-        const data = await apiGroupGetDevicesById(id)
-        if (data) {
-          Object.keys(data).forEach((el) => {
-            if (data[el].length > 0) {
-              this.devices[el] = data[el]
-            }
-          })
-          return this.devices
-        }
-      } catch {
-        useNotification('error', 'Произошла непредвиденная ошибка')
+      this.devices = {}
+      const data = await apiGroupGetDevicesById(id)
+      if (data) {
+        Object.keys(data).forEach((el) => {
+          if (data[el].length > 0) {
+            this.devices[el] = data[el]
+          }
+        })
+        return this.devices
       }
     },
     async getGroupById (id:string) {
@@ -134,28 +126,19 @@ export const useGroupsStore = defineStore('groups', {
       return await apiGroupsGetSubgroups(id)
     },
     async changeName (id:string, name:string) {
-      try {
-        await apiGroupChangeName(id, name)
-        await this.getAll()
-        useNotification('info', 'Имя группы успешно изменено')
-      } catch {
-        useNotification('error', 'Произошла ошибка при смене названия')
-      }
+      await apiGroupChangeName(id, name)
+      await this.getAll()
     },
     async changeDevices (id:string, devices:string[]) {
       await apiDevicesChangeDevices(id, devices)
     },
     async deleteGroup (id:string) {
-      try {
-        await apiGroupDelete(id)
-        useNotification('info', 'Группа успешно удалена')
-        setTimeout(() => {
-          window.location.href = useRuntimeConfig().app.baseURL || '/'
-        }, 1000)
-        this.getAll()
-      } catch {
-        useNotification('error', "Произошла ошибка при удалении")
-      }
+      await apiGroupDelete(id)
+      useNotification('info', 'Группа успешно удалена')
+      setTimeout(() => {
+        window.location.href = useRuntimeConfig().app.baseURL || '/'
+      }, 1000)
+      await this.getAll()
     },
     async addUserToGroup (data:IAddUserToGroupProps) {
       await apiGroupAddUser(data)

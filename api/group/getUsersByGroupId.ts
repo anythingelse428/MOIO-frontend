@@ -1,5 +1,5 @@
-import type { AxiosError } from "axios"
 import useAsyncQuery from '~/composables/useAsyncQuery'
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IUsersByGroupResponse {
   id: number,
@@ -16,7 +16,7 @@ export default async function apiGroupGetUserByGroupId (id:string):Promise<IUser
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Произошла ошибка получения гостей')
+      useValidationBackendError(e, 'Произошла ошибка при получении гостей дома')
     }
   })
 }

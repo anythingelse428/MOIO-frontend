@@ -1,4 +1,4 @@
-import type { AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IAddScenario {
   name: string,
@@ -26,7 +26,7 @@ export default async function apiScenariosAdd (props:IAddScenario) {
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка при создании сценария')
+      useValidationBackendError(e, 'Ошибка при создании сценария')
     }
   })
 }

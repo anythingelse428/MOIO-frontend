@@ -1,4 +1,4 @@
-import { type AxiosError } from "axios"
+import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export default async function apiScenariosExecute (id:string) {
   return await useAsyncQuery(async ({ axios, path }) => {
@@ -9,7 +9,7 @@ export default async function apiScenariosExecute (id:string) {
         return response
       }
     } catch (e) {
-      useNotification('error', <string>(e as AxiosError)?.response?.data ?? 'Ошибка при запуске сценария')
+      useValidationBackendError(e, 'Ошибка при запуске сценария')
     }
   })
 }

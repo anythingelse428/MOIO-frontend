@@ -115,21 +115,15 @@ export const useUserStore = defineStore('user', {
     async init () {
       const config = useRuntimeConfig()
       const refreshToken = useCookie(config.public.REST_BASE_TOKEN_STORAGE_NAME)
-      try {
-        const accessToken = await this.refresh()
-        if (accessToken) {
-          this.accessToken = accessToken
-          const userData = await getUserInfo()
-          // console.log(userData)
-          this.login = userData.login
-          this.role = userData.role
-          this.displayedName = userData.name
-          this.id = userData.id
-          this.clientId = userData.clientId
-        }
-      } catch (e) {
-        refreshToken.value = ''
-        window.location.pathname = '/login'
+      const accessToken = await this.refresh()
+      if (accessToken) {
+        this.accessToken = accessToken
+        const userData = await getUserInfo()
+        this.login = userData.login
+        this.role = userData.role
+        this.displayedName = userData.name
+        this.id = userData.id
+        this.clientId = userData.clientId
       }
     },
     async changeName (name:string) {
