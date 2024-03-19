@@ -9,7 +9,7 @@ export interface IAutomationUpdateProps {
      orderId: number
    }[]
   newTriggers: IAutomationValue[]
-  removeTriggersIds: string[]
+  removeTriggerIds: string[]
   allConditions: boolean
 }
 

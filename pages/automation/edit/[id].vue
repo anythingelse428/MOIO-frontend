@@ -153,7 +153,6 @@ import { useAutomationStore } from "~/store/automation"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import type { IAutomationUpdateProps } from "~/api/automations/update"
 import { useGroupsStore } from "~/store/groups"
-import type { ServiceProps } from "~/components/Service/TheService.vue"
 import { type IAutomationValue } from "~/api/automations/create"
 import type { AutomationConditionTypes } from "~/components/Automation/AutomationCondition.vue"
 import type { IAutomationSensor, IBaseCondition } from "~/pages/automation/create/index.vue"
@@ -162,6 +161,7 @@ import useApplyRangeAutomationCondition from "~/composables/useApplyRangeAutomat
 import useApplyAutomationTemperatureCondition from "~/composables/useApplyAutomationTemperatureCondition"
 import useSelectOnlySensors from "~/composables/useSelectOnlySensors"
 import useSetAutomationCondition from "~/composables/useSetAutomationCondition"
+import { AutomationConditionTypesEnum } from "~/utils/enums"
 
 const route = useRoute()
 const isLoading = ref(true)
@@ -263,10 +263,10 @@ async function update () {
     if (isSensorCondition) {
       newTriggersArr.push({ ...iAutomationValue.value })
     }
-    if (iAutomationValue.type === 'time') {
+    if (iAutomationValue.type === AutomationConditionTypesEnum.time) {
       newTriggersArr.push({ time: new Date(`2077 ${iAutomationValue.value.time}`).toISOString() })
     }
-    if (iAutomationValue.type === 'time-range') {
+    if (iAutomationValue.type === AutomationConditionTypesEnum.timeRange) {
       newTriggersArr.push({
         timeRange: {
           startTime: new Date(`2077 ${iAutomationValue.value.timeRange?.startTime}`).toISOString(),
@@ -277,11 +277,11 @@ async function update () {
   }
 
   newConditions.value.forEach((el) => {
-    if (!el.value.deviceId && (el.type === 'sensor' || el.type === 'temperature')) {
+    if (!el.value.deviceId && (el.type === AutomationConditionTypesEnum.sensor || el.type === AutomationConditionTypesEnum.temperature)) {
       isSensorsValid = false
       useNotification('error', 'Не выбран датчик для условия с датчиком')
     }
-    if (el.type === 'time') {
+    if (el.type === AutomationConditionTypesEnum.time) {
       return
     }
     return el.value
@@ -297,7 +297,7 @@ async function update () {
       }
     }),
     newTriggers: newTriggersArr,
-    removeTriggersIds: removeCondition.value,
+    removeTriggerIds: removeCondition.value,
     allConditions: runByAllConditions.value,
   }
   isSensorsValid && await automationStore.update(automationData)
@@ -318,7 +318,7 @@ async function getData () {
     const timePoint = new Date(`2077 ${el.time} UTC`)
     oldConditions.value.push({
       id: el.automationTriggerId,
-      type: "time",
+      type: AutomationConditionTypesEnum.time,
       value: {
         time:
             `${getValidTimePart(timePoint.getHours())}:${getValidTimePart(timePoint.getMinutes())}`,
@@ -330,7 +330,7 @@ async function getData () {
     const endTime = new Date(`2077 ${el.endTime} UTC`)
     oldConditions.value.push({
       id: el.automationTriggerId,
-      type: "time-range",
+      type: AutomationConditionTypesEnum.timeRange,
       value: {
         timeRange: {
           startTime: `${getValidTimePart(startTime.getHours())}:${getValidTimePart(startTime.getMinutes())}`,
@@ -342,7 +342,7 @@ async function getData () {
   response.triggers?.sensors?.forEach((el) => {
     oldConditions.value.push({
       id: el.automationTriggerId,
-      type: el.condition || el.temperatureRange ? 'temperature' : 'sensor',
+      type: el.condition || el.temperatureRange ? AutomationConditionTypesEnum.temperature : AutomationConditionTypesEnum.sensor,
       value: {
         deviceId: el.id,
         temperatureRange: el.temperatureRange,
