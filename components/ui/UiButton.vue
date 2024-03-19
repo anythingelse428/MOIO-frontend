@@ -16,7 +16,7 @@ export interface IUiButton{
   fill?: string
   rounded?:string
   padding?:string
-  centered?:false
+  centered?:boolean
   bgColor?:string
 }
 const props = withDefaults(defineProps<IUiButton>(), {

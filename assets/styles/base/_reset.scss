@@ -47,7 +47,10 @@ a,div,h1,h2,h3,span,label,p,i,main,section,header,aside,nav{
   word-break: break-word;
   -webkit-tap-highlight-color: transparent;
 }
-
+button {
+  word-break: normal;
+  word-break: auto-phrase;
+}
 button.blank{
   border: 0;
   outline: none;

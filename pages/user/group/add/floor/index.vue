@@ -162,7 +162,7 @@ const rooms = ref<{ id: string, name:string }[]>([])
 const existingRooms = ref<{id:string, name:string}[]>()
 const existingHouses = ref()
 const existingDevices = ref()
-const upperGroups = ref(groupStore.uppperGroups)
+const upperGroups = ref(groupStore.upperGroups)
 existingHouses.value = upperGroups.value.filter(el => el.groupCreatorId === useUserStore().id)
 const selectData = ref(existingHouses.value.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], []))
 const previewData = ref({

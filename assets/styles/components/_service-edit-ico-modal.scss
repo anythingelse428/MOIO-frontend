@@ -19,16 +19,18 @@
 	&__header{
 		width: 100%;
 		display: inline-flex;
-		align-items: flex-end;
-		.header{
+		align-items: center;
+		position: relative;
+		&-text{
 			@include capabilities-modal-header;
 			color: $color-active;
-			width: calc(100% - 16px);
+			width: 100%;
 			margin-inline: auto;
 			text-align: center;
 		}
-		.close-button{
-			font-size: 24px;
+		.ui-button.--blank{
+			position: absolute;
+			right: -8px;
 			cursor: pointer;
 			display: inline-flex;
 			align-items: center;

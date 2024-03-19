@@ -11,16 +11,17 @@
 		}
 	}
 	&__subheader {
-		font-size: 25px;
+		font-size: 24px;
 		font-weight: 600;
 		width: 100%;
 		text-align: center;
 		margin-top: 32px;
 		@media screen and (max-width:768px) {
-			font-size: 21px;
+			font-size: 20px;
 		}
 	}
 	&__params {
+		margin-top: 40px;
 		&-main{
 			display: flex;
 			justify-content: space-between;

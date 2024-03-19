@@ -1,7 +1,7 @@
 <template>
   <div id="custom-select" class="custom-select" @click="selectCollapsed = !selectCollapsed">
     <div class="custom-select__current-value">
-      {{ currentValue?.length > 0 ? currentValueDescriptionByValue : selectName }}
+      {{ currentValue?.length ? currentValueDescriptionByValue : selectName }}
     </div>
     <transition name="fade">
       <div v-show="selectCollapsed" class="custom-select__options">
@@ -9,7 +9,7 @@
           <label for="custom-select__option-label">
             {{ option.description }}
           </label>
-          <span id="select-value" class="custom-select__option-value" role="radio" @click="emit('custom-select',option.value)" />
+          <span id="select-value" class="custom-select__option-value" role="radio" @click="emit('customSelect',option.value)" />
         </div>
       </div>
     </transition>
@@ -28,7 +28,9 @@ export interface ISelectProps {
 }
 
 const props = defineProps<ISelectProps>()
-const emit = defineEmits(['custom-select'])
+const emit = defineEmits<{
+    customSelect:[string]
+}>()
 const selectCollapsed = ref(false)
 const currentValueDescriptionByValue = computed(() => {
   if (props.options && props.currentValue && props.currentValue?.length > 0 && props.options?.length > 0) {

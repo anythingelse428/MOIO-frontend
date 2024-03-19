@@ -26,7 +26,7 @@
 
 import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-import { useAutomationStore } from "~/store/autmation"
+import { useAutomationStore } from "~/store/automation"
 import UiIcon from "~/components/ui/UiIcon.vue"
 
 const isLoading = ref(true)

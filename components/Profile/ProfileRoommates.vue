@@ -51,7 +51,7 @@
         :groups="groups"
         :email="login"
         @modal-close="closeModal"
-        @remove-user="emit('remove-user')"
+        @remove-user="emit('removeUser')"
       />
     </template>
   </ui-modal>
@@ -72,13 +72,15 @@ export type ProfileRoommates = {
 }
 
 const props = defineProps<ProfileRoommates>()
-const emit = defineEmits(['remove-user'])
+const emit = defineEmits<{
+    removeUser:[void]
+}>()
 const groupStore = useGroupsStore()
 const isSettingsModalShow = ref(false)
 async function removeUserFromGroup (isHome?:boolean) {
   const groups = isHome ? [groupStore.currentHome] : props.groups.map(el => el.id)
   await groupStore.removeUsersFromGroup(groups, [], [props.id])
-  emit('remove-user')
+  emit('removeUser')
 }
 function closeModal (e:Event) {
   if (isSettingsModalShow.value) {

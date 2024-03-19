@@ -26,14 +26,16 @@ export type FormInput = {
 }
 
 const props = defineProps<FormInput>()
-const emit = defineEmits(['auth-input'])
+const emit = defineEmits<{
+    authInput:[string]
+}>()
 const authInputParent = ref(null)
 const model = computed({
   get () {
     return props.value
   },
   set (value) {
-    emit('auth-input', value)
+    emit('authInput', value)
   },
 })
 

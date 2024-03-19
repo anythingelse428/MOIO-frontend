@@ -22,21 +22,22 @@
 import AsideItem from '~/components/Aside/AsideItem.vue'
 import type { TUiIconNames } from "#build/types/ui-icon"
 
-export type AsideCategory = {
+export interface IAsideCategoryItem {
+	icon: TUiIconNames,
+	name: string,
+	url: string
+	id?:number|string
+	typeId?:number
+	isEditable?:boolean
+	isPending?:boolean
+	isActive?:boolean
+}
+export interface IAsideCategory {
   categoryHeader:string,
-  categoryItems:
-      {
-        icon: TUiIconNames,
-        name: string,
-        url: string
-        id?:number|string
-        typeId?:number
-        isEditable?:boolean
-        isPending?:boolean
-      }[]
+  categoryItems:IAsideCategoryItem[]
 }
 
-const props = defineProps<AsideCategory>()
+const props = defineProps<IAsideCategory>()
 </script>
 
 <style lang="scss">

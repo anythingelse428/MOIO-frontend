@@ -22,7 +22,9 @@ export interface MaskProps {
 }
 
 const props = withDefaults(defineProps<MaskProps>(), { bgColor: 'var(--bg-primary)', backdropFilter: '', transitionFadeName: 'no-transition', transitionContentName: 'no-transition', width: '400px' })
-const emit = defineEmits(['click-outside'])
+const emit = defineEmits<{
+    clickOutside:[PointerEvent]
+}>()
 const isMounted = ref(false)
 
 onMounted(() => {
@@ -41,7 +43,7 @@ onMounted(() => {
 const inner = ref()
 const modal = ref()
 onClickOutside(inner, (e) => {
-  emit('click-outside', e)
+  emit('clickOutside', e)
 })
 
 </script>

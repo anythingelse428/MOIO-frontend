@@ -127,12 +127,12 @@
       <template #inner>
         <div class="change-icon-modal" role="dialog">
           <div class="change-icon-modal__header">
-            <div class="header">
+            <div class="change-icon-modal__header-text">
               Выберите иконку устройства
             </div>
-            <button class="blank close-button" @click="isIconModalShow = false">
+            <ui-button class-name="blank" padding="0" margin-inline="0" class="blank close-button" @click="isIconModalShow = false">
               <ui-icon name="close" />
-            </button>
+            </ui-button>
           </div>
           <div class="change-icon-modal__icons">
             <h2 class="change-icon-modal__subheader">
@@ -213,7 +213,7 @@ export interface ServiceProps {
   capabilities?:ICapability[]
   categoryId?:number
   deviceIcon: { name:TUiIconNames } | null
-  groupId:string|number
+  groupId?:string|number
 }
 
 const props = defineProps<ServiceProps>()

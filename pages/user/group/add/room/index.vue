@@ -115,7 +115,7 @@ import useSetItemOnCheckbox from "~/composables/useSetItemOnCheckbox"
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)
-const { floors, uppperGroups } = storeToRefs(groupStore)
+const { floors, upperGroups } = storeToRefs(groupStore)
 const name = ref('')
 const floor = ref('')
 const house = ref('')
@@ -124,7 +124,7 @@ const devices = ref<{ id: string, name:string }[]>([])
 const existingHouses = ref()
 const existingDevices = ref()
 const selectData = computed(() => existingHouses.value?.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], []))
-existingHouses.value = uppperGroups.value.filter(el => el.groupCreatorId === useUserStore().id)
+existingHouses.value = upperGroups.value.filter(el => el.groupCreatorId === useUserStore().id)
 
 const previewData = ref({
   name,

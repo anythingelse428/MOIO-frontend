@@ -111,11 +111,15 @@
 <script setup lang="ts">
 import UiModal from "~/components/ui/UiModal.vue"
 import { useScenarioStore } from "~/store/scenario"
-import { useAutomationStore } from "~/store/autmation"
-import type { IAutomationCreateProps, IAutomationValue } from "~/api/automations/create"
+import { useAutomationStore } from "~/store/automation"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { useGroupsStore } from "~/store/groups"
-import type { IGroupResponseItem } from "~/api/group/getById"
+import useAutomationShowCondition from "~/composables/useAutomationShowCondition"
+import useApplyRangeAutomationCondition from "~/composables/useApplyRangeAutomationCondition"
+import useApplyAutomationTemperatureCondition from "~/composables/useApplyAutomationTemperatureCondition"
+import type { IAutomationCreateProps, IAutomationValue } from "~/api/automations/create"
+import useSelectOnlySensors from "~/composables/useSelectOnlySensors"
+import useSetAutomationCondition from "~/composables/useSetAutomationCondition"
 import type { ICapability, ServiceProps } from "~/components/Service/TheService.vue"
 import type { AutomationConditionTypes } from "~/components/Automation/AutomationCondition.vue"
 
@@ -125,10 +129,15 @@ export interface IAutomationSensor {
   type:string
   range?:ICapability["range"]
 }
+export interface IBaseCondition<T>{
+  id:T
+  value:IAutomationValue
+  type:AutomationConditionTypes
+}
 const isLoading = ref(false)
 const isConditionModalShow = ref(false)
 const isTemperatureModalShow = ref(false)
-const conditions = ref<{value:IAutomationValue, type:AutomationConditionTypes, id:number}[]>([])
+const conditions = ref<IBaseCondition<number>[]>([])
 const groupStore = useGroupsStore()
 const scenarios = ref<string[]>([])
 const name = ref('')
@@ -137,15 +146,7 @@ const scenarioStore = useScenarioStore()
 const automationStore = useAutomationStore()
 const existingScenarios = await scenarioStore.getAll()
 function setShowConditionalModal () {
-  if (sensors.value.length > 0 && conditions.value.filter(el => el.type === 'time').length === 0) {
-    isConditionModalShow.value = true
-    return
-  }
-  conditions.value.push({
-    type: 'time',
-    id: conditions.value.length + 1,
-    value: { time: `${new Date().getHours()}:${new Date().getMinutes()}` },
-  })
+  useAutomationShowCondition(sensors.value, conditions, isConditionModalShow, conditions.value.length + 1)
 }
 
 function deleteCondition (id:number) {
@@ -163,107 +164,18 @@ function deleteCondition (id:number) {
   }
 }
 function applyTemperatureRangeCondition (conditionId:number, range:Exclude<IAutomationValue["temperatureRange"], undefined>) {
-  const id = conditions.value.findIndex(el => el.id === conditionId)
-  if (typeof range?.min !== "undefined" && typeof range?.max !== "undefined" && id > -1) {
-    conditions.value[id].value.temperatureRange = { ...range }
-    conditions.value[id].value.automationCondition = undefined
-  }
+  useApplyRangeAutomationCondition(conditions, conditionId, range)
   isTemperatureModalShow.value = false
 }
 function applyAutomationCondition (conditionId:number, automationCondition:Exclude<IAutomationValue["automationCondition"], undefined>) {
-  const id = conditions.value.findIndex(el => el.id === conditionId)
-  if (typeof automationCondition?.condition !== "undefined" && typeof automationCondition?.value !== "undefined" && id > -1) {
-    conditions.value[id].value.automationCondition = { ...automationCondition }
-    conditions.value[id].value.temperatureRange = undefined
-  }
+  useApplyAutomationTemperatureCondition(conditions, conditionId, automationCondition)
   isTemperatureModalShow.value = false
 }
-function setCondition (id:number, type:AutomationConditionTypes, value?:any) {
-  const isSensorCondition = type === 'sensor' || type === 'temperature'
-  const sensorProps = (id:string) => isSensorCondition ? sensors.value.find(el => el.id === id) : undefined
-  const isTemperatureSensor = (id:string) => isSensorCondition ? sensorProps(id)?.type?.includes('temp') || sensorProps(id)?.type?.includes('therm') : undefined
-  const isConditionExist = conditions.value.findIndex(el => el.id === id)
-
-  if (isTemperatureSensor(value || '') && conditions.value[isConditionExist]?.value?.deviceId === value) {
-    isTemperatureModalShow.value = true
-    return
-  }
-
-  const isSensorConditionExist = conditions.value.find(el => el.type === 'sensor' || el.type === 'temperature')
-  const validInitialTime = `${new Date().getHours()}:${new Date().getMinutes()}`
-
-
-  if (isConditionExist > -1) {
-    if (!isSensorCondition) {
-      if (isSensorConditionExist) {
-        conditions.value[isConditionExist].value = {
-          timeRange: value,
-        }
-        conditions.value[isConditionExist].type = 'time-range'
-        return
-      }
-      conditions.value[isConditionExist].value = { time: value }
-      conditions.value[isConditionExist].type = 'time'
-      return
-    }
-    if (isSensorCondition) {
-      conditions.value[isConditionExist].value = {
-        deviceId: value,
-      }
-      conditions.value[isConditionExist].type = isTemperatureSensor(value || '') ? 'temperature' : 'sensor'
-      if (isTemperatureSensor(value || '') && conditions.value[isConditionExist].value?.deviceId === value) {
-        isTemperatureModalShow.value = true
-      }
-      conditions.value.forEach((el) => {
-        if (el.type === 'time') { el.type = 'time-range' }
-      })
-      return
-    }
-  }
-  if (isConditionExist === -1) {
-    if (!isSensorCondition) {
-      if (isSensorConditionExist) {
-        conditions.value.push({
-          id: conditions.value.length + 1,
-          type: 'time-range',
-          value: {
-            timeRange: {
-              startTime: validInitialTime,
-              endTime: validInitialTime,
-            },
-          },
-        })
-        return
-      }
-      conditions.value.push({
-        id: conditions.value.length + 1,
-        type: 'time',
-        value: { time: validInitialTime },
-      })
-      return
-    }
-    if (isSensorCondition) {
-      conditions.value.push({
-        id: conditions.value.length + 1,
-        type: isTemperatureSensor(sensors.value[0].id) ? 'temperature' : 'sensor',
-        value: { deviceId: sensors.value[0].id },
-      })
-      nextTick(() => {
-        if (isTemperatureSensor(sensors.value[0].id) && conditions.value[conditions.value.length - 1].value.deviceId === value) {
-          isTemperatureModalShow.value = true
-        }
-      })
-    }
-  }
+function setCondition (id:number, type:AutomationConditionTypes, value?:IAutomationValue) {
+  useSetAutomationCondition(id, type, sensors.value, conditions, isTemperatureModalShow, value)
 }
 
-function selectOnlySensors (group:IGroupResponseItem, arr:ServiceProps[] = []) {
-  arr.push(...group.devices.filter(el => el.id.includes('_sen') || el.type.includes('temp') || el.type.includes('therm')))
-  group.inverseParent?.forEach(el => selectOnlySensors(el, arr))
-  return arr
-}
-
-sensors.value = selectOnlySensors(await groupStore.getGroupById(groupStore.currentHome)).map((el) => {
+sensors.value = useSelectOnlySensors(await groupStore.getGroupById(groupStore.currentHome)).map((el) => {
   return {
     id: el.id,
     name: el.name,

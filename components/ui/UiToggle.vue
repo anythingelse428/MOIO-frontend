@@ -24,7 +24,9 @@ export interface IToggleSwitchProps {
   openable?:boolean
 }
 const props = withDefaults(defineProps<IToggleSwitchProps>(), { ico: 'service/other/help' })
-const emit = defineEmits(['check'])
+const emit = defineEmits<{
+    check:[boolean]
+}>()
 const currentValue = computed({
   get () {
     return props.checked
@@ -37,7 +39,4 @@ const currentValue = computed({
 
 <style lang="scss">
 @import "assets/styles/components/toggle-switch";
-.toggle-switch {
-
-}
 </style>

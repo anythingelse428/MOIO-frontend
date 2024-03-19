@@ -14,8 +14,16 @@ export interface ICheckboxProps{
   initialBg?:string
   checkedBg?:string
 }
-const props = withDefaults(defineProps<ICheckboxProps>(), { size: 20, checked: false, checkedBg: 'var(--color-active)', initialBg: 'var(--bg-primary)' })
-const emit = defineEmits(['check'])
+const props = withDefaults(defineProps<ICheckboxProps>(), {
+  size: 20,
+  checked: false,
+  checkedBg: 'var(--color-active)',
+  initialBg: 'var(--bg-primary)',
+})
+
+const emit = defineEmits<{
+    check:[boolean]
+}>()
 </script>
 
 <style lang="scss">

@@ -85,7 +85,9 @@ export interface ServiceCapability {
 }
 
 const props = defineProps<ServiceCapability & ICapability>()
-const emit = defineEmits(['update-bool-val'])
+const emit = defineEmits<{
+    updateBoolVal:[void]
+}>()
 const devicesStore = useDevicesStore()
 const groupStore = useGroupsStore()
 const toggleSwitchIco = useIcoByDeviceType(props.deviceType)
@@ -94,7 +96,7 @@ const capability = ref(capabilitySource)
 const isMounted = ref(false)
 const hue = ref(Number(capability.value.hsv?.h))
 const saturation = ref(Number(capability.value.hsv?.s))
-const rgb = computed(() => useHSVToRGB(Number(hue.value), saturation.value / 100, capability.value.hsv.v / 100))
+const rgb = computed(() => useHSVToRGB(Number(hue.value), saturation.value / 100, (capability.value.hsv?.v ?? 100) / 100))
 
 const throttledAction = useThrottle(actionFabric)
 const mainActionProps = {
@@ -118,7 +120,7 @@ function updateDevice (val:{type:string, value:any}, delay?:number) {
   switch (val.type) {
     case 'devices.capabilities.on_off':
     case 'open':
-      emit('update-bool-val')
+      emit('updateBoolVal')
       break
     case 'devices.capabilities.range':
       if (props?.instance === 'threshold_temperature') {

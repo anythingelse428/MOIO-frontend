@@ -23,7 +23,7 @@
         :is-preview="true"
         :selected="device?.selected"
         :device-icon="device.deviceIcon"
-        @left-mouse-click="e=>emit('get-data',{...e,groupId:id})"
+        @left-mouse-click="e=>emit('getData',{...e,groupId:id})"
       />
     </div>
     <transition v-show="isCollapsed" name="fade">
@@ -54,7 +54,7 @@
           :hide-empty="hideEmpty"
           :hide-sensors="hideSensors"
           :child-depth="(childDepth??0)+1"
-          @get-data="e=>emit('get-data',{...e,groupId:group.id})"
+          @get-data="e=>emit('getData',{...e,groupId:group.id})"
         />
       </div>
     </transition>
@@ -63,8 +63,8 @@
 
 <script setup lang="ts">
 import type { IAllDevicesResponse } from "~/api/device/getAll"
-import TheService from "~/components/Service/TheService.vue"
-import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
+import TheService, { type ServiceProps } from "~/components/Service/TheService.vue"
+import ScenarioService, { type IScenarioService } from "~/components/Scenarios/ScenarioService.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
 
 export interface GroupList {
@@ -82,7 +82,9 @@ export interface GroupList {
 }
 
 const props = defineProps<GroupList>()
-const emit = defineEmits(['get-data'])
+const emit = defineEmits<{
+    getData:[IScenarioService & ServiceProps]
+}>()
 const isCollapsed = ref(true)
 
 const isNotEmpty = computed(() => {

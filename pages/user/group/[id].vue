@@ -39,7 +39,7 @@ async function fetchGroups () {
   isLoading.value = false
 }
 
-if (groupStore.currentHome !== groupId && groupStore.uppperGroups?.find(el => el.id === groupId)?.typeId === 1) {
+if (groupStore.currentHome !== groupId && groupStore.upperGroups?.find(el => el.id === groupId)?.typeId === 1) {
   groupStore.setCurrentHome(groupId)
   useNotification('info', 'Просматриваемый дом изменен')
 }

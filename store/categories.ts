@@ -3,7 +3,7 @@ import type { IGetAllResponseItem } from "~/api/category/getAll"
 import apiCategoryGetAll from "~/api/category/getAll"
 import apiCategoryGetDevicesById, { type IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 import useIcoByGroupName from "~/composables/useIcoByGroupName"
-import type { AsideCategory } from "~/components/Aside/AsideCategory.vue"
+import type { IAsideCategory } from "~/components/Aside/AsideCategory.vue"
 
 export const useCategoriesStore = defineStore('categories', {
   state: () => ({
@@ -13,11 +13,11 @@ export const useCategoriesStore = defineStore('categories', {
   getters: {
     allCategories: state => (array = state.categories) => {
       return array.reduce((
-        acc:AsideCategory['categoryItems'],
-        curr:AsideCategory['categoryItems'][0]) => {
+        acc:IAsideCategory['categoryItems'],
+        curr) => {
         acc.push(
           {
-            name: curr.name,
+            name: curr.name ?? '',
             url: `/user/category/${curr.id}`,
             icon: useIcoByGroupName(curr.name)?.name,
             id: curr.id,

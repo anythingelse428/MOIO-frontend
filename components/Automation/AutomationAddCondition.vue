@@ -1,12 +1,23 @@
 <template>
   <div class="automation-add-condition">
     <div class="automation-add-condition__header">
-      <span class="automation-add-condition__header-text">
+      <div class="automation-add-condition__header-text">
         Добавить условие
-      </span>
-      <ui-icon name="close" role="button" color="#fff" @click="emit('hide-modal')" />
+      </div>
+      <ui-button
+        class-name="blank"
+        padding="0"
+        margin-inline="0"
+      >
+        <ui-icon
+          name="close"
+          role="button"
+          color="#fff"
+          @click="emit('hideModal')"
+        />
+      </ui-button>
     </div>
-    <form class="automation-add-condition__form" @submit.prevent="emit('add-condition', condition)">
+    <form class="automation-add-condition__form" @submit.prevent="emit('addCondition', condition)">
       <div class="automation-add-condition__conditions">
         <div :class="`automation-add-condition__condition ${condition==='time'&&'--active'}`" @click="condition='time'">
           <ui-icon name="service/devices/clock-time-three-outline" size="100" />
@@ -21,7 +32,12 @@
           </div>
         </div>
       </div>
-      <ui-button type="submit" rounded="16px" class="automation-add-condition__submit" padding="8px 12px">
+      <ui-button
+        type="submit"
+        rounded="16px"
+        padding="8px 12px"
+        class="automation-add-condition__submit"
+      >
         Добавить
       </ui-button>
     </form>
@@ -31,7 +47,10 @@
 <script setup lang="ts">
 import UiIcon from "~/components/ui/UiIcon.vue"
 
-const emit = defineEmits(['add-condition', 'hide-modal'])
+const emit = defineEmits<{
+    addCondition:['sensor'|'time']
+    hideModal:[void]
+}>()
 const condition = ref<'sensor'|'time'>('time')
 </script>
 

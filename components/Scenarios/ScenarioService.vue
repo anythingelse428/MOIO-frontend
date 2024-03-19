@@ -1,5 +1,9 @@
 <template>
-  <div ref="service" :class="`service --scenario ${selected&&'--active'}`" role="button">
+  <div
+    ref="service"
+    :class="`service --scenario ${selected&&'--active'}`"
+    role="button"
+  >
     <div ref="info" class="service-info" @mousedown.left.stop="handleLeftMouse()">
       <div class="service-ico-wrapper">
         <ui-icon :name="ico" size="30" />
@@ -11,7 +15,7 @@
       </div>
     </div>
     <div
-      v-if="isMounted && capabilities?.length >= 1 && !isPreview"
+      v-if="isMounted && capabilities?.length && capabilities.length >= 1 && !isPreview"
       class="service-capabilities-list-wrapper"
     >
       <ui-modal
@@ -48,7 +52,7 @@
                     :hsv="item.hsv"
                     :value="item.value"
                     :icon="ico"
-                    @update-bool-val="e=>{emit('update-capability',e)}"
+                    @update-bool-val="e=>{emit('updateCapability',e)}"
                   />
                 </template>
               </service-capabilities-structure>
@@ -63,7 +67,7 @@
       color="#D15151"
       size="20"
       class="--delete"
-      @click.prevent="emit('left-mouse-click',props)"
+      @click.prevent="emit('leftMouseClick',props)"
     />
   </div>
 </template>
@@ -77,13 +81,16 @@ import { useGroupsStore } from "~/store/groups"
 import UiIcon from "~/components/ui/UiIcon.vue"
 import type { ServiceProps } from "~/components/Service/TheService.vue"
 
-export type ScenarioService = {
+export interface IScenarioService {
   isPreview?:boolean
   selected?:boolean
 }
 
-const props = defineProps<ScenarioService & ServiceProps>()
-const emit = defineEmits(['left-mouse-click', 'update-capability'])
+const props = defineProps<IScenarioService & ServiceProps>()
+const emit = defineEmits<{
+	leftMouseClick:[IScenarioService & ServiceProps],
+	updateCapability:[any],
+}>()
 const isMounted = ref(false)
 const service = ref<HTMLDivElement | null>(null)
 const isCapabilitiesShow = ref(false)
@@ -98,7 +105,7 @@ onClickOutside(target, () => {
 
 function handleLeftMouse () {
   if (props.isPreview) {
-    emit('left-mouse-click', props)
+    emit('leftMouseClick', props)
   }
   if (!props.isPreview) {
     isCapabilitiesShow.value = true

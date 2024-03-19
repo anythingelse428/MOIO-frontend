@@ -47,7 +47,6 @@
         </template>
       </ui-modal>
     </div>
-    <!--    <profile-settings />-->
     <div v-if="invitedHouses?.length" class="invited-house-section">
       <h2 class="invited-house-section__header">
         Дома, в которые меня пригласили
@@ -62,7 +61,7 @@
       </div>
     </div>
     <ui-button
-      v-if="isHouseOwner?.id||!groupStore.uppperGroups?.length"
+      v-if="isHouseOwner?.id||!groupStore.upperGroups?.length"
       rounded="16px"
       class="profile__sync-device"
       @click="aliceSync()"
@@ -92,8 +91,8 @@ const { userInfo } = storeToRefs(userStore)
 const isAddRoommatesModalShow = ref(false)
 const isLoading = ref(true)
 const addRoommateModal = ref(null)
-const isHouseOwner = groupStore.uppperGroups.find(el => el.groupCreatorId === userInfo.value.id && el.id === groupStore.currentHome)
-const invitedHouses = ref(groupStore.uppperGroups.filter(el => el.groupCreatorId !== userInfo.value.id))
+const isHouseOwner = groupStore.upperGroups.find(el => el.groupCreatorId === userInfo.value.id && el.id === groupStore.currentHome)
+const invitedHouses = ref(groupStore.upperGroups.filter(el => el.groupCreatorId !== userInfo.value.id))
 function aliceSync () {
   devicesStore.getConfig()
 }
@@ -101,13 +100,15 @@ async function getRoommates () {
   isLoading.value = true
   roommates.value = await groupStore.getUsersByGroupId(groupStore.currentHome)
   isLoading.value = false
-  roommates.value = roommates.value.filter(el => el.id !== groupStore.uppperGroups.find(el => el.id === groupStore.currentHome)?.groupCreatorId)
+  roommates.value = roommates.value.filter(el => el.id !== groupStore.upperGroups.find(el => el.id === groupStore.currentHome)?.groupCreatorId)
 }
 onMounted(() => {
   nextTick(async () => {
-    // console.log(await groupStore.getUsersByGroupId(groupStore.currentHome))
     if (userInfo.value.name?.length < 1) {
       await userStore.init()
+    }
+    if (!groupStore.currentGroup?.groupCreatorId) {
+      groupStore.currentGroup = groupStore.upperGroups.find(el => el.id === groupStore.currentHome)
     }
     await getRoommates()
   })

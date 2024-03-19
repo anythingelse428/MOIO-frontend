@@ -4,6 +4,8 @@
 	width: 100%;
 	margin-inline: auto;
 	padding-bottom: 40px;
+	max-height: 85dvh;
+	overflow-y: auto;
 	&__form{
 		display: flex;
 		flex-direction: column;
@@ -19,13 +21,12 @@
 		align-items: center;
 		justify-content: center;
 		&-text{
-			width: calc(100% - 30px);
+			width: 100%;
 			text-align: center;
 		}
-		.ui-icon{
+		.ui-button.--blank{
 			position: absolute;
-			right: 0;
-			font-size: 20px!important;
+			right: 2px;
 			cursor: pointer;
 		}
 	}
@@ -36,7 +37,10 @@
 		flex-wrap: wrap;
 		text-align: center;
 		justify-content: center;
-		
+		@media screen and (max-width: 560px) {
+			gap:16px;
+			margin-top: 16px;
+		}
 	}
 	&__condition{
 		display: inline-block;
@@ -70,5 +74,8 @@
 	}
 	&__submit{
 		margin-top: 44px;
+		@media screen and (max-width: 560px) {
+			margin-top: 20px;
+		}
 	}
 }

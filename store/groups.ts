@@ -1,29 +1,29 @@
 import { defineStore } from 'pinia'
 
+import { useUserStore } from "~/store/user"
 import type { IGroupResponseItem } from "~/api/group/getAll"
 import apiGroupGetAll from "~/api/group/getAll"
 import apiGroupAddRoom from "~/api/group/addRoom"
-import type { IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 import apiGroupGetDevicesById from "~/api/group/getDevicesByGroupId"
 import apiGroupsGetUpperGroups from "~/api/group/getUpperGroups"
 import apiGroupGetById from "~/api/group/getById"
 import apiGroupChangeName from "~/api/group/changeName"
 import apiDevicesChangeDevices from "~/api/device/changeGroup"
 import apiGroupDelete from "~/api/group/delete"
-import { useUserStore } from "~/store/user"
-import apiGroupAddUser, { IAddUserToGroupProps } from "~/api/group/addUser"
 import apiGroupGetUserByGroupId from "~/api/group/getUsersByGroupId"
 import apiGroupRemoveUsers from "~/api/group/removeUsers"
 import apiGroupsGetSubgroups from "~/api/group/getSubgroups"
 import apiGroupCheckCode from "~/api/group/checkCode"
 import useIcoByGroupName from "~/composables/useIcoByGroupName"
-import type { AsideCategory } from "~/components/Aside/AsideCategory.vue"
+import apiGroupAddUser, { type IAddUserToGroupProps } from "~/api/group/addUser"
+import type { IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
+import type { IAsideCategoryItem } from "~/components/Aside/AsideCategory.vue"
 
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
     groups: [] as IGroupResponseItem[],
     devices: {} as IDevicesInCategory,
-    uppperGroups: [] as IGroupResponseItem[],
+    upperGroups: [] as IGroupResponseItem[],
     currentHome: '',
     clientId: '',
     currentGroup: {} as IGroupResponseItem,
@@ -35,12 +35,12 @@ export const useGroupsStore = defineStore('groups', {
     formattedGroup: (state) => {
       return (typeId:number) => {
         const { id } = useUserStore()
-        return state[typeId === 1 ? 'uppperGroups' : 'groups']
-          .reduce((acc:AsideCategory['categoryItems'], curr:AsideCategory['categoryItems'][0]) => {
-            if (curr.typeId === typeId) {
+        return state[typeId === 1 ? 'upperGroups' : 'groups']
+          .reduce((acc:IAsideCategoryItem[], curr) => {
+            if (curr?.typeId === typeId) {
               acc.push(
                 {
-                  name: curr.name,
+                  name: curr.name ?? '',
                   url: `/user/group/${curr.id}`,
                   icon: useIcoByGroupName(String(typeId))?.name,
                   id: curr.id,
@@ -81,14 +81,14 @@ export const useGroupsStore = defineStore('groups', {
       if (!Number.isInteger(user.id)) {
         await user.init()
       }
-      this.uppperGroups = response
+      this.upperGroups = response
       if (localStorage.getItem('moio-current-home')?.length) {
         this.currentHome = localStorage.getItem('moio-current-home') as string
       } else {
-        this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id ?? this.uppperGroups[0]?.id
+        this.currentHome = response.find(el => el.groupCreatorId === user.userInfo.id)?.id ?? this.upperGroups[0]?.id
         localStorage.setItem('moio-current-home', this.currentHome)
       }
-      this.clientId = this.uppperGroups.find(el => el.id === this.currentHome)?.clientId ?? ''
+      this.clientId = this.upperGroups.find(el => el.id === this.currentHome)?.clientId ?? ''
     },
     async setCurrentHome (id:string) {
       localStorage.setItem('moio-current-home', id)

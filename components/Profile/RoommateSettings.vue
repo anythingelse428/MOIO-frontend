@@ -2,12 +2,12 @@
   <div class="roommate-settings">
     <loader-screen :is-loading="isLoading" />
     <div class="roommate-settings__header">
-      <h1 class="header">
+      <h1 class="roommate-settings__header-text">
         Настройки пользователя
       </h1>
-      <button class="blank" @click="(e)=>emit('modal-close',e)">
+      <ui-button class-name="blank" padding="0" margin-inline="0" @click="(e:PointerEvent)=>emit('modalClose',e)">
         <ui-icon name="close" size="24" />
-      </button>
+      </ui-button>
     </div>
     <div class="roommate-settings__user-info">
       <img v-if="avatarUrl?.length" :alt="`Аватар пользователя ${email}`" class="profile-card__avatar" :src="avatarUrl" width="136" height="136">
@@ -51,7 +51,7 @@
       class="roommate-settings__submit"
       rounded="16px"
       padding="4px 14px"
-      @click="e=>removeUserFromGroups(e)"
+      @click="(e:PointerEvent)=>removeUserFromGroups(e)"
     >
       Сохранить
     </ui-button>
@@ -74,7 +74,11 @@ export interface IRoommateSettingsProps {
 }
 
 const props = defineProps<IRoommateSettingsProps>()
-const emit = defineEmits(['modal-close', 'remove-user'])
+// ['modal-close', 'remove-user']
+const emit = defineEmits<{
+    modalClose:[PointerEvent]
+    removeUser:[void]
+}>()
 const groupStore = useGroupsStore()
 const existingGroups = ref<IRoommateSettingsProps["groups"]>(props.groups)
 const groupsForRemove = ref<string[]>([])
@@ -84,14 +88,14 @@ function prepareGroupsForRemove (id:string) {
   groupsForRemove.value.push(id)
   existingGroups.value = existingGroups.value.filter(el => el.id !== id)
 }
-async function removeUserFromGroups (e:Event) {
+async function removeUserFromGroups (e:PointerEvent) {
   if (props.email.length && groupsForRemove.value.length) {
     isLoading.value = true
     await groupStore.removeUsersFromGroup(groupsForRemove.value, [props.email], [])
-    emit('remove-user')
+    emit('removeUser')
     isLoading.value = false
   }
-  emit('modal-close', e)
+  emit('modalClose', e)
 }
 </script>
 

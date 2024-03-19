@@ -1,9 +1,9 @@
 <template>
   <div class="automation-select-range">
     <div class="automation-select-range__header">
-      <span class="automation-select-range__header-text">
+      <div class="automation-select-range__header-text">
         Состояние устройства
-      </span>
+      </div>
       <ui-button
         class-name="blank"
         margin-inline="0"

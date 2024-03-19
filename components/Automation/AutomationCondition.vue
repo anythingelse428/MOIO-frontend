@@ -16,7 +16,7 @@
         @click="openTimeSelect"
       >
         <div class="automation-condition__time-offset">
-          {{ Date().match(/GMT.\d\d?\d\d/gm)[0] }}
+          {{ timeOffset ? timeOffset[0] : '' }}
         </div>
         <div class="automation-condition__time-value">
           <input
@@ -35,7 +35,7 @@
         @click="openTimeSelect"
       >
         <div class="automation-condition__time-offset">
-          {{ Date().match(/GMT.\d\d?\d\d/gm)[0] }}
+          {{ timeOffset ? timeOffset[0] : '' }}
         </div>
         <div class="automation-condition__time-value">
           <input
@@ -69,7 +69,7 @@
           v-for="sensor in sensors"
           :key="sensor.id"
           :class="`automation-condition__sensor ${editable?'--editable':''}`"
-          @click="editable&&emit('select-option',{type, value:sensor.id})"
+          @click="editable&&emit('selectOption',{type, value:{deviceId:sensor.id}})"
         >
           <ui-icon
             :name="useIcoByDeviceType(sensor.type).name"
@@ -125,13 +125,8 @@
 import UiIcon from "~/components/ui/UiIcon.vue"
 import type { ICapability, ServiceProps } from "~/components/Service/TheService.vue"
 import type { IAutomationValue } from "~/api/automations/create"
+import { AutomationConditionTypesEnum } from "~/utils/enums"
 
-enum AutomationConditionTypesEnum {
-  sensor='sensor',
-  temperature='temperature',
-  time='time',
-  timeRange='time-range',
-}
 export type AutomationConditionTypes = AutomationConditionTypesEnum
 export interface AutomationConditionProps {
   idx:number|string
@@ -156,7 +151,11 @@ const props = withDefaults(defineProps<AutomationConditionProps & IAutomationVal
     range: undefined,
   },
 )
-const emit = defineEmits(['select-option', 'add-sensor-condition'])
+
+const emit = defineEmits<{
+    selectOption:[{type:AutomationConditionTypes, value?:IAutomationValue}]
+}>()
+const timeOffset = Date()?.match(/GMT.\d\d?\d\d/gm)
 const conditionSymbols = ['<', '>', '=']
 const timeInput = ref<InstanceType<typeof HTMLInputElement>>()
 const timeInputStart = ref<InstanceType<typeof HTMLInputElement>>()
@@ -166,7 +165,7 @@ const timePoint = props.type === 'time' && computed({
     return props.time
   },
   set (value) {
-    emit('select-option', { type: 'time', value })
+    emit('selectOption', { type: AutomationConditionTypesEnum.time, value: { time: value } })
   },
 })
 const timeEnd = props.type === 'time-range' && computed({
@@ -175,11 +174,13 @@ const timeEnd = props.type === 'time-range' && computed({
   },
   set (value) {
     console.log(value)
-    emit('select-option', {
-      type: 'time-range',
+    emit('selectOption', {
+      type: AutomationConditionTypesEnum.timeRange,
       value: {
-        startTime: props.timeRange?.startTime ?? '00:00',
-        endTime: value,
+        timeRange: {
+          startTime: props.timeRange?.startTime ?? '00:00',
+          endTime: value,
+        },
       },
     })
   },
@@ -190,11 +191,13 @@ const timeStart = props.type === 'time-range' && computed({
   },
   set (value) {
     console.log(value)
-    emit('select-option', {
-      type: 'time-range',
+    emit('selectOption', {
+      type: AutomationConditionTypesEnum.timeRange,
       value: {
-        startTime: value,
-        endTime: props.timeRange?.endTime ?? '00:00',
+        timeRange: {
+          startTime: value,
+          endTime: props.timeRange?.endTime ?? '00:00',
+        },
       },
     })
   },
@@ -205,7 +208,7 @@ function openTimeSelect () {
   }
 }
 onMounted(() => {
-  props.type === 'time' && emit('select-option', { type: 'time', value: props.currTime })
+  props.type === 'time' && emit('selectOption', { type: AutomationConditionTypesEnum.time, value: { time: props.currTime } })
 })
 </script>
 

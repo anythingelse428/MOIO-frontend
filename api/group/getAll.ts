@@ -13,6 +13,7 @@ export interface IGroupResponseItem{
         code:string|null
         name:string|null
     },
+    groupId?:string|number
     name: string|null,
     devices: IAllDevicesResponse[],
     groupCreatorId:number
