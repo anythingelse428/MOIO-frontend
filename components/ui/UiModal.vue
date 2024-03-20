@@ -1,6 +1,6 @@
 <template>
   <transition :name="transitionFadeName" mode="out-in">
-    <div v-show="isShown" ref="modal" class="modal" :style="backdropFilter?`-webkit-backdrop-filter:${backdropFilter};backdrop-filter:${backdropFilter};`:''">
+    <div v-show="isShown" ref="modal" :class="`modal ${isShown?'--shown':''}`" :style="backdropFilter?`-webkit-backdrop-filter:${backdropFilter};backdrop-filter:${backdropFilter};`:''">
       <transition :name="transitionContentName">
         <div v-show="isShown" ref="inner" class="modal__content" :style="`background: ${bgColor}; width: min(${width}, 95%)`">
           <slot name="inner" />

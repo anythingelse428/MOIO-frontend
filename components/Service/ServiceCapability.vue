@@ -10,9 +10,29 @@
            background: rgb(${Math.round(255 * rgb.red )}, ${Math.round(255 * rgb.green)}, ${Math.round(255 * rgb.blue)});`"
       />
       <div class="service-capability__color">
-        <input id="color" v-model="hue" step="1" type="range" :min="0" :max="360" name="" class="service-capability__hue" @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
+        <input
+          id="color"
+          v-model="hue"
+          step="1"
+          type="range"
+          :min="0"
+          :max="360"
+          name=""
+          class="service-capability__hue"
+          @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})"
+        >
       </div>
-      <input id="" v-model="saturation" step="1" type="range" :min="0" :max="100" name="" class="service-capability__saturation" @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})">
+      <input
+        id=""
+        v-model="saturation"
+        step="1"
+        type="range"
+        :min="0"
+        :max="100"
+        name=""
+        class="service-capability__saturation"
+        @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})"
+      >
     </div>
     <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
       <ui-toggle

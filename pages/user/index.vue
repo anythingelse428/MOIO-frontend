@@ -54,9 +54,11 @@
       <div class="invited-house-section__container">
         <invited-house
           v-for="house in invitedHouses"
-          :id="house.id" :key="house.id"
-          :group-creator-id="house.groupCreatorId"
-          :name="house?.name??''"
+          :id="house.id"
+          :key="house.id"
+          :name="house?.name"
+          :inviter="house.inviter"
+          :code="house.code"
         />
       </div>
     </div>
@@ -82,6 +84,7 @@ import UiIcon from "~/components/ui/UiIcon.vue"
 import InvitationForm from "~/components/Profile/InvitationForm.vue"
 import type { IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
 import InvitedHouse from "~/components/Profile/InvitedHouse.vue"
+import apiUsersPendingGet from "~/api/usersPending/get"
 
 const roommates = ref<IUsersByGroupResponse[]>([])
 const userStore = useUserStore()
@@ -92,7 +95,7 @@ const isAddRoommatesModalShow = ref(false)
 const isLoading = ref(true)
 const addRoommateModal = ref(null)
 const isHouseOwner = groupStore.upperGroups.find(el => el.groupCreatorId === userInfo.value.id && el.id === groupStore.currentHome)
-const invitedHouses = ref(groupStore.upperGroups.filter(el => el.groupCreatorId !== userInfo.value.id))
+const invitedHouses = ref(await apiUsersPendingGet())
 function aliceSync () {
   devicesStore.getConfig()
 }
@@ -102,6 +105,8 @@ async function getRoommates () {
   isLoading.value = false
   roommates.value = roommates.value.filter(el => el.id !== groupStore.upperGroups.find(el => el.id === groupStore.currentHome)?.groupCreatorId)
 }
+
+
 onMounted(() => {
   nextTick(async () => {
     if (userInfo.value.name?.length < 1) {

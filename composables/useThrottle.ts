@@ -6,7 +6,6 @@ const useThrottle = <T extends (...args: any[]) => any>(fn: T, initialWait = 100
   let lastTime = 0
 
   return function (this: ThisParameterType<T>, wait = initialWait, ...args: Parameters<T>) {
-    console.log('wait: ', wait)
     if (!inThrottle) {
       fn.apply(this, args)
       lastTime = Date.now()

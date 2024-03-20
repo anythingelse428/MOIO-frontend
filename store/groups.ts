@@ -15,9 +15,10 @@ import apiGroupRemoveUsers from "~/api/group/removeUsers"
 import apiGroupsGetSubgroups from "~/api/group/getSubgroups"
 import apiGroupCheckCode from "~/api/group/checkCode"
 import useIcoByGroupName from "~/composables/useIcoByGroupName"
-import apiGroupAddUser, { type IAddUserToGroupProps } from "~/api/group/addUser"
+import { type IAddUserToGroupProps } from "~/api/group/addUser"
 import type { IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
 import type { IAsideCategoryItem } from "~/components/Aside/AsideCategory.vue"
+import apiUsersPendingCreate from "~/api/usersPending/create"
 
 export const useGroupsStore = defineStore('groups', {
   state: () => ({
@@ -141,7 +142,7 @@ export const useGroupsStore = defineStore('groups', {
       await this.getAll()
     },
     async addUserToGroup (data:IAddUserToGroupProps) {
-      await apiGroupAddUser(data)
+      await apiUsersPendingCreate(data)
     },
     async removeUsersFromGroup (groupIds:string[], logins:string[], ids:number[]) {
       await apiGroupRemoveUsers(groupIds, logins, ids)

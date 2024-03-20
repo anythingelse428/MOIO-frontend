@@ -291,7 +291,6 @@ async function deleteDevice () {
   }
 }
 async function refreshData () {
-  console.log('refresh device data')
   if (Number.isInteger(Number(props.groupId))) {
     await categoriesStore.getDevicesByCategoryId(Number(props.groupId), groupStore.currentHome)
   } else {

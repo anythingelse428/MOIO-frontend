@@ -153,7 +153,13 @@ async function addGroup () {
   }
   isLoading.value = true
   const devicesArrayId = devices.value.map(el => el.id)
-  const parent = floor.value.length ? floor.value : house.value
+  let parent = groupStore.currentHome
+  if (house.value.length) {
+    parent = house.value
+  }
+  if (floor.value.length) {
+    parent = floor.value
+  }
   await groupStore.addRoom(name.value, 3, parent, devicesArrayId, undefined)
   isLoading.value = false
 //   TODO отправить пользователя в свежесозаднную комнату. Будет сделано после рефакторинга бека

@@ -39,9 +39,13 @@ socket.connection.on("UpdateSensorState", (message:string) => {
 })
 socket.connection.on("UpdateDeviceState", (message:ServiceProps) => {
   // console.log("UpdateDeviceState", message)
+  // const isCapabilityModalShown = document.querySelector('.service-capabilities-list-wrapper .modal.--shown')
+  // if (!isCapabilityModalShown) {
+  //   TODO пересмотреть поведение получения девайса, который настраивается
   isChanged = false
   changeCapability(message)
   $bus.emit('device-update-emit', message)
+  // }
 })
 socket.connection.on("UpdateConfig", (message:ServiceProps) => {
   // console.log("UpdateConfig", message)
@@ -49,6 +53,7 @@ socket.connection.on("UpdateConfig", (message:ServiceProps) => {
 })
 
 function changeCapability (message:ServiceProps, group = groupStore.currentGroup) {
+  // console.log('hiiiiiiiiiiiiiiiiiiiii')
   const isCategory = route.path.includes('category/')
   if (isCategory && !isChanged) {
     for (const category of Object.keys(categoriesStore.devicesInCategory)) {
@@ -61,7 +66,9 @@ function changeCapability (message:ServiceProps, group = groupStore.currentGroup
   }
   if (group.id === message.groupId) {
     const deviceIdx = group.devices.findIndex(el => el.id === message.id)
-    group.devices[deviceIdx].capabilities = message.capabilities
+    if (message.capabilities?.length) {
+      group.devices[deviceIdx].capabilities = [...message.capabilities]
+    }
     isChanged = true
     return
   }
