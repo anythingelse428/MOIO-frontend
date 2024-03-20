@@ -37,6 +37,7 @@
           :type="device.type"
           :capabilities="device?.capabilities"
           :device-icon="device.deviceIcon"
+          :can-edit="canEdit"
         />
       </div>
     </transition>
@@ -54,6 +55,7 @@
           :hide-empty="hideEmpty"
           :hide-sensors="hideSensors"
           :child-depth="(childDepth??0)+1"
+          :can-edit="canEdit"
           @get-data="e=>emit('getData',{...e,groupId:group.id})"
         />
       </div>
@@ -70,7 +72,7 @@ import UiIcon from "~/components/ui/UiIcon.vue"
 export interface GroupList {
   name?:string,
   id:string|number
-  devices?: Array<IAllDevicesResponse & { selected: boolean }>,
+  devices?: Array<IAllDevicesResponse & { selected?: boolean }>,
   inverseParent?: GroupList[],
   hideEmpty?:boolean
   hideSensors?:boolean
@@ -78,7 +80,8 @@ export interface GroupList {
   isScenarios?:boolean
   childDepth?:number
   isGroupPage?:boolean
-  typeId?:number
+  typeId?:number|null
+    canEdit?:boolean
 }
 
 const props = defineProps<GroupList>()
@@ -95,7 +98,7 @@ const isNotEmpty = computed(() => {
   return Boolean(props.devices?.length || (props.inverseParent?.length && devicesInChilds))
 })
 const filteredDevices = () => {
-  let temp: Array<IAllDevicesResponse & { selected: boolean }> = []
+  let temp: GroupList["devices"] = []
   if (!props.hideDevices && !props.hideSensors) { return props.devices }
   if (props.hideDevices && typeof props.hideDevices !== 'undefined') {
     temp = props.devices?.filter(el => !el.id.includes('_ch')) || []

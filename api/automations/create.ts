@@ -25,6 +25,10 @@ export interface IAutomationCreateProps {
    }[]
 }
 export default async function apiAutomationsCreate (props:IAutomationCreateProps) {
+  if (props.name.includes(`'`) || props.name.includes(`"`)) {
+    useNotification('error', 'Недопустимый символ в названии автоматизации')
+    return false
+  }
   return await useAsyncQuery(async ({ axios, path }) => {
     try {
       const response = await axios.post(path + '/v1/automations/create', props)

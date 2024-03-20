@@ -14,6 +14,10 @@ export interface IAutomationUpdateProps {
 }
 
 export default async function apiAutomationsUpdate (props:IAutomationUpdateProps) {
+  if (props.name.includes(`'`) || props.name.includes(`"`)) {
+    useNotification('error', 'Недопустимый символ в названии автоматизации')
+    return false
+  }
   return await useAsyncQuery(async ({ axios, path }) => {
     try {
       const response = await axios.put(path + '/v1/automations/update', props)

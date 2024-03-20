@@ -24,22 +24,15 @@
   }
 
   &__header{
-    width: calc(100% - 24px);
+    width: 100%;
     margin-inline: auto;
     @include capabilities-modal-header;
     text-align: center;
     position: relative;
-    top: calc(-24px - 6px);
-    right: 0;
-    left: 0;
     padding-inline: 20px;
-	  display: -webkit-box;
-	  -webkit-line-clamp: 4;
-	  line-clamp: 4;
-	  -webkit-box-orient: vertical;
 	  overflow: hidden;
     min-height: 1em;
-    span{
+    &-text{
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -72,7 +65,8 @@
     font-size: 24px;
     cursor: pointer;
     bottom: -2px;
-    position: relative;
+    position: absolute;
+    left: 0;
     z-index: 1;
     width: fit-content;
     @media screen and (max-width:768px) {

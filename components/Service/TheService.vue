@@ -29,7 +29,7 @@
         </span>
       </div>
     </div>
-    <div v-if="isMounted && capabilities?.length>=1" class="service-capabilities-list-wrapper">
+    <div v-if="isMounted && capabilities?.length && capabilities?.length>=1" class="service-capabilities-list-wrapper">
       <ui-modal
         :is-shown="isCapabilitiesShow"
         transition-fade-name="fade"
@@ -39,11 +39,14 @@
       >
         <template #inner>
           <div ref="target" class="service-capabilities-modal" role="dialog">
-            <div class="edit-ico" @click="isEdit=!isEdit">
-              <ui-icon name="pencil" />
-            </div>
             <div class="service-capabilities-modal__header">
-              <form v-if="isEdit" class="service-capabilities-modal__header --edited" @submit.prevent="setNewDeviceName()">
+              <div v-if="canEdit" class="edit-ico" @click="isEdit=!isEdit">
+                <ui-icon name="pencil" />
+              </div>
+              <span v-show="!isEdit" class="service-capabilities-modal__header-text">
+                {{ name }}
+              </span>
+              <form v-if="canEdit" v-show="isEdit" class="service-capabilities-modal__header --edited" @submit.prevent="setNewDeviceName()">
                 <input v-model="newDeviceName" type="text">
                 <ui-button
                   type="submit"
@@ -55,9 +58,6 @@
                   <ui-icon name="check" size="16" />
                 </ui-button>
               </form>
-              <span v-show="!isEdit">
-                {{ name }}
-              </span>
             </div>
             <div :class="`service-capabilities-modal__body ${isDeviceOn|| String(isDeviceOpen)?.indexOf('true')>-1 || String(isDeviceOpen)?.indexOf('open') > -1 ? '--active':''}`">
               <service-capabilities-structure>
@@ -83,7 +83,7 @@
                   />
                 </template>
               </service-capabilities-structure>
-              <div class="service-capabilities-modal__footer">
+              <div v-if="canEdit" class="service-capabilities-modal__footer">
                 <ui-button
                   padding="8px 16px"
                   rounded="20px"
@@ -106,7 +106,7 @@
         </template>
       </ui-modal>
     </div>
-    <ui-modal ref="deleteModal" :is-shown="isDeleteModalShow" transition-content-name="translate" backdrop-filter="blur(5px)" width="395px" @click-outside="isDeleteModalShow = false">
+    <ui-modal v-if="canEdit" ref="deleteModal" :is-shown="isDeleteModalShow" transition-content-name="translate" backdrop-filter="blur(5px)" width="395px" @click-outside="isDeleteModalShow = false">
       <template #inner>
         <div class="delete-device-modal" role="dialog">
           <div class="delete-device-modal__header">
@@ -123,7 +123,7 @@
         </div>
       </template>
     </ui-modal>
-    <ui-modal ref="iconModal" :is-shown="isIconModalShow" transition-content-name="translate" backdrop-filter="blur(5px)" width="528px" @click-outside="isIconModalShow=false">
+    <ui-modal v-if="canEdit" ref="iconModal" :is-shown="isIconModalShow" transition-content-name="translate" backdrop-filter="blur(5px)" width="528px" @click-outside="isIconModalShow=false">
       <template #inner>
         <div class="change-icon-modal" role="dialog">
           <div class="change-icon-modal__header">
@@ -214,8 +214,12 @@ export interface ServiceProps {
   categoryId?:number
   deviceIcon: { name:TUiIconNames } | null
   groupId?:string|number
+    canEdit?:boolean
 }
 
+const deviceStore = useDevicesStore()
+const groupStore = useGroupsStore()
+const categoriesStore = useCategoriesStore()
 const props = defineProps<ServiceProps>()
 const isMounted = ref(false)
 const service = ref<HTMLDivElement | null>(null)
@@ -235,9 +239,6 @@ const currentIcon:TUiIconNames = props.deviceIcon?.name ?? ico
 const selectedIcon = ref<TUiIconNames>(currentIcon)
 const existingIcons = uiIconNames
 const newDeviceName = ref(props.name)
-const deviceStore = useDevicesStore()
-const groupStore = useGroupsStore()
-const categoriesStore = useCategoriesStore()
 const floatValue = ref(props.capabilities?.find(el => el.type.includes('float')))
 const { $bus } = useNuxtApp()
 const stuff = ref<ICapability>({} as ICapability)
@@ -279,15 +280,11 @@ async function turnOnDevice () {
   }
 }
 async function deleteDevice () {
-  try {
-    const res = await deviceStore.deleteDevice(props.id)
-    isDeleteModalShow.value = false
-    isCapabilitiesShow.value = false
-    if (service.value && res?.includes('Девайс с Id')) {
-      service.value.style.display = 'none'
-    }
-  } catch {
-
+  const res = await deviceStore.deleteDevice(props.id)
+  isDeleteModalShow.value = false
+  isCapabilitiesShow.value = false
+  if (service.value && res?.includes('Девайс с Id')) {
+    service.value.style.display = 'none'
   }
 }
 async function refreshData () {
@@ -301,7 +298,6 @@ async function setNewDeviceName () {
   if (newDeviceName.value?.length && newDeviceName.value !== props.name) {
     await deviceStore.changeName(props.id, newDeviceName.value)
   }
-  newDeviceName.value = props.name
   isEdit.value = false
   await refreshData()
 }

@@ -14,7 +14,11 @@ export interface IRegisterUserResponse {
     username: string,
     role: string
 }
-export default async function apiUserRegister (props:IRegisterUserProps):Promise<IRegisterUserResponse> {
+export default async function apiUserRegister (props:IRegisterUserProps):Promise<IRegisterUserResponse|undefined> {
+  if (props.name.includes(`'`) || props.name.includes(`"`)) {
+    useNotification('error', 'Недопустимый символ в имени')
+    return
+  }
   return await useAsyncQuery(async ({ axios, path }) => {
     const response = await axios.post(path + '/v1/users/Register', props)
     try {

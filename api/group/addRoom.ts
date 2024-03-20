@@ -9,6 +9,10 @@ export interface IAddGroupPayload {
   groupIds?: string[]
 }
 export default async function apiGroupAddRoom ({ name, typeId, parentId, devicesIds, groupIds }:IAddGroupPayload) {
+  if (name.includes(`'`) || name.includes(`"`)) {
+    useNotification('error', 'Недопустимый символ в названии группы')
+    return false
+  }
   return await useAsyncQuery(async ({ axios, path }) => {
     try {
       const response = await axios.post(path + '/v1/groups/AddGroup', {

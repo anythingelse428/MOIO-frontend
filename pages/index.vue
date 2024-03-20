@@ -9,6 +9,7 @@
       :inverse-parent="group?.inverseParent"
       :hide-empty="true"
       :type-id="1"
+      :can-edit="canEdit"
     />
   </div>
 </template>
@@ -18,27 +19,20 @@ import { storeToRefs } from "pinia"
 
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-import type { IGroupResponseItem } from "~/api/group/getAll"
-import type { ServiceProps } from "~/components/Service/TheService.vue"
+import { useUserStore } from "~/store/user"
 
-export interface IGroupData {
- name: string
- devices: IGroupResponseItem['devices'],
- inverseParent: IGroupResponseItem['inverseParent']
-}
-
-const isLoading = ref(true)
+const userStore = useUserStore()
 const groupStore = useGroupsStore()
 const { group } = storeToRefs(groupStore)
+const isLoading = ref(true)
+const canEdit = ref(userStore.userInfo.id === group.value.groupCreatorId)
 
 onMounted(async () => {
-  try {
-    isLoading.value = true
-    await groupStore.getAll()
-    await groupStore.getGroupById(groupStore.currentHome)
-    isLoading.value = false
-  } catch {
-  }
+  isLoading.value = true
+  await groupStore.getAll()
+  await groupStore.getGroupById(groupStore.currentHome)
+  canEdit.value = userStore.userInfo.id === group.value.groupCreatorId
+  isLoading.value = false
 })
 </script>
 

@@ -19,6 +19,10 @@ export default async function apiScenariosAdd (props:IAddScenario) {
     axios,
     path,
   }) => {
+    if (props.name.includes(`'`) || props.name.includes(`"`)) {
+      useNotification('error', 'Недопустимый символ в названии сценария')
+      return false
+    }
     try {
       const response = await axios.post(path + 'v1/scenarios/create', props)
       if (response.status === 200) {

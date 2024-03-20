@@ -13,6 +13,10 @@ export interface IScenarioUpdateProps {
   removeDevicesId:string[]
 }
 export default async function apiScenariosUpdate (props:IScenarioUpdateProps) {
+  if (props.name.includes(`'`) || props.name.includes(`"`)) {
+    useNotification('error', 'Недопустимый символ в названии сценария')
+    return false
+  }
   return await useAsyncQuery(async ({ axios, path }) => {
     try {
       const response = await axios.put(path + '/v1/scenarios/update', props)

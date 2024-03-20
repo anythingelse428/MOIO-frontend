@@ -10,32 +10,28 @@
       :inverse-parent="currentGroup?.inverseParent"
       :hide-empty="true"
       :type-id="currentGroup?.typeId"
+      :can-edit="canEdit"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-
 import { useGroupsStore } from "~/store/groups"
-import type { IGroupResponseItem } from "~/api/group/getAll"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import { useUserStore } from "~/store/user"
 
-export interface IGroupData {
-  name: string
-  devices: IGroupResponseItem['devices'],
-  inverseParent: IGroupResponseItem['inverseParent']
-}
-
+const userStore = useUserStore()
 const groupStore = useGroupsStore()
 const { currentGroup } = storeToRefs(groupStore)
 const route = useRoute()
 const groupId = route.params.id as string
 const isLoading = ref(false)
-
+const canEdit = ref(userStore.userInfo.id === currentGroup.value.groupCreatorId)
 async function fetchGroups () {
   isLoading.value = true
   await groupStore.getGroupById(groupId)
+  canEdit.value = userStore.userInfo.id === currentGroup.value.groupCreatorId
   isLoading.value = false
 }
 
@@ -44,19 +40,10 @@ if (groupStore.currentHome !== groupId && groupStore.upperGroups?.find(el => el.
   useNotification('info', 'Просматриваемый дом изменен')
 }
 
+
 watch(route, () => {
   fetchGroups()
 }, { deep: true, immediate: true })
-
-
-// onMounted(async () => {
-//   try {
-//     isLoading.value = true
-//     await groupStore.getGroupById(groupId)
-//     isLoading.value = false
-//   } catch {
-//   }
-// })
 
 </script>
 
