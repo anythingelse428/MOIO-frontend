@@ -3,7 +3,7 @@
     <div class="custom-select__current-value">
       {{ currentValue?.length ? currentValueDescriptionByValue : selectName }}
     </div>
-    <transition name="fade">
+    <transition name="fade" mode="out-in">
       <div v-show="selectCollapsed" class="custom-select__options">
         <div v-for="option in options" :key="option.value" class="custom-select__option" :class="option.value === currentValue?'--active':''">
           <label for="custom-select__option-label">

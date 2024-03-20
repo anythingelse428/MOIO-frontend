@@ -142,10 +142,10 @@ export const useGroupsStore = defineStore('groups', {
       await this.getAll()
     },
     async addUserToGroup (data:IAddUserToGroupProps) {
-      await apiUsersPendingCreate(data)
+      return await apiUsersPendingCreate(data)
     },
     async removeUsersFromGroup (groupIds:string[], logins:string[], ids:number[]) {
-      await apiGroupRemoveUsers(groupIds, logins, ids)
+      return await apiGroupRemoveUsers(groupIds, logins, ids)
     },
     async getUsersByGroupId (id:string) {
       return await apiGroupGetUserByGroupId(id)

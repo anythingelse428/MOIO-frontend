@@ -59,6 +59,7 @@
           :name="house?.name"
           :inviter="house.inviter"
           :code="house.code"
+          @update-pending="getPending"
         />
       </div>
     </div>
@@ -69,6 +70,14 @@
       @click="aliceSync()"
     >
       Синхронизировать с Алисой
+    </ui-button>
+    <ui-button
+      v-if="!isHouseOwner"
+      class-name="delete"
+      rounded="16px"
+      @click="leaveFromHouse"
+    >
+      Покинуть дом
     </ui-button>
   </div>
 </template>
@@ -105,7 +114,23 @@ async function getRoommates () {
   isLoading.value = false
   roommates.value = roommates.value.filter(el => el.id !== groupStore.upperGroups.find(el => el.id === groupStore.currentHome)?.groupCreatorId)
 }
-
+async function getPending () {
+  isLoading.value = true
+  invitedHouses.value = await apiUsersPendingGet()
+  await groupStore.getHouses()
+  isLoading.value = false
+}
+async function leaveFromHouse () {
+  const response = await groupStore.removeUsersFromGroup([groupStore.currentHome], [], [userInfo.value.id])
+  if (response.length) {
+    useNotification('info', response)
+    const currentHomeId = groupStore.upperGroups.find(el => el.groupCreatorId === userInfo.value.id)?.id || groupStore.upperGroups[0].id
+    setTimeout(async () => {
+      await groupStore.setCurrentHome(currentHomeId)
+      await useRouter().push(`user/group/${currentHomeId}`)
+    }, 1000)
+  }
+}
 
 onMounted(() => {
   nextTick(async () => {

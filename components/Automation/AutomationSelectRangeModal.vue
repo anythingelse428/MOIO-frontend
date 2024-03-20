@@ -179,24 +179,6 @@ watch(props, () => {
   max-height: 85dvh;
   overflow-y: auto;
   overflow-x: clip;
-  &::-webkit-scrollbar {
-    border-radius: 2px;
-    width: 8px;
-    margin-inline-start: 10px;
-    left: 10px;
-    position: absolute;
-  }
-  &::-webkit-scrollbar-track {
-    background: $settings-color;
-    width: 4px;
-    border-radius: 2px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: $color-active;
-    width: 8px;
-    height: 32px;
-    border-radius: 12px;
-  }
   &__header{
     width: 100%;
     text-align: center;

@@ -47,6 +47,22 @@ a,div,h1,h2,h3,span,label,p,i,main,section,header,aside,nav{
   word-break: break-word;
   -webkit-tap-highlight-color: transparent;
 }
+div{
+  &::-webkit-scrollbar {
+    border-radius: 2px;
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: $settings-color;
+    width: 4px;
+    border-radius: 2px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $color-active;
+    width: 8px;
+    border-radius: 12px;
+  }
+}
 button {
   word-break: normal;
   word-break: auto-phrase;

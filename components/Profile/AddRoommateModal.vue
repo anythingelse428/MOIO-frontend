@@ -14,7 +14,7 @@
         <ui-icon name="close" />
       </ui-button>
     </div>
-    <form action="" method="post" class="add-roommate-modal__form">
+    <form action="" method="post" class="add-roommate-modal__form" @submit.prevent="addRoommate()">
       <div class="add-roommate-modal__input-group">
         <label for="email" class="add-roommate-modal__input-group-label">
           Email нового пользователя
@@ -25,13 +25,23 @@
           type="email"
           name="email"
           class="add-roommate-modal__input-group-input"
+          @keydown.enter="addToLoginsArray"
         >
-        <ui-button class-name="default" rounded="100%" padding="8px" margin-inline="0" @click="addToLoginsArray">
+        <ui-button
+          class-name="default"
+          rounded="100%"
+          padding="8px"
+          margin-inline="0"
+          @click="addToLoginsArray"
+        >
           <ui-icon name="plus" />
         </ui-button>
       </div>
       <div class="add-roommate-modal__users">
-        <div v-if="logins?.length === 0" class="add-roommate-modal__users-user --placeholder">
+        <div
+          v-if="logins?.length === 0"
+          class="add-roommate-modal__users-user --placeholder"
+        >
           Здесь будет отображен список пользователей
         </div>
         <ui-any-list-item
@@ -40,7 +50,9 @@
           class="add-roommate-modal__users-user"
         >
           <template #title>
-            {{ user.userLogin }}
+            <span>
+              {{ user.userLogin }}
+            </span>
           </template>
           <template #action>
             <ui-button
@@ -128,7 +140,7 @@
           </template>
         </ui-any-list-item>
       </div>
-      <ui-button :disabled="logins?.length===0 || selectedHouse.length === 0" rounded="16px" @click="addRoommate()">
+      <ui-button type="submit" :disabled="logins?.length===0 || selectedHouse.length === 0" rounded="16px">
         Отправить приглашение
       </ui-button>
     </form>
@@ -142,7 +154,7 @@ import UiSelect from "~/components/ui/UiSelect.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
 import { useUserStore } from "~/store/user"
-import type { IGroupUser } from "~/api/group/addUser"
+import type { IGroupUser } from "~/api/usersPending/create"
 
 const groupStore = useGroupsStore()
 const isLoading = ref(false)
@@ -174,7 +186,7 @@ function addToLoginsArray () {
   if (login.value?.length > 0) {
     const emailRegex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/gm
     if (!login.value.match(emailRegex)) {
-      useNotification('error', 'Введите валидный email')
+      useNotification('error', 'Введите настоящий email')
       return false
     }
     logins.value.push({ userLogin: login.value, canAutomate: false })

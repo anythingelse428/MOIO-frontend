@@ -31,7 +31,6 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from "~/store/user"
 import { useGroupsStore } from "~/store/groups"
 import apiGroupRejectPending from "~/api/group/removePending"
 
@@ -42,17 +41,18 @@ export interface IInvitedHouse {
     code:string
 }
 const props = defineProps<IInvitedHouse>()
-const userStore = useUserStore()
+const emit = defineEmits<{
+    updatePending:[void]
+}>()
 const groupStore = useGroupsStore()
-// const ownerName = await userStore.getUserById(props.groupCreatorId)
-
 async function acceptInvite () {
   await groupStore.checkCode(props.code)
+  emit('updatePending')
 }
 
 async function rejectInvite () {
   await apiGroupRejectPending(props.id)
-  // console.log(response)
+  emit('updatePending')
 }
 </script>
 

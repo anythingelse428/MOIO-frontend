@@ -3,17 +3,19 @@
 }
 .custom-select{
 	position: relative;
-	border-radius: 16px;
-	background-color: $settings-color;
-	box-shadow: 0px 0px 4.7px 0px $color-active;
-	-webkit-box-shadow: 0px 0px 4.7px 0px $color-active;
-	width: clamp(30%, 304px, 95%);
 	cursor: pointer;
+	width: 100%;
 	&__current-value{
+		width: 100%;
+		text-align: center;
 		padding: 12px 16px;
 		position: relative;
 		@include action-item;
 		font-weight: 400;
+		border-radius: 16px;
+		background-color: $settings-color;
+		box-shadow: 0px 0px 4.7px 0px $color-active;
+		-webkit-box-shadow: 0px 0px 4.7px 0px $color-active;
 	}
 	&__options{
 		position: absolute;
@@ -24,6 +26,9 @@
 		right: 0;
 		margin-top: 8px;
 		z-index: 5;
+		max-height: min(164px, 80dvh);
+		overflow-y: auto;
+		padding: 4px;
 	}
 	&__option{
 		background: $settings-color;

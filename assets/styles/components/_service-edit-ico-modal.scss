@@ -4,18 +4,7 @@
 	width: 100%;
 	background: $bg-primary;
 	padding-inline: 8px;
-	&::-webkit-scrollbar{
-		width: 8px;
-		background: $bg-accent;
-	}
-	&::-webkit-scrollbar-track{
-		background: $settings-color;
-		
-	}
-	&::-webkit-scrollbar-thumb{
-		background: $color-active;
-		border-radius: 12px;
-	}
+
 	&__header{
 		width: 100%;
 		display: inline-flex;
