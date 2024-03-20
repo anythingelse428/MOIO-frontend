@@ -38,7 +38,9 @@
           {{ timeOffset ? timeOffset[0] : '' }}
         </div>
         <div class="automation-condition__time-value">
+          <span v-if="!editable" class="time">{{ timeStart }}</span>
           <input
+            v-if="editable"
             ref="timeInput"
             v-model="timeStart"
             type="time"
@@ -48,7 +50,9 @@
             @keydown.enter.prevent="false"
           >
           -
+          <span v-if="!editable" class="time">{{ timeEnd }}</span>
           <input
+            v-if="editable"
             ref="timeInput"
             v-model="timeEnd"
             type="time"
@@ -92,29 +96,6 @@
           >
             {{ conditionSymbols[automationCondition.condition] }}
           </span>
-        </div>
-        <div v-if="typeof timeRange !== 'undefined'" class="automation-condition__sensor-time-range">
-          <div class="automation-condition__time">
-            <input
-              ref="timeInputStart"
-              v-model="timeStart"
-              type="time"
-              name=""
-              :disabled="Number(editable) === 0"
-              @keydown.enter.stop="false"
-              @keydown.enter.prevent="false"
-            >
-            -
-            <input
-              ref="timeInputEnd"
-              v-model="timeEnd"
-              type="time"
-              name=""
-              :disabled="Number(editable) === 0"
-              @keydown.enter.stop="false"
-              @keydown.enter.prevent="false"
-            >
-          </div>
         </div>
       </div>
     </div>
