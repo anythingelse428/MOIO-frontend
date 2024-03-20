@@ -26,7 +26,7 @@ export default async function apiUserRegister (props:IRegisterUserProps):Promise
         return response
       }
     } catch (e) {
-      useValidationBackendError(e, 'Произошла ошибка при смене регистрации')
+      useValidationBackendError(e, 'Произошла ошибка при регистрации')
     }
   })
 }
