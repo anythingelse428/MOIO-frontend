@@ -38,7 +38,7 @@
           {{ timeOffset ? timeOffset[0] : '' }}
         </div>
         <div class="automation-condition__time-value">
-          <span v-if="!editable" class="time">{{ timeStart }}</span>
+          <span v-if="!editable" class="time">{{ timeRange?.startTime ?? 'err' }}</span>
           <input
             v-if="editable"
             ref="timeInput"
@@ -50,7 +50,7 @@
             @keydown.enter.prevent="false"
           >
           -
-          <span v-if="!editable" class="time">{{ timeEnd }}</span>
+          <span v-if="!editable" class="time">{{ timeRange?.endTime ?? 'err' }}</span>
           <input
             v-if="editable"
             ref="timeInput"
