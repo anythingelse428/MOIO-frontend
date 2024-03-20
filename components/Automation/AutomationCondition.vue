@@ -19,7 +19,7 @@
           {{ timeOffset ? timeOffset[0] : '' }}
         </div>
         <div class="automation-condition__time-value">
-          <span class="time">
+          <span v-if="!editable" class="time">
             {{ time }}
           </span>
           <input
