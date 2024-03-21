@@ -50,6 +50,7 @@
         cx="108"
         cy="108"
         fill="#32be55"
+        style="pointer-events: bounding-box"
       />
       <circle
         id="thumb"
@@ -91,7 +92,7 @@ export interface IThermostatProps {
 const props = defineProps<IThermostatProps>()
 
 const emit = defineEmits(['t-input'])
-const p = ref(getSliderValue(props.value))
+const p = ref(getSliderValue(props.value.value))
 const range = ref<InstanceType<typeof SVGElement>>()
 const svg = ref<InstanceType<typeof SVGElement>>()
 const progress = ref<InstanceType<typeof SVGElement>>()

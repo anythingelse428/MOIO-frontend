@@ -73,7 +73,13 @@
       >
     </div>
     <div v-if="instance?.includes('temperature')" class="service-capability__control --thermostat">
-      <thermostat-input :value="capability.value" :step="capability.range?.precision || 1" :min="capability.range?.min || 20" :max="capability.range?.max || 40" @t-input="(e)=>{capability.value=e;updateDevice()}" />
+      <thermostat-input
+        :value="capability.value"
+        :step="capability.range?.precision || 1"
+        :min="capability.range?.min || 20"
+        :max="capability.range?.max || 40"
+        @t-input="(e)=>{capability.value=e.value;updateDevice()}"
+      />
     </div>
     <div v-if="instance === 'open' && type === 'devices.capabilities.range'" :class="`service-capability__control`">
       <ui-toggle
