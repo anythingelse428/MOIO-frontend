@@ -11,7 +11,7 @@ export default function useTransformOnScroll (scrollTarget:Ref<HTMLDivElement>,
   function transform () {
     const currentScrollPos = scrollTarget.value.scrollTop
     const delta = currentScrollPos - prevScroll.value
-    if (delta < 0 || currentScrollPos <= 100) {
+    if (delta <= 0 || currentScrollPos <= 100) {
       hideTarget.forEach((el) => {
         el.value.style[vector ?? "top"] = showValue
       })
