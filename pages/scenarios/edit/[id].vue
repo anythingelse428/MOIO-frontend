@@ -170,8 +170,8 @@ async function updateScenario () {
     devicesValueStates: capabilities.value,
     removeDevicesId: devicesForRemove.value,
   }
-  const response = await scenarioStore.updateScenario(updateData)
-  console.log(response)
+  await scenarioStore.updateScenario(updateData)
+
   isLoading.value = false
 }
 

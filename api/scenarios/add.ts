@@ -27,7 +27,9 @@ export default async function apiScenariosAdd (props:IAddScenario) {
       const response = await axios.post(path + 'v1/scenarios/create', props)
       if (response.status === 200) {
         useNotification('info', "Сценарий успешно добавлен")
-        return response
+        setTimeout(() => {
+          useRouter().push('/scenarios')
+        }, 500)
       }
     } catch (e) {
       useValidationBackendError(e, 'Ошибка при создании сценария')

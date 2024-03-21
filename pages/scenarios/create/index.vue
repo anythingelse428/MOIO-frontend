@@ -77,7 +77,7 @@
 import { useGroupsStore } from "~/store/groups"
 import type { ServiceProps } from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
-import type { IGroupResponseItem } from "~/api/group/getById"
+import type { IGroupResponseItem } from "~/api/group/getAll"
 import type { GroupList } from "~/components/Group/GroupList.vue"
 import { useScenarioStore } from "~/store/scenario"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"

@@ -22,7 +22,9 @@ export default async function apiScenariosUpdate (props:IScenarioUpdateProps) {
       const response = await axios.put(path + '/v1/scenarios/update', props)
       if (response.status === 200) {
         useNotification('info', 'Сценарий успешно обновлен')
-        return response
+        setTimeout(() => {
+          useRouter().push('/scenarios')
+        }, 500)
       }
     } catch (e) {
       useValidationBackendError(e, 'Ошибка при получении сценария')

@@ -326,8 +326,7 @@ async function getData () {
     })
   })
   response.triggers?.rangeTime?.forEach((el) => {
-    const startTime = new Date(`2077
-     +${el.startTime} UTC`)
+    const startTime = new Date(`2077/01/01 ${el.startTime} UTC`)
     const endTime = new Date(`2077/01/01 ${el.endTime} UTC`)
     oldConditions.value.push({
       id: el.automationTriggerId,

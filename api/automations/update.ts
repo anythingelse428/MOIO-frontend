@@ -22,9 +22,11 @@ export default async function apiAutomationsUpdate (props:IAutomationUpdateProps
     try {
       const response = await axios.put(path + '/v1/automations/update', props)
       if (response.status === 200) {
-        useNotification('info', 'Автоматизация обновлена')
+        useNotification('info', 'Автоматизация успешно обновлена')
+        setTimeout(() => {
+          useRouter().push('/automation')
+        }, 500)
       }
-      return response
     } catch (e) {
       useValidationBackendError(e, 'Произошла ошибка при обновлении автоматизации')
     }
