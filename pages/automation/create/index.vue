@@ -209,17 +209,26 @@ async function create () {
     useNotification("error", "Не выбран сценарий")
     return
   }
-  const isSensorsValid = true
+  let isSensorsValid = true
   const automationData:IAutomationCreateProps = {
     name: name.value,
     value: conditions.value.map((el) => {
       if ((el.type === "sensor" || el.type === "temperature") && !el.value?.deviceId?.length) {
+        isSensorsValid = false
         useNotification('error', `Не выбран датчик для условия ${el.id}`)
       }
       if (el.type === 'time') {
+        if (!el.value.time) {
+          isSensorsValid = false
+          useNotification('error', 'Введите время')
+        }
         el.value.time = new Date(`2077/01/01 ${el.value.time}`).toISOString()
       }
       if (el.type === 'time-range') {
+        if (!el.value.timeRange || !el.value.timeRange.endTime || !el.value.timeRange.startTime) {
+          isSensorsValid = false
+          useNotification('error', 'Не указан дипазон времнеи')
+        }
         el.value.timeRange = {
           startTime: new Date(`2077/01/01 ${el.value.timeRange?.startTime}`).toISOString(),
           endTime: new Date(`2077/01/01 ${el.value.timeRange?.endTime}`).toISOString(),
