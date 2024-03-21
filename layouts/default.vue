@@ -64,6 +64,7 @@ function changeCapability (message:ServiceProps, group = groupStore.currentGroup
     for (const category of Object.keys(categoriesStore.devicesInCategory)) {
       const deviceIdx = categoriesStore.devicesInCategory[category].findIndex(el => el.id === message.id)
       if (deviceIdx > -1) {
+        categoriesStore.devicesInCategory[category][deviceIdx].capabilities = [...message.capabilities]
         isChanged = true
       }
     }
