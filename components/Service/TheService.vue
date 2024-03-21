@@ -79,6 +79,7 @@
                     :value="item.value"
                     :icon="deviceIcon?.name"
                     :float="floatValue?.value"
+                    :brightness="capabilities?.find(el=>el.instance?.includes('bright'))?.value"
                     @update-bool-val="turnOnDevice()"
                   />
                 </template>
@@ -242,7 +243,7 @@ const newDeviceName = ref(props.name)
 const floatValue = ref(props.capabilities?.find(el => el.type.includes('float')))
 const { $bus } = useNuxtApp()
 const stuff = ref<ICapability>({} as ICapability)
-const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v ? useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100) : { red: 1, green: 1, blue: 1 })
+const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v ? useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v) : { red: 1, green: 1, blue: 1 })
 onClickOutside(target, (event) => {
   isCapabilitiesShow.value = false
   isDeleteModalShow.value = false
@@ -324,7 +325,7 @@ function setDisplayedStuff () {
     stuff.value.hsv = props?.capabilities[hsvIdx].hsv
   }
   if (!isDeviceOn.value) {
-    stuff.value.hsv = { h: 0, s: 0, v: 64 }
+    stuff.value.hsv = { h: 1, s: 1, v: 64 }
   }
 }
 watch(props, (value) => {
