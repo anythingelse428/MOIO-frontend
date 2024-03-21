@@ -31,7 +31,7 @@
         :max="100"
         name=""
         class="service-capability__saturation"
-        @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})"
+        @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv?.v,h:Number(hue)}})"
       >
     </div>
     <div
@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import useThrottle from "~/composables/useThrottle"
+import { throttle } from "@antfu/utils"
 import { useDevicesStore } from "~/store/devices"
 import UiToggle from "~/components/ui/UiToggle.vue"
 import ThermostatInput from "~/components/Service/ThermostatInput.vue"
@@ -123,7 +123,8 @@ const hue = ref(Number(capability.value.hsv?.h))
 const saturation = ref(Number(capability.value.hsv?.s))
 const rgb = computed(() => useHSVToRGB(Number(hue.value), saturation.value / 100, (capability.value.brightness / 100 ?? capability.value.hsv?.v / 100 ?? 1)))
 
-const throttledAction = useThrottle(actionFabric)
+const throttledAction = throttle(2000, actionFabric)
+const smallThrottle = throttle(70, actionFabric)
 const mainActionProps = {
   clientId: groupStore.clientId,
   deviceId: props.deviceId,
@@ -138,7 +139,7 @@ if (capability.value && String(capability.value?.value)?.indexOf('open') > -1) {
 
 async function actionFabric (fnName:'changeOnOf'|'changeTemperature'|'changeBrightness'|'changeRGB', args:any) {
   // обращаемся к action из сторы, передаем аргументы
-  // вынесено для вызова в useThrottle, чтобы работали замыкания
+  // вынесено для вызова в Throttle, чтобы работали замыкания
   return await devicesStore[fnName](args)
 }
 function updateDevice (val:{type:string, value:any}, delay?:number) {
@@ -149,14 +150,14 @@ function updateDevice (val:{type:string, value:any}, delay?:number) {
       break
     case 'devices.capabilities.range':
       if (props?.instance === 'threshold_temperature') {
-        throttledAction(delay ?? 70, 'changeTemperature', { ...mainActionProps, temperature: val.value })
+        smallThrottle('changeTemperature', { ...mainActionProps, temperature: val.value })
       }
       if ((props?.instance === 'brightness') || capability.value?.hsv?.v || props.instance === 'hsv') {
-        throttledAction(delay ?? 2_000, 'changeBrightness', { ...mainActionProps, brightness: val.value })
+        throttledAction('changeBrightness', { ...mainActionProps, brightness: val.value })
       }
       break
     case 'devices.capabilities.color_setting':
-      throttledAction(delay ?? 2_000, 'changeRGB', { ...mainActionProps, ...val.value })
+      throttledAction('changeRGB', { ...mainActionProps, ...val.value })
       break
   }
 }

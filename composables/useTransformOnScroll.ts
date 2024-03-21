@@ -1,6 +1,5 @@
 import { type Ref } from "vue/dist/vue"
 import { throttle } from "@antfu/utils"
-import useThrottle from "~/composables/useThrottle"
 
 export default function useTransformOnScroll (scrollTarget:Ref<HTMLDivElement>,
   hideTarget:Ref<HTMLDivElement>[],
