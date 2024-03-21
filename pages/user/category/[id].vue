@@ -19,6 +19,7 @@
             :type="service.type"
             :capabilities="service?.capabilities"
             :device-icon="service.deviceIcon"
+            :can-edit="canEdit"
           />
         </div>
       </div>
@@ -34,18 +35,22 @@ import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { type IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
+import { useUserStore } from "~/store/user"
 
 const categoryStore = useCategoriesStore()
 const groupStore = useGroupsStore()
+const userStore = useUserStore()
 const { devicesInCategory } = storeToRefs(categoryStore)
 const route = useRoute()
 const categoryId = Number(route.params.id) as number
 const groupData = ref<{name:string, groups:IDevicesInCategory}>()
 const isLoading = ref(true)
+const canEdit = ref(userStore.userInfo.id === groupStore.currentGroup.groupCreatorId)
 
 async function fetchGroups () {
   isLoading.value = true
   await categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome)
+  canEdit.value = userStore.userInfo.id === groupStore.currentGroup.groupCreatorId
   isLoading.value = false
   groupData.value = {
     name: categoryStore.categoryById(categoryId)?.name ?? "",
