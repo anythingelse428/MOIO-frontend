@@ -15,7 +15,7 @@
           v-model="hue"
           step="1"
           type="range"
-          :min="0"
+          :min="1"
           :max="360"
           name=""
           class="service-capability__hue"

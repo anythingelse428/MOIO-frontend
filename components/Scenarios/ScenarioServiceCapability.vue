@@ -16,7 +16,7 @@
           v-model="hue"
           step="1"
           type="range"
-          :min="0"
+          :min="1"
           :max="360"
           name=""
           class="service-capability__hue"
@@ -107,7 +107,7 @@ const capability = ref(capabilitySource)
 const isMounted = ref(false)
 const hue = ref(Number(capability.value.hsv?.h))
 const saturation = ref(Number(capability.value.hsv?.s))
-const rgb = computed(() => useHSVToRGB(Number(hue.value), saturation.value / 100, (capability.value.hsv?.v ?? 100) / 100))
+const rgb = computed(() => useHSVToRGB(Number(hue.value), saturation.value / 100, 100))
 
 if (capability.value && String(capability.value?.value)?.indexOf('close') > -1) {
   capability.value.value = false
