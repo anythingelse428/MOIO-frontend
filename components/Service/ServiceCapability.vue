@@ -34,8 +34,13 @@
         @input="updateDevice({type,value:{s:Number(saturation),v:capability.hsv.v,h:Number(hue)}})"
       >
     </div>
-    <div v-if="type === 'devices.capabilities.on_off'" :class="`service-capability__control ${capability?.value?'--checked':''}`" @click.stop="()=>false">
+    <div
+      v-if="type === 'devices.capabilities.on_off'"
+      :class="`service-capability__control ${capability?.value?'--checked':''} `"
+      @click.stop="()=>false"
+    >
       <ui-toggle
+        :class="`${isPending?'--pending':''}`"
         role="button"
         :checked="capability.value"
         :ico="icon??toggleSwitchIco?.name"
@@ -104,7 +109,7 @@ export interface ServiceCapability {
   type:string
 }
 
-const props = defineProps<ServiceCapability & ICapability & {brightness?:number}>()
+const props = defineProps<ServiceCapability & ICapability & {brightness?:number, isPending?:boolean}>()
 const emit = defineEmits<{
     updateBoolVal:[void]
 }>()

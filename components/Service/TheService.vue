@@ -79,6 +79,7 @@
                     :value="item.value"
                     :icon="deviceIcon?.name"
                     :float="floatValue?.value"
+                    :is-pending="isPending"
                     :brightness="capabilities?.find(el=>el.instance?.includes('bright'))?.value"
                     @update-bool-val="turnOnDevice()"
                   />

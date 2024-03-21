@@ -7,6 +7,12 @@ $ball-size: 30px !default;
 	border-radius: 100%;
 }
 
+@keyframes service-skeleton {
+	to {
+		background-position-x: -200%;
+	}
+}
+
 
 @keyframes ball-triangle-path-1 {
 	17% {
@@ -14,7 +20,7 @@ $ball-size: 30px !default;
 	}
 	33% {
 		opacity: 1;
-		transform: translate($amount / 2, -$amount);
+		transform: translate(calc($amount / 2), -$amount);
 	}
 	50% {
 		opacity: .25;
@@ -38,14 +44,14 @@ $ball-size: 30px !default;
 	}
 	33% {
 		opacity: 1;
-		transform: translate($amount / 2, $amount);
+		transform: translate(calc($amount / 2), $amount);
 	}
 	50%{
 		opacity: .25;
 	}
 	66% {
 		opacity: 1;
-		transform: translate(- $amount / 2, $amount);
+		transform: translate(calc(-1 * $amount / 2), $amount);
 	}
 	83%{
 		opacity: .25;
@@ -62,14 +68,14 @@ $ball-size: 30px !default;
 	}
 	33% {
 		opacity: 1;
-		transform: translate(-$amount, 0px);
+		transform: translate(-1 * $amount, 0px);
 	}
 	50%{
 		opacity: .25;
 	}
 	66% {
 		opacity: 1;
-		transform: translate(- $amount / 2, -$amount);
+		transform: translate(calc(-1 * $amount / 2), -$amount);
 	}
 	83%{
 		opacity: .25;
@@ -96,7 +102,7 @@ $ball-size: 30px !default;
 .loader-item-wrapper {
 	position: relative;
 	@include ball-triangle-path();
-	transform: translate(-$amount / 1.667, -$amount / 1.333);
+	transform: translate(calc(-1 * $amount / 1.667), calc(-1 * $amount / 1.333));
 	
 	> div {
 		animation-fill-mode: both;
@@ -109,7 +115,7 @@ $ball-size: 30px !default;
 			top: $amount;
 		}
 		&:nth-of-type(2) {
-			left: $amount / 2;
+			left: calc($amount / 2);
 		}
 		&:nth-of-type(3) {
 			top: $amount;
