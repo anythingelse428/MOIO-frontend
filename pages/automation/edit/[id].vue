@@ -315,7 +315,7 @@ async function getData () {
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
   response.triggers?.time?.forEach((el) => {
-    const timePoint = new Date(`2077 ${el.time} UTC`)
+    const timePoint = new Date(`2077-01-01 ${el.time} UTC`)
     oldConditions.value.push({
       id: el.automationTriggerId,
       type: AutomationConditionTypesEnum.time,
@@ -326,8 +326,8 @@ async function getData () {
     })
   })
   response.triggers?.rangeTime?.forEach((el) => {
-    const startTime = new Date(`2077 ${el.startTime} UTC`)
-    const endTime = new Date(`2077 ${el.endTime} UTC`)
+    const startTime = new Date(`2077-01-01 ${el.startTime} UTC`)
+    const endTime = new Date(`2077-01-01 ${el.endTime} UTC`)
     oldConditions.value.push({
       id: el.automationTriggerId,
       type: AutomationConditionTypesEnum.timeRange,
