@@ -1,13 +1,13 @@
 <template>
   <keep-alive>
     <div class="layout --default">
-      <header class="header">
+      <header ref="header" class="header">
         <the-header />
       </header>
-      <aside>
+      <aside ref="aside">
         <the-aside />
       </aside>
-      <main>
+      <main ref="main">
         <slot />
       </main>
     </div>
@@ -27,6 +27,11 @@ const categoriesStore = useCategoriesStore()
 const route = useRoute()
 await userStore.init()
 await groupStore.getHouses()
+const main = ref()
+const header = ref()
+const aside = ref()
+useTransformOnScroll(main, [header, aside], '0px', '-124px', 'top')
+
 // Сокеты
 const { $bus } = useNuxtApp()
 const restBaseUrl = useRuntimeConfig().public.REST_BASE_TARGET

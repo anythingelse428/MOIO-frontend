@@ -41,7 +41,7 @@
           <div ref="target" class="service-capabilities-modal" role="dialog">
             <div class="service-capabilities-modal__header">
               <div v-if="canEdit" class="edit-ico" @click="isEdit=!isEdit">
-                <ui-icon name="pencil" />
+                <ui-icon name="pencil" size="inherit" />
               </div>
               <span v-show="!isEdit" class="service-capabilities-modal__header-text">
                 {{ name }}

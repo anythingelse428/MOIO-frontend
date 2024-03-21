@@ -13,9 +13,11 @@
           <div class="scenarios-available__list-item-name">
             {{ scenario.name }}
           </div>
-          <div class="scenarios-available__list-item-edit" @click.stop="redirect(`scenarios/edit/${scenario.id}`)">
-            <ui-icon name="pencil" role="link" />
-          </div>
+          <nuxt-link :to="`/scenarios/edit/${scenario.id}`" @click.stop="false">
+            <div class="scenarios-available__list-item-edit">
+              <ui-icon name="pencil" role="link" />
+            </div>
+          </nuxt-link>
         </div>
       </div>
     </div>

@@ -46,6 +46,7 @@
         <group-list
           v-for="groups in filteredGroups"
           :id="groups.id"
+          :key="groups.id"
           :devices="groups?.devices"
           :inverse-parent="groups.inverseParent"
           :name="groups?.name"
@@ -83,7 +84,7 @@
 import { useGroupsStore } from "~/store/groups"
 import type { ServiceProps } from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
-import type { IGroupResponseItem } from "~/api/group/getById"
+import type { IGroupResponseItem } from "~/api/group/getAll"
 import type { GroupList } from "~/components/Group/GroupList.vue"
 import { useScenarioStore } from "~/store/scenario"
 import type { IScenarioUpdateProps } from "~/api/scenarios/update"
@@ -169,7 +170,8 @@ async function updateScenario () {
     devicesValueStates: capabilities.value,
     removeDevicesId: devicesForRemove.value,
   }
-  await scenarioStore.updateScenario(updateData)
+  const response = await scenarioStore.updateScenario(updateData)
+  console.log(response)
   isLoading.value = false
 }
 

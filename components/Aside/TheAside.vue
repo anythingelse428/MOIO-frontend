@@ -1,13 +1,19 @@
 <template>
   <div class="aside">
-    <ui-icon
-      :class="`aside-trigger ${isAsideCollapsed? '--collapsed':' '}`"
-      :name="isAsideCollapsed? 'close':'aside/menu'"
-      size="40"
-      role="button"
-      @click="isAsideCollapsed=!isAsideCollapsed"
-    />
-    <div :class="`aside-collapse ${isAsideCollapsed&& '--collapsed'}`">
+    <div ref="trigger" :class="`aside-trigger ${isAsideCollapsed? '--collapsed':' '}`">
+      <ui-button
+        class-name="blank"
+        margin-inline="0"
+        padding="0"
+      >
+        <ui-icon
+          :name="isAsideCollapsed? 'close':'aside/menu'"
+          size="40"
+          @click="isAsideCollapsed=!isAsideCollapsed"
+        />
+      </ui-button>
+    </div>
+    <div ref="aside" :class="`aside-collapse ${isAsideCollapsed&& '--collapsed'}`">
       <div class="aside-main">
         <aside-category
           category-header="Основное"
@@ -91,17 +97,20 @@ const asideContent:IAsideContent =
       },
     ],
   }
-const automateLinks:IAsideContent["categoryContent"] = [{
-  icon: 'aside/automation',
-  name: 'автоматизации',
-  url: '/automation',
-},
-{
-  icon: 'aside/scenarios',
-  name: 'сценарии',
-  url: '/scenarios',
-}]
-
+const automateLinks:IAsideContent["categoryContent"] = [
+  {
+    icon: 'aside/automation',
+    name: 'автоматизации',
+    url: '/automation',
+  },
+  {
+    icon: 'aside/scenarios',
+    name: 'сценарии',
+    url: '/scenarios',
+  }]
+const aside = ref()
+const trigger = ref()
+useTransformOnScroll(aside, [trigger], '-54px', '-124px', 'top')
 async function getCategories () {
   await categoriesStore.getAll()
   categories.value = categoriesStore.allCategories()
