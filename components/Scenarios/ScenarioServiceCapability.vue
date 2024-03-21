@@ -31,7 +31,7 @@
         v-model="saturation"
         step="1"
         type="range"
-        :min="0"
+        :min="1"
         :max="100"
         name=""
         class="service-capability__saturation"

@@ -1,7 +1,7 @@
-import type { TUiIconNames } from "#build/types/ui-icon"
 
+import type { TUiIconNames } from "#build/types/ui-icon";
 export const uiIconNames:{ [key:string]: TUiIconNames[] } = {
-  aside: [
+  "aside": [
     "aside/automation",
     "aside/climate",
     "aside/electronic",
@@ -17,9 +17,9 @@ export const uiIconNames:{ [key:string]: TUiIconNames[] } = {
     "aside/scenarios",
     "aside/secure",
     "aside/theme",
-    "aside/water",
+    "aside/water"
   ],
-  other: [
+  "other": [
     "check",
     "chevron-right",
     "close",
@@ -29,20 +29,20 @@ export const uiIconNames:{ [key:string]: TUiIconNames[] } = {
     "pencil",
     "plus-thick",
     "plus",
-    "service/other/help",
+    "service/other/help"
   ],
-  header: [
+  "header": [
     "header/dots-horizontal",
     "header/home",
     "header/plus-circle-outline",
-    "header/scenario",
+    "header/scenario"
   ],
-  notification: [
+  "notification": [
     "notification/alert-octagon",
     "notification/alert",
-    "notification/information",
+    "notification/information"
   ],
-  service: [
+  "service": [
     "service/devices/air-conditioner",
     "service/devices/camera-outline",
     "service/devices/ceiling-light-multiple-outline",
@@ -87,9 +87,9 @@ export const uiIconNames:{ [key:string]: TUiIconNames[] } = {
     "service/sensor/leak",
     "service/sensor/motion-sensor",
     "service/sensor/smoke",
-    "service/sensor/water-alert-outline",
+    "service/sensor/water-alert-outline"
   ],
-  devices: [
+  "devices": [
     "service/devices/air-conditioner",
     "service/devices/camera-outline",
     "service/devices/ceiling-light-multiple-outline",
@@ -126,15 +126,15 @@ export const uiIconNames:{ [key:string]: TUiIconNames[] } = {
     "service/devices/video-outline",
     "service/devices/water-outline",
     "service/devices/water-pump",
-    "service/devices/water-thermometer-outline",
+    "service/devices/water-thermometer-outline"
   ],
-  sensor: [
+  "sensor": [
     "service/sensor/access-point",
     "service/sensor/fire-alert",
     "service/sensor/gesture-tap",
     "service/sensor/leak",
     "service/sensor/motion-sensor",
     "service/sensor/smoke",
-    "service/sensor/water-alert-outline",
-  ],
+    "service/sensor/water-alert-outline"
+  ]
 }
