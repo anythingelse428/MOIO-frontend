@@ -264,13 +264,13 @@ async function update () {
       newTriggersArr.push({ ...iAutomationValue.value })
     }
     if (iAutomationValue.type === AutomationConditionTypesEnum.time) {
-      newTriggersArr.push({ time: new Date(`2077 ${iAutomationValue.value.time}`).toISOString() })
+      newTriggersArr.push({ time: new Date(`2077/01/01 ${iAutomationValue.value.time}`).toISOString() })
     }
     if (iAutomationValue.type === AutomationConditionTypesEnum.timeRange) {
       newTriggersArr.push({
         timeRange: {
-          startTime: new Date(`2077 ${iAutomationValue.value.timeRange?.startTime}`).toISOString(),
-          endTime: new Date(`2077 ${iAutomationValue.value.timeRange?.endTime}`).toISOString(),
+          startTime: new Date(`2077/01/01 ${iAutomationValue.value.timeRange?.startTime}`).toISOString(),
+          endTime: new Date(`2077/01/01 ${iAutomationValue.value.timeRange?.endTime}`).toISOString(),
         },
       })
     }

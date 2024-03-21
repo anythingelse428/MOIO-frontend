@@ -209,22 +209,20 @@ async function create () {
     useNotification("error", "Не выбран сценарий")
     return
   }
-  isLoading.value = true
-  let isSensorsValid = true
+  const isSensorsValid = true
   const automationData:IAutomationCreateProps = {
     name: name.value,
     value: conditions.value.map((el) => {
       if ((el.type === "sensor" || el.type === "temperature") && !el.value?.deviceId?.length) {
         useNotification('error', `Не выбран датчик для условия ${el.id}`)
-        isSensorsValid = false
       }
       if (el.type === 'time') {
-        el.value.time = new Date(`2077 ${el.value.time}`).toISOString()
+        el.value.time = new Date(`2077/01/01 ${el.value.time}`).toISOString()
       }
       if (el.type === 'time-range') {
         el.value.timeRange = {
-          startTime: new Date(`2077 ${el.value.timeRange?.startTime}`).toISOString(),
-          endTime: new Date(`2077 ${el.value.timeRange?.endTime}`).toISOString(),
+          startTime: new Date(`2077/01/01 ${el.value.timeRange?.startTime}`).toISOString(),
+          endTime: new Date(`2077/01/01 ${el.value.timeRange?.endTime}`).toISOString(),
         }
       }
       return unref(el.value)
@@ -236,6 +234,7 @@ async function create () {
       }
     }),
   }
+  isLoading.value = true
   isSensorsValid && await automationStore.create(automationData)
   isLoading.value = false
 }
