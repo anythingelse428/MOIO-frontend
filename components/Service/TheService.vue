@@ -244,7 +244,7 @@ const newDeviceName = ref(props.name)
 const floatValue = ref(props.capabilities?.find(el => el.type.includes('float')))
 const { $bus } = useNuxtApp()
 const stuff = ref<ICapability>({} as ICapability)
-const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v ? useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v) : { red: 1, green: 1, blue: 1 })
+const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v ? useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100) : { red: 1, green: 1, blue: 1 })
 onClickOutside(target, (event) => {
   isCapabilitiesShow.value = false
   isDeleteModalShow.value = false

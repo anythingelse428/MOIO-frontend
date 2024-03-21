@@ -121,7 +121,7 @@ const capability = ref(capabilitySource)
 const isMounted = ref(false)
 const hue = ref(Number(capability.value.hsv?.h))
 const saturation = ref(Number(capability.value.hsv?.s))
-const rgb = computed(() => useHSVToRGB(Number(hue.value), saturation.value / 100, (capability.value.brightness ?? capability.value.hsv?.v ?? 100)))
+const rgb = computed(() => useHSVToRGB(Number(hue.value), saturation.value / 100, (capability.value.brightness / 100 ?? capability.value.hsv?.v / 100 ?? 1)))
 
 const throttledAction = useThrottle(actionFabric)
 const mainActionProps = {
