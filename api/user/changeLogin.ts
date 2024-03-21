@@ -16,6 +16,7 @@ export default async function apiUserChangeLogin (props:IChangeLoginPayload) {
             ? 'Данные успешно изменены'
             : 'На ваш email был отправлен код подтверждения',
         )
+        return response
       }
     } catch (e) {
       useValidationBackendError(e, 'Произошла ошибка при смене почты')
