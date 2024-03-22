@@ -41,18 +41,18 @@ const groupStore = useGroupsStore()
 const { devicesInCategory } = storeToRefs(categoryStore)
 const route = useRoute()
 const categoryId = Number(route.params.id) as number
-const groupData = ref<{name:string, groups:IDevicesInCategory}>({ name: '', groups: {} })
+const groupData = reactive<{name:string, groups:IDevicesInCategory}>({ name: '', groups: {} })
 const canEdit = ref(groupStore.canEdit)
 const fetchCategories = await useAsyncData(
   'category',
   () => categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome),
   { watch: [route], deep: false },
 )
-groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
+groupData.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
 watch(devicesInCategory, (newVal, oldValue) => {
-  if (Object.keys(newVal).length && groupData.value?.groups) {
-    groupData.value.groups = newVal
+  if (Object.keys(newVal).length && groupData?.groups) {
+    groupData.groups = newVal
   }
 }, { deep: true, immediate: true })
 </script>
