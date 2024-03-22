@@ -1,15 +1,15 @@
 <template>
   <div class="group">
-    <loader-screen :is-loading="isLoading" />
+    <loader-screen :is-loading="fetchGroup.pending.value&&fetchGroup.status.value !== 'idle'" />
     <group-list
-      v-if="currentGroup?.name"
+      v-if="group?.name"
       :id="groupId"
       :is-group-page="true"
-      :name="currentGroup?.name"
-      :devices="currentGroup?.devices"
-      :inverse-parent="currentGroup?.inverseParent"
+      :name="group?.name"
+      :devices="group?.devices"
+      :inverse-parent="group?.inverseParent"
       :hide-empty="true"
-      :type-id="currentGroup?.typeId"
+      :type-id="group?.typeId"
       :can-edit="canEdit"
     />
   </div>
@@ -19,31 +19,26 @@
 import { storeToRefs } from "pinia"
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-import { useUserStore } from "~/store/user"
 
-const userStore = useUserStore()
 const groupStore = useGroupsStore()
-const { currentGroup } = storeToRefs(groupStore)
+const { group } = storeToRefs(groupStore)
 const route = useRoute()
 const groupId = route.params.id as string
-const isLoading = ref(false)
-const canEdit = ref(userStore.userInfo.id === currentGroup.value.groupCreatorId)
-async function fetchGroups () {
-  isLoading.value = true
-  await groupStore.getGroupById(groupId)
-  canEdit.value = userStore.userInfo.id === currentGroup.value.groupCreatorId
-  isLoading.value = false
-}
+const canEdit = ref(groupStore.canEdit)
+const fetchGroup = await useAsyncData(
+  'group',
+  () => groupStore.getGroupById(groupId),
+  {
+    watch: [route],
+    deep: false,
+  },
+)
 
-if (groupStore.currentHome !== groupId && groupStore.upperGroups?.find(el => el.id === groupId)?.typeId === 1) {
+
+if (groupStore.currentHome !== groupId && groupStore.upGroups?.find(el => el.id === groupId)?.typeId === 1) {
   groupStore.setCurrentHome(groupId)
   useNotification('info', 'Просматриваемый дом изменен')
 }
-
-
-watch(route, () => {
-  fetchGroups()
-}, { deep: true, immediate: true })
 
 </script>
 

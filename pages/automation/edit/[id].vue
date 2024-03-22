@@ -311,7 +311,6 @@ async function update () {
   isSensorsValid && await automationStore.update(automationData)
   isLoading.value = false
 }
-
 async function getData () {
   isLoading.value = true
   const response = await automationStore.getById(id as string)

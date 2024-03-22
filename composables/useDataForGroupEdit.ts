@@ -24,7 +24,7 @@ export default async function useDataForGroupEdit (id:string) {
   inGroupUsers = await groupStore.getUsersByGroupId(id)
   groupHouse = groupStore.currentHome
   groupName = data.name ?? ''
-  inGroupUsers = inGroupUsers?.filter(el => el.id !== groupStore.currentGroup.groupCreatorId)
+  inGroupUsers = inGroupUsers?.filter(el => el.id !== groupStore.group.groupCreatorId)
 
   const inGroupDevices = await getDevicesByGroupId(id)
   const inHouseDevices = await getDevicesByGroupId(groupHouse)

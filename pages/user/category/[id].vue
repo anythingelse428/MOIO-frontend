@@ -1,6 +1,6 @@
 <template>
   <div class="category">
-    <loader-screen :is-loading="isLoading" />
+    <loader-screen :is-loading="fetchCategories.pending.value" />
     <h1 class="category__header">
       {{ groupData?.name }}
     </h1>
@@ -35,33 +35,21 @@ import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { type IDevicesInCategory } from "~/api/category/getDevicesByCategoryId"
-import { useUserStore } from "~/store/user"
 
 const categoryStore = useCategoriesStore()
 const groupStore = useGroupsStore()
-const userStore = useUserStore()
 const { devicesInCategory } = storeToRefs(categoryStore)
 const route = useRoute()
 const categoryId = Number(route.params.id) as number
-const groupData = ref<{name:string, groups:IDevicesInCategory}>()
-const isLoading = ref(true)
-const canEdit = ref(userStore.userInfo.id === groupStore.currentGroup.groupCreatorId)
+const groupData = ref<{name:string, groups:IDevicesInCategory}>({ name: '', groups: {} })
+const canEdit = ref(groupStore.canEdit)
+const fetchCategories = await useAsyncData(
+  'category',
+  () => categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome),
+  { watch: [route], deep: false },
+)
+groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
-async function fetchGroups () {
-  isLoading.value = true
-  await categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome)
-  canEdit.value = userStore.userInfo.id === groupStore.currentGroup.groupCreatorId
-  isLoading.value = false
-  groupData.value = {
-    name: categoryStore.categoryById(categoryId)?.name ?? "",
-    groups: categoryStore.devices,
-  }
-}
-// await fetchGroups()
-
-watch(route, () => {
-  fetchGroups()
-}, { deep: true, immediate: true })
 watch(devicesInCategory, (newVal, oldValue) => {
   if (Object.keys(newVal).length && groupData.value?.groups) {
     groupData.value.groups = newVal

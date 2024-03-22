@@ -1,6 +1,11 @@
 <template>
   <div class="profile">
-    <loader-screen :is-loading="isLoading" />
+    <loader-screen
+      :is-loading="
+        roommatesFetch.pending.value||
+          invitedHousesFetch.pending.value||
+          (userFetch.pending.value && userFetch.status.value !== 'idle')"
+    />
     <profile-card
       :role="userInfo.role"
       :displayed-name="userInfo.name"
@@ -15,7 +20,7 @@
       </h1>
       <div class="profile-roommates-section__list">
         <profile-roommates
-          v-for="item in roommates"
+          v-for="item in roommatesFetch.data.value"
           :id="item.id"
           :key="item.id"
           :name="item.name"
@@ -47,13 +52,13 @@
         </template>
       </ui-modal>
     </div>
-    <div v-if="invitedHouses?.length" class="invited-house-section">
+    <div v-if="invitedHousesFetch.data.value?.length" class="invited-house-section">
       <h2 class="invited-house-section__header">
         Дома, в которые меня пригласили
       </h2>
       <div class="invited-house-section__container">
         <invited-house
-          v-for="house in invitedHouses"
+          v-for="house in invitedHousesFetch.data.value"
           :id="house.id"
           :key="house.id"
           :name="house?.name"
@@ -64,7 +69,7 @@
       </div>
     </div>
     <ui-button
-      v-if="isHouseOwner?.id||!groupStore.upperGroups?.length"
+      v-if="isHouseOwner?.id||!groupStore.upGroups?.length"
       rounded="16px"
       class="profile__sync-device"
       @click="aliceSync()"
@@ -73,6 +78,7 @@
     </ui-button>
     <ui-button
       v-if="!isHouseOwner"
+      class="profile__leave-from-house-button"
       class-name="delete"
       rounded="16px"
       @click="leaveFromHouse"
@@ -91,40 +97,44 @@ import AddRoommateModal from "~/components/Profile/AddRoommateModal.vue"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
 import InvitationForm from "~/components/Profile/InvitationForm.vue"
-import type { IUsersByGroupResponse } from "~/api/group/getUsersByGroupId"
 import InvitedHouse from "~/components/Profile/InvitedHouse.vue"
 import apiUsersPendingGet from "~/api/usersPending/get"
 
-const roommates = ref<IUsersByGroupResponse[]>([])
 const userStore = useUserStore()
 const groupStore = useGroupsStore()
 const devicesStore = useDevicesStore()
 const { userInfo } = storeToRefs(userStore)
 const isAddRoommatesModalShow = ref(false)
-const isLoading = ref(true)
 const addRoommateModal = ref(null)
-const isHouseOwner = groupStore.upperGroups.find(el => el.groupCreatorId === userInfo.value.id && el.id === groupStore.currentHome)
-const invitedHouses = ref(await apiUsersPendingGet())
+const isHouseOwner = groupStore.upGroups.find(el => el.groupCreatorId === userInfo.value.id && el.id === groupStore.currentHome)
+
+const invitedHousesFetch = await useAsyncData(
+  'pending',
+  () => apiUsersPendingGet(),
+  { deep: false })
+const roommatesFetch = await useAsyncData(
+  'roommates',
+  () => groupStore.getUsersByGroupId(groupStore.currentHome),
+  { deep: false })
+const userFetch = await useAsyncData(
+  'user',
+  () => userStore.init(),
+  { deep: false, immediate: false, server: false })
 function aliceSync () {
   devicesStore.getConfig()
 }
 async function getRoommates () {
-  isLoading.value = true
-  roommates.value = await groupStore.getUsersByGroupId(groupStore.currentHome)
-  isLoading.value = false
-  roommates.value = roommates.value.filter(el => el.id !== groupStore.upperGroups.find(el => el.id === groupStore.currentHome)?.groupCreatorId)
+  await roommatesFetch.refresh()
 }
 async function getPending () {
-  isLoading.value = true
-  invitedHouses.value = await apiUsersPendingGet()
+  await invitedHousesFetch.refresh()
   await groupStore.getHouses()
-  isLoading.value = false
 }
 async function leaveFromHouse () {
   const response = await groupStore.removeUsersFromGroup([groupStore.currentHome], [], [userInfo.value.id])
   if (response.length) {
     useNotification('info', response)
-    const currentHomeId = groupStore.upperGroups.find(el => el.groupCreatorId === userInfo.value.id)?.id || groupStore.upperGroups[0].id
+    const currentHomeId = groupStore.upGroups.find(el => el.groupCreatorId === userInfo.value.id)?.id || groupStore.upperGroups[0].id
     setTimeout(async () => {
       await groupStore.setCurrentHome(currentHomeId)
       await useRouter().push(`user/group/${currentHomeId}`)
@@ -135,12 +145,14 @@ async function leaveFromHouse () {
 onMounted(() => {
   nextTick(async () => {
     if (userInfo.value.name?.length < 1) {
-      await userStore.init()
+      await userFetch.execute()
     }
-    if (!groupStore.currentGroup?.groupCreatorId) {
-      groupStore.currentGroup = groupStore.upperGroups.find(el => el.id === groupStore.currentHome)
+    if (!groupStore.group?.groupCreatorId) {
+      const fallbackGroup = groupStore.upGroups.find(el => el.id === groupStore.currentHome)
+      if (fallbackGroup) {
+        groupStore.setCurrentGroup(fallbackGroup)
+      }
     }
-    await getRoommates()
   })
 })
 </script>

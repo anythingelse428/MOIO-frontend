@@ -7,7 +7,7 @@
     <form method="post" class="add-group__form" @submit.prevent="addGroup()">
       <div class="add-group__input-group">
         <label for="group" class="add-group__label">Введите название этажа</label>
-        <input id="group" v-model="name" type="text" name="group" class="add-group__input" required placeholder="Название комнаты">
+        <input id="group" v-model="name" type="text" name="group" class="add-group__input" required placeholder="Название этажа">
       </div>
       <div v-if="existingHouses?.length" class="add-group__input-group">
         <label for="house" class="add-group__label">Выберите дом </label>
@@ -70,7 +70,7 @@
         <div v-if="previewData.name?.length" class="add-group__preview">
           <div class="add-group__preview-section">
             <div class="add-group__preview-section-title">
-              Название комнаты
+              Название этажа
             </div>
             <div class="add-group__preview-section-value">
               {{ previewData.name }}
@@ -162,7 +162,7 @@ const rooms = ref<{ id: string, name:string }[]>([])
 const existingRooms = ref<{id:string, name:string}[]>()
 const existingHouses = ref()
 const existingDevices = ref()
-const upperGroups = ref(groupStore.upperGroups)
+const upperGroups = ref(groupStore.upGroups)
 existingHouses.value = upperGroups.value.filter(el => el.groupCreatorId === useUserStore().id)
 const selectData = ref(existingHouses.value.reduce((acc:{description:string, value:string}[], curr:{name:string, id:string}) => [...acc, { description: curr.name, value: curr.id }], []))
 const previewData = ref({
@@ -174,12 +174,7 @@ async function getRoomsByHomeId () {
   isLoading.value = true
   await groupStore.getAll(house.value)
   isLoading.value = false
-  existingRooms.value = groupStore.groups.filter(el => el.typeId === 3 && el.parentId === house.value).map((el) => {
-    return {
-      id: el.id,
-      name: el.name ?? '',
-    }
-  })
+  existingRooms.value = groupStore.rooms
 }
 getRoomsByHomeId()
 

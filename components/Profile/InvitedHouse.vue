@@ -8,8 +8,9 @@
         {{ inviter }}
       </div>
     </div>
-    <div class="" style="display:flex; gap: 16px;">
+    <div class="invited-house__actions" style="display:flex; gap: 16px;">
       <ui-button
+        class="invited-house__actions-action"
         class-name="default"
         rounded="16px"
         margin-inline="0"
@@ -18,6 +19,7 @@
         Принять
       </ui-button>
       <ui-button
+        class="invited-house__actions-action"
         class-name="delete"
         fill="var(--settings-color)"
         rounded="16px"

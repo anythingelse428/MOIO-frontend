@@ -222,6 +222,7 @@ export interface ServiceProps {
 const deviceStore = useDevicesStore()
 const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
+
 const props = defineProps<ServiceProps>()
 const isMounted = ref(false)
 const service = ref<HTMLDivElement | null>(null)
@@ -245,6 +246,7 @@ const floatValue = ref(props.capabilities?.find(el => el.type.includes('float'))
 const { $bus } = useNuxtApp()
 const stuff = ref<ICapability>({} as ICapability)
 const color = computed(() => stuff.value.hsv?.s && stuff.value.hsv?.v ? useHSVToRGB(Number(stuff.value.hsv?.h), stuff.value.hsv?.s / 100, stuff.value.hsv?.v / 100) : { red: 1, green: 1, blue: 1 })
+
 onClickOutside(target, (event) => {
   isCapabilitiesShow.value = false
   isDeleteModalShow.value = false
@@ -254,7 +256,7 @@ onClickOutside(target, (event) => {
 }, { ignore: [deleteModal, iconModal] })
 
 onLongPress(service, () => {
-  if (navigator.maxTouchPoints > 0) {
+  if (navigator.maxTouchPoints > 0 && !isPending.value) {
     isCapabilitiesShow.value = true
   }
 }, { delay: 400 })
@@ -293,7 +295,7 @@ async function refreshData () {
   if (Number.isInteger(Number(props.groupId))) {
     await categoriesStore.getDevicesByCategoryId(Number(props.groupId), groupStore.currentHome)
   } else {
-    await groupStore.getGroupById(groupStore.currentGroup.id)
+    await groupStore.getGroupById(groupStore.group.id)
   }
 }
 async function setNewDeviceName () {

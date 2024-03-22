@@ -57,7 +57,7 @@ socket.connection.on("UpdateConfig", (message:ServiceProps) => {
   useNotification("info", `Обновлено состояние устройства ${message.name}`)
 })
 
-function changeCapability (message:ServiceProps, group = groupStore.currentGroup) {
+function changeCapability (message:ServiceProps, group = groupStore.group) {
   // console.log('hiiiiiiiiiiiiiiiiiiiii')
   const isCategory = route.path.includes('category/')
   if (isCategory && !isChanged) {

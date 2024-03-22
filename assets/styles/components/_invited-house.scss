@@ -20,12 +20,14 @@
 			@include carousel-category-item;
 		}
 	}
-	&__leave-from-house-button{
-		&.ui-button{
-			border: 1px solid $color-active;
-			color: $color-active;
-			@include action-item;
-			background: $settings-color;
+	&__actions{
+		display: flex;
+		gap: 16px;
+		width: 70%;
+		justify-content: flex-end;
+		align-items: center;
+		&-action {
+			margin: 0;
 		}
 	}
 }

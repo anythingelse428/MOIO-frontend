@@ -1,4 +1,4 @@
-import { type Ref } from "vue/dist/vue"
+import { type Ref } from "vue"
 import { throttle } from "@antfu/utils"
 
 export default function useTransformOnScroll (scrollTarget:Ref<HTMLDivElement>,

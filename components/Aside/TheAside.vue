@@ -17,7 +17,7 @@
       <div class="aside-main">
         <aside-category
           category-header="Основное"
-          :category-items="currentGroup?.canAutomate || currentGroup.groupCreatorId === userId ?
+          :category-items="groupsStore.canAutomate ?
             [...asideContent.categoryContent,...automateLinks]
             : asideContent.categoryContent"
         />
@@ -51,6 +51,7 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia"
 import AsideCategory from '~/components/Aside/AsideCategory.vue'
 import { useUserStore } from "~/store/user"
 import { useCategoriesStore } from "~/store/categories"
@@ -71,8 +72,7 @@ const groupsStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
 const colorMode = useColorTheme()
 const route = useRoute()
-const { rooms, floors, currentGroup } = storeToRefs(groupsStore)
-const userId = useUserStore().userInfo.id
+const { rooms, floors } = storeToRefs(groupsStore)
 const isAsideCollapsed = ref(false)
 const categories = ref<{
   icon: TUiIconNames,

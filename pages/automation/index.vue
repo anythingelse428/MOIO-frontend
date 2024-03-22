@@ -1,6 +1,6 @@
 <template>
   <div class="scenarios">
-    <loader-screen :is-loading="isLoading" />
+    <loader-screen :is-loading="automationFetch.pending.value" />
     <h1 class="scenarios__header">
       Автоматизации
     </h1>
@@ -10,13 +10,13 @@
       </h2>
       <div class="scenarios-available__list">
         <nuxt-link
-          v-for="scenario in scenarios"
-          :key="scenario.id"
-          :to="`/automation/edit/${scenario.id}`"
+          v-for="automation in automationFetch.data.value"
+          :key="automation.id"
+          :to="`/automation/edit/${automation.id}`"
           class="scenarios-available__list-item"
         >
           <div class="scenarios-available__list-item-name">
-            {{ scenario.name }}
+            {{ automation.name }}
           </div>
           <div class="scenarios-available__list-item-edit">
             <ui-icon
@@ -30,22 +30,15 @@
 </template>
 
 <script setup lang="ts">
-
-import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { useAutomationStore } from "~/store/automation"
 import UiIcon from "~/components/ui/UiIcon.vue"
 
-const isLoading = ref(true)
-const scenarios = ref<IAllScenariosResponse[]>([])
-const scenarioStore = useAutomationStore()
-scenarios.value = await scenarioStore.getAll() as IAllScenariosResponse[]
-isLoading.value = false
+const automationStore = useAutomationStore()
+const automationFetch = await useAsyncData('automations', () => automationStore.getAll(), { deep: false })
 
 
-function redirect (to:string) {
-  useRouter().push(to)
-}
+
 </script>
 
 <style lang="scss">

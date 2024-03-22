@@ -2,7 +2,7 @@
   <div class="header-content">
     <div class="header-content__menu-container">
       <ui-button
-        v-if="currentGroup?.canAutomate || currentGroup.groupCreatorId === id"
+        v-if="groupsStore.canAutomate"
         ref="addMenuTrigger"
         class-name="blank"
         padding="0"
@@ -49,7 +49,7 @@ const groupsStore = useGroupsStore()
 const { id } = useUserStore()
 const { houses, currentGroup } = storeToRefs(groupsStore)
 const route = useRoute()
-const isHouseEditable = ref(groupsStore.upperGroups.find(el => el.id === groupsStore.currentHome)?.groupCreatorId === id)
+const isHouseEditable = ref(groupsStore.upGroups.find(el => el.id === groupsStore.currentHome)?.groupCreatorId === id)
 const addMenuItems = [
   {
     icon: "aside/automation",
@@ -101,7 +101,7 @@ watch(() => route.fullPath, () => {
   isAddMenuShow.value = false
 })
 watch(() => groupsStore.currentHome, () => {
-  isHouseEditable.value = groupsStore.upperGroups.find(el => el.id === groupsStore.currentHome)?.groupCreatorId === id
+  isHouseEditable.value = groupsStore.upGroups.find(el => el.id === groupsStore.currentHome)?.groupCreatorId === id
 })
 
 </script>

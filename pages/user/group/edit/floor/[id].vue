@@ -62,7 +62,7 @@
                         users = users.filter(el=>el.id !== user.id)}"
                     >
                       <ui-icon
-                        v-if="user.id !== groupStore.currentGroup.groupCreatorId"
+                        v-if="user.id !== groupStore.group.groupCreatorId"
                         name="delete"
                         color="#D15151"
                         size="20"
@@ -132,10 +132,26 @@ import UiAnyListItem from "~/components/ui/UiAnyListItem.vue"
 import useDataForGroupEdit from "~/composables/useDataForGroupEdit"
 import useEditGroup from "~/composables/useEditGroup"
 
+
+const editFetch = await useAsyncData(
+  'editGp',
+  () => useEditGroup(id, name.value, oldName, usersForRemove.value, existingDevices.value, devices.value),
+  { deep: false, immediate: false },
+)
+const groupFetch = await useAsyncData(
+  'getGp',
+  () => useDataForGroupEdit(id),
+  { deep: false, immediate: false },
+)
+const deleteFetch = await useAsyncData(
+  'deleteGp',
+  () => groupStore.deleteGroup(id),
+  { deep: false, immediate: false },
+)
+
 let oldName = ''
-const isLoading = ref(false)
 const groupStore = useGroupsStore()
-const { groups, currentHome } = storeToRefs(groupStore)
+const { currentHome } = storeToRefs(groupStore)
 const name = ref('')
 const house = ref(currentHome)
 const devices = ref<{ id: string, name:string }[]>([])
@@ -143,7 +159,6 @@ const existingDevices = ref<{id:string, name:string}[]>([])
 const users = ref<{id:number, name:string}[]>([])
 const id = useRoute().params.id as string
 const usersForRemove = ref<{id:number, name:string}[]>([])
-const router = useRouter()
 const rooms = ref<{ id: string, name:string }[]>([])
 const previewData = ref({
   name,
@@ -152,30 +167,35 @@ const previewData = ref({
   users,
 })
 
+const isLoading = computed(() =>
+  (deleteFetch.pending.value && deleteFetch.status.value !== 'idle') ||
+    (editFetch.pending.value && editFetch.status.value !== 'idle') ||
+    (groupFetch.pending.value && groupFetch.status.value !== 'idle'))
 async function getGroupData () {
-  isLoading.value = true
-  const { inGroupDevices, inHouseDevices, groupName, inGroupUsers, groupHouse } = await useDataForGroupEdit(id)
-  isLoading.value = false
-  name.value = groupName
-  oldName = groupName
-  devices.value = inGroupDevices
-  existingDevices.value = inHouseDevices
-  users.value = inGroupUsers
-  house.value = groupHouse
+  await groupFetch.execute()
+  const data = groupFetch.data.value
+  if (data) {
+    const { inGroupDevices, inHouseDevices, groupName, inGroupUsers, groupHouse } = data
+    name.value = groupName
+    oldName = groupName
+    devices.value = inGroupDevices
+    existingDevices.value = inHouseDevices
+    users.value = inGroupUsers
+    house.value = groupHouse
+  }
 }
 getGroupData()
 async function editGroup () {
-  isLoading.value = true
-  const isSuccess = await useEditGroup(id, name.value, oldName, usersForRemove.value, existingDevices.value, devices.value)
-  isLoading.value = false
-  if (isSuccess) {
+  await editFetch.execute()
+  if (editFetch.status.value === 'success') {
+    useNotification('info', 'Изменения успешно сохранены')
     setTimeout(() => {
       useRouter().push({ path: '/user/group/' + id })
     }, 900)
   }
 }
 async function deleteGroup () {
-  await groupStore.deleteGroup(id as string)
+  await deleteFetch.execute()
 }
 
 

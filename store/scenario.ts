@@ -26,7 +26,9 @@ export const useScenarioStore = defineStore('scenario', {
       return await apiScenariosGetById(id)
     },
     async executeScenario (id:string) {
-      return await apiScenariosExecute(id)
+      if (id.length > 0) {
+        return await apiScenariosExecute(id)
+      }
     },
     async updateScenario (data:IScenarioUpdateProps) {
       return await apiScenariosUpdate(data)

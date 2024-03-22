@@ -30,9 +30,24 @@ export const useGroupsStore = defineStore('groups', {
     currentGroup: {} as IGroupResponseItem,
   }),
   getters: {
+    home: state => state.currentHome,
     allGroups: state => state.groups,
     groupById: state => (id:string) => state.groups.find(el => el.id === id),
     group: state => state.currentGroup,
+    canEdit: (state) => {
+      const userStore = useUserStore()
+      return state.currentGroup.groupCreatorId === userStore.userInfo.id
+    },
+    canAutomate: (state) => {
+      const userStore = useUserStore()
+      const userId = userStore.userInfo.id
+      if (state.currentGroup?.canAutomate || state.currentGroup.groupCreatorId === userId) {
+        return true
+      }
+      if (!state.currentGroup?.groupId) {
+        return state.upperGroups.find(el => el.id === state.currentHome)?.groupCreatorId === userId
+      }
+    },
     formattedGroup: (state) => {
       return (typeId:number) => {
         const { id } = useUserStore()
@@ -65,8 +80,12 @@ export const useGroupsStore = defineStore('groups', {
     houses () {
       return this.formattedGroup(1)
     },
+    upGroups: state => state.upperGroups,
   },
   actions: {
+    setCurrentGroup (group:IGroupResponseItem) {
+      this.currentGroup = group
+    },
     async getAll (groupId?:string) {
       const id = groupId ?? unref(this.currentHome)
       if (id?.length > 0) {

@@ -74,39 +74,59 @@ import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 const userStore = useUserStore()
 const router = useRoute()
-const isLoading = ref(false)
+
+const passwordFetch = await useAsyncData(
+  'password',
+  () => userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value, confirmationCode: code.value }),
+  { deep: false, immediate: false },
+)
+const loginFetch = await useAsyncData(
+  'login',
+  () => userStore.changeLogin({ newLogin: login.value, password: oldPassword.value, confirmationCode: code.value }),
+  { deep: false, immediate: false },
+)
+
+const isLoading = computed(() => (passwordFetch.pending.value && passwordFetch.status.value !== 'idle') ||
+    (loginFetch.pending.value && loginFetch.status.value !== 'idle'))
 const type = ref<'password'|'email'>(router.query?.password ? 'password' : 'email')
 const oldPassword = ref('')
 const newPassword = ref('')
 const login = ref('')
 const code = ref('')
 const step = ref(1)
+function clearFields () {
+  code.value = ''
+  newPassword.value = ''
+  code.value = ''
+  oldPassword.value = ''
+  login.value = ''
+}
 
 async function changeData () {
-  isLoading.value = true
   if (step.value === 1) {
     if (type.value === "password") {
-      const response = await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value })
-      isLoading.value = false
-      step.value = response ? 2 : 1
+      await passwordFetch.execute()
+      step.value = passwordFetch.data.value ? 2 : 1
       return
     }
     if (type.value === "email") {
-      const response = await userStore.changeLogin({ newLogin: login.value, password: oldPassword.value })
-      isLoading.value = false
-      step.value = response ? 2 : 1
+      await loginFetch.execute()
+      step.value = loginFetch.data.value ? 2 : 1
       return
     }
   }
   if (step.value === 2) {
     if (type.value === "password") {
-      await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value, confirmationCode: code.value })
+      await passwordFetch.execute()
+      step.value = passwordFetch.data.value ? 1 : 2
+      passwordFetch.data.value && clearFields()
     }
     if (type.value === "email") {
-      await userStore.changeLogin({ newLogin: login.value, password: oldPassword.value, confirmationCode: code.value })
+      await loginFetch.execute()
+      step.value = loginFetch.status.value === 'success' ? 2 : 1
+      loginFetch.data.value && clearFields()
     }
   }
-  isLoading.value = false
 }
 </script>
 

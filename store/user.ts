@@ -65,7 +65,7 @@ export const useUserStore = defineStore('user', {
       return JSON.parse(jsonPayload)
     },
     async register (props:IRegisterUserProps) {
-      const { accessToken, refreshToken } = await apiUserRegister(props)
+      const { accessToken, refreshToken } = await apiUserRegister(props) || {}
       if (accessToken) {
         const config = useRuntimeConfig()
         localStorage.setItem('moio-current-home', '')

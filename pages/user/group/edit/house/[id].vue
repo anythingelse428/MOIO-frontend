@@ -48,7 +48,7 @@
                         }"
                       >
                         <ui-icon
-                          v-if="user.id !== groupStore.currentGroup.groupCreatorId"
+                          v-if="user.id !== groupStore.group.groupCreatorId"
                           name="delete"
                           color="#D15151"
                           size="20"
@@ -95,7 +95,6 @@ const house = ref("")
 const users = ref<{id:number, name:string}[]>([])
 const usersForRemove = ref<{id:number, name:string}[]>([])
 const groupStore = useGroupsStore()
-const router = useRouter()
 const previewData = ref({
   name,
   users,
@@ -115,6 +114,7 @@ getGroupData()
 async function editGroup () {
   isLoading.value = true
   const isSuccess = await useEditGroup(id, name.value, oldName, usersForRemove.value)
+  await groupStore.getHouses()
   isLoading.value = false
   if (isSuccess) {
     setTimeout(() => {

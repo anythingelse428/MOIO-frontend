@@ -19,21 +19,12 @@ import { storeToRefs } from "pinia"
 
 import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
-import { useUserStore } from "~/store/user"
 
-const userStore = useUserStore()
 const groupStore = useGroupsStore()
-const { group } = storeToRefs(groupStore)
-const isLoading = ref(true)
-const canEdit = ref(userStore.userInfo.id === group.value.groupCreatorId)
-
-onMounted(async () => {
-  isLoading.value = true
-  await groupStore.getAll()
-  await groupStore.getGroupById(groupStore.currentHome)
-  canEdit.value = userStore.userInfo.id === group.value.groupCreatorId
-  isLoading.value = false
-})
+const { group, canEdit, home } = storeToRefs(groupStore)
+const groupsFetch = await useAsyncData('allGroups', () => groupStore.getAll(), { deep: false })
+const groupFetch = await useAsyncData('groupById', () => groupStore.getGroupById(home.value), { deep: false })
+const isLoading = computed(() => (groupsFetch.status.value !== 'idle' && groupsFetch.pending.value) || (groupFetch.status.value !== 'idle' && groupFetch.pending.value))
 </script>
 
 <style lang="scss">

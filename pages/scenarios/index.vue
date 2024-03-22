@@ -1,6 +1,6 @@
 <template>
   <div class="scenarios">
-    <loader-screen :is-loading="isLoading" />
+    <loader-screen :is-loading="scenariosFetch.pending.value || isLoading" />
     <h1 class="scenarios__header">
       Сценарии
     </h1>
@@ -9,14 +9,16 @@
         Список доступных сценариев
       </h2>
       <div class="scenarios-available__list">
-        <div v-for="scenario in scenarios" :key="scenario.id" class="scenarios-available__list-item" @click="executeScenario(scenario.id)">
+        <div
+          v-for="scenario in scenariosFetch.data.value"
+          :key="scenario.id"
+          class="scenarios-available__list-item" @click="executeScenario(scenario.id)"
+        >
           <div class="scenarios-available__list-item-name">
             {{ scenario.name }}
           </div>
-          <nuxt-link :to="`/scenarios/edit/${scenario.id}`" @click.stop="false">
-            <div class="scenarios-available__list-item-edit">
-              <ui-icon name="pencil" role="link" />
-            </div>
+          <nuxt-link :to="`/scenarios/edit/${scenario.id}`" class="scenarios-available__list-item-edit" @click.stop="false">
+            <ui-icon name="pencil" role="link" />
           </nuxt-link>
         </div>
       </div>
@@ -27,23 +29,24 @@
 <script setup lang="ts">
 
 import { useScenarioStore } from "~/store/scenario"
-import type { IAllScenariosResponse } from "~/api/scenarios/getAll"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
 
-const isLoading = ref(true)
-const scenarios = ref<IAllScenariosResponse[]>([])
 const scenarioStore = useScenarioStore()
-scenarios.value = await scenarioStore.getAll() as IAllScenariosResponse[]
-isLoading.value = false
+const scenariosFetch = await useAsyncData('scenarios', () => scenarioStore.getAll(), { deep: false })
+const executedScenario = ref('')
+const executeScenarioFetch = await useAsyncData(
+  'scenarios',
+  () => scenarioStore.executeScenario(executedScenario.value),
+  { deep: false, immediate: false })
+const isLoading = computed(() => (executeScenarioFetch.pending.value && executeScenarioFetch.status.value !== 'idle') || scenariosFetch.pending.value)
 
 async function executeScenario (id:string) {
-  isLoading.value = true
-  await scenarioStore.executeScenario(id)
-  isLoading.value = false
-}
-function redirect (to:string) {
-  useRouter().push(to)
+  executedScenario.value = id
+  await executeScenarioFetch.execute()
+  await nextTick(() => {
+    executedScenario.value = ''
+  })
 }
 </script>
 

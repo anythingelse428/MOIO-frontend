@@ -14,7 +14,12 @@
         <ui-icon name="close" />
       </ui-button>
     </div>
-    <form action="" method="post" class="add-roommate-modal__form" @submit.prevent="addRoommate()">
+    <form
+      action=""
+      method="post"
+      class="add-roommate-modal__form"
+      @submit.prevent="addRoommate()"
+    >
       <div class="add-roommate-modal__input-group">
         <label for="email" class="add-roommate-modal__input-group-label">
           Email нового пользователя
@@ -71,7 +76,7 @@
           </template>
         </ui-any-list-item>
       </div>
-      <div class="add-roommate-modal__input-group">
+      <div v-show="logins.length" class="add-roommate-modal__input-group">
         <label for="house" class="add-roommate-modal__input-group-label">
           Выберите дом, доступный пользователю
         </label>
@@ -156,30 +161,27 @@ import UiIcon from "~/components/ui/UiIcon.vue"
 import { useUserStore } from "~/store/user"
 import type { IGroupUser } from "~/api/usersPending/create"
 
+const emit = defineEmits(['modal-close', 'add-roommate'])
 const groupStore = useGroupsStore()
+const userId = useUserStore().id
 const isLoading = ref(false)
 const login = ref('')
 const groupIds = ref<string[]>([])
 const selectedHouse = ref('')
-const userId = useUserStore().id
-const logins = ref<IGroupUser[]>([])
-const { groups, upperGroups } = storeToRefs(groupStore)
-const emit = defineEmits(['modal-close', 'add-roommate'])
-const selectDataHouses = ref(upperGroups.value.reduce((acc:{ description:string, value:any }[], curr) => {
-  if (!acc?.length) {
-    acc = []
-  }
+const logins = reactive<IGroupUser[]>([])
+const upperGroups = groupStore.upGroups
+const selectDataHouses = ref(upperGroups.reduce((acc:{ description:string, value:any }[], curr) => {
   if (curr.groupCreatorId === userId && curr.typeId === 1) {
     acc.push({ description: curr.name as string, value: curr.id })
   }
   return acc
 }, []))
 const selectDataGroups = ref<{id:string, name:string}[]>([])
-const isAllCanAutomate = computed(() => !logins.value.find(el => el.canAutomate === false))
+const isAllCanAutomate = computed(() => !logins.find(el => el.canAutomate === false))
 await groupStore.getAll()
 
 function addToLoginsArray () {
-  if (logins.value?.length > 0 && logins.value?.find(el => el?.userLogin?.toLowerCase() === login.value.toLowerCase())) {
+  if (logins?.length > 0 && logins?.find(el => el?.userLogin?.toLowerCase() === login.value.toLowerCase())) {
     useNotification('error', 'Этот пользователь уже есть в списке')
     return false
   }
@@ -189,14 +191,14 @@ function addToLoginsArray () {
       useNotification('error', 'Введите настоящий email')
       return false
     }
-    logins.value.push({ userLogin: login.value, canAutomate: false })
+    logins.push({ userLogin: login.value, canAutomate: false })
     login.value = ''
   }
 }
 function removeFromLoginsArray (login:string) {
-  if (logins.value?.length) {
-    const idx = logins.value.findIndex(el => el.userLogin?.toLowerCase() === login.toLowerCase())
-    logins.value.splice(idx, 1)
+  if (logins?.length) {
+    const idx = logins.findIndex(el => el.userLogin?.toLowerCase() === login.toLowerCase())
+    logins.splice(idx, 1)
   }
 }
 
@@ -205,7 +207,7 @@ async function getSubgroups () {
 }
 function setAllUserAutomatePermission () {
   const canAutomate = unref(isAllCanAutomate.value)
-  logins.value.map(el => el.canAutomate = !canAutomate)
+  logins.map(el => el.canAutomate = !canAutomate)
 }
 function selectGroups (e:boolean, id:string) {
   if (id === 'all') {
@@ -227,21 +229,11 @@ async function addRoommate () {
     return
   }
   isLoading.value = true
-  await groupStore.addUserToGroup({ userPendingAutomationPermission: logins.value, groupsIds: [selectedHouse.value, ...groupIds.value] })
+  await groupStore.addUserToGroup({ userPendingAutomationPermission: logins, groupsIds: [selectedHouse.value, ...groupIds.value] })
   isLoading.value = false
   emit('add-roommate')
 }
-watch(groups, (newValue) => {
-  selectDataHouses.value = newValue.reduce((acc:{ description:string, value:any }[], curr) => {
-    if (!acc?.length) {
-      acc = []
-    }
-    if (curr.groupCreatorId === userId && curr.typeId === 1) {
-      acc.push({ description: curr.name as string, value: curr.id })
-    }
-    return acc
-  }, [])
-}, { deep: true })
+
 </script>
 
 <style lang="scss">
