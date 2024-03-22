@@ -150,24 +150,25 @@ import UiAnyListItem from "~/components/ui/UiAnyListItem.vue"
 import useDataForGroupEdit from "~/composables/useDataForGroupEdit"
 import useEditGroup from "~/composables/useEditGroup"
 
+const id = useRoute().params.id as string
 
 const editFetch = await useAsyncData(
   'editGp',
   () => useEditGroup(id, name.value, oldName, usersForRemove.value, existingDevices.value, devices.value),
   { deep: false, immediate: false },
 )
-const groupFetch = await useAsyncData(
-  'getGp',
-  () => useDataForGroupEdit(id),
+const groupFetch = useLazyAsyncData(
+  `groupById-${id}`,
+  async () => await useDataForGroupEdit(id),
   { deep: false, immediate: false },
 )
+
 const deleteFetch = await useAsyncData(
   'deleteGp',
   () => groupStore.deleteGroup(id),
   { deep: false, immediate: false },
 )
 let oldName = ''
-const id = useRoute().params.id as string
 const name = ref('')
 const house = ref('')
 const devices = ref<{ id: string, name:string }[]>([])

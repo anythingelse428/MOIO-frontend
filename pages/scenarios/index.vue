@@ -39,10 +39,10 @@ if (!canAutomate.value) {
   useRouter().back()
 }
 const scenarioStore = useScenarioStore()
-const scenariosFetch = await useAsyncData('scenarios', () => scenarioStore.getAll(), { deep: false })
-const executeScenarioFetch = await useAsyncData(
-  'scenarios',
-  () => scenarioStore.executeScenario(executedScenario.value),
+const scenariosFetch = useLazyAsyncData('scenarios-all', async () => await scenarioStore.getAll(), { deep: false })
+const executeScenarioFetch = useAsyncData(
+  'scenarios-exec',
+  async () => await scenarioStore.executeScenario(executedScenario.value),
   { deep: false, immediate: false })
 executeScenarioFetch.pending.value = false
 

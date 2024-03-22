@@ -42,7 +42,7 @@ if (!canAutomate.value) {
 }
 
 const automationStore = useAutomationStore()
-const automationFetch = await useAsyncData('automations', () => automationStore.getAll(), { deep: false })
+const automationFetch = useLazyAsyncData('automations', async () => await automationStore.getAll(), { deep: false })
 
 
 

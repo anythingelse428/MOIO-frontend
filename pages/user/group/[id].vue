@@ -25,9 +25,9 @@ const { group } = storeToRefs(groupStore)
 const route = useRoute()
 const groupId = route.params.id as string
 const canEdit = ref(groupStore.canEdit)
-const fetchGroup = await useAsyncData(
-  'fetchGroup',
-  () => groupStore.getGroupById(groupId),
+const fetchGroup = useLazyAsyncData(
+  `groupById-${groupId}`,
+  async () => await groupStore.getGroupById(groupId),
   {
     watch: [route],
     deep: false,

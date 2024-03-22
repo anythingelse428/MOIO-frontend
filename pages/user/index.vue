@@ -108,17 +108,17 @@ const isAddRoommatesModalShow = ref(false)
 const addRoommateModal = ref(null)
 const isHouseOwner = groupStore.upGroups.find(el => el.groupCreatorId === userInfo.value.id && el.id === groupStore.currentHome)
 
-const invitedHousesFetch = await useAsyncData(
+const invitedHousesFetch = useLazyAsyncData(
   'pending',
-  () => apiUsersPendingGet(),
+  async () => await apiUsersPendingGet(),
   { deep: false })
-const roommatesFetch = await useAsyncData(
-  'roommates',
-  () => groupStore.getUsersByGroupId(groupStore.currentHome),
+const roommatesFetch = useLazyAsyncData(
+  'groupUsers',
+  async () => await groupStore.getUsersByGroupId(groupStore.currentHome),
   { deep: false })
-const userFetch = await useAsyncData(
-  'user',
-  () => userStore.init(),
+const userFetch = useLazyAsyncData(
+  'user-init',
+  async () => await userStore.init(),
   { deep: false })
 function aliceSync () {
   devicesStore.getConfig()
