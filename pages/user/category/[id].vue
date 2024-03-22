@@ -49,7 +49,7 @@ const fetchCategories = useLazyAsyncData(
 )
 groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
-watch(devicesInCategory, async (newVal, oldValue) => {
+watch(devicesInCategory, (newVal, oldValue) => {
   groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
   if (Object.keys(newVal).length && groupData.value?.groups) {
     groupData.value.groups = newVal
