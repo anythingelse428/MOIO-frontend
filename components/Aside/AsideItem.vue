@@ -1,14 +1,14 @@
 <template>
-  <div v-if="title?.length && url?.length" class="aside-item">
-    <NuxtLink class="aside-item__link" :to="url">
+  <div v-if="title?.length && url?.length" :class="`aside-item ${router.currentRoute.value.path === props.url?'--active':''}`">
+    <nuxt-link class="aside-item__link" :to="url">
       <ui-icon :name="icon" size="28" />
       <h2 class="aside-item__title">
         {{ title }}
       </h2>
-    </NuxtLink>
-    <div v-if="isEditable" class="aside-item__edit-btn" role="button" @click.prevent="router.push({path:'/user/group/edit/'+editPostfix+id})">
-      <ui-icon name="pencil" />
-    </div>
+    </nuxt-link>
+    <nuxt-link v-if="isEditable" :to="`/user/group/edit/${editPostfix+id}`" class="aside-item__edit-btn">
+      <ui-icon name="pencil" color="inherit" />
+    </nuxt-link>
   </div>
 </template>
 
@@ -27,6 +27,7 @@ export interface AsideItem {
 
 const props = defineProps<AsideItem>()
 const router = useRouter()
+
 let editPostfix = 'room/'
 if (props?.typeId === 2) {
   editPostfix = 'floor/'
