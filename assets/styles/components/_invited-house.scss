@@ -26,6 +26,11 @@
 		width: 70%;
 		justify-content: flex-end;
 		align-items: center;
+		@media screen and (max-width: 768px) {
+			width: 100%;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
 		&-action {
 			margin: 0;
 		}
