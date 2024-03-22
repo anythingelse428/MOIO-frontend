@@ -57,15 +57,15 @@
     margin-inline: auto;
     &.--active,
     &:hover{
+        color: $color-active;
       .header-menu__item-title{
         color: $color-active;
       }
-      .ui-icon{
-        color: $color-active!important;
-      }
     }
-    .mdi{
-      font-size: 28px;
+    &-edit{
+      &[aria-current="page"]{
+        color: $color-active;
+      }
     }
     &-title{
       @media screen and (max-width: 768px) {

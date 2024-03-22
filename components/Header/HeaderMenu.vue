@@ -34,6 +34,7 @@ const props = defineProps<HeaderMenuProps>()
 .header-menu__item-edit{
   display: block;
   margin-inline-start: auto;
+
 }
 </style>
 

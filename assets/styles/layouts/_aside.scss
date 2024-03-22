@@ -116,9 +116,13 @@
       cursor: pointer;
       margin-inline-start: auto;
         font-size: 24px;
+      &:not([aria-current="page"]){
+        color: $color-primary;
+      }
       @media screen  and  (max-width: 768px){
         font-size: 20px;
       }
+      &[aria-current="page"],
       &:hover{
           color: $color-active;
       }
