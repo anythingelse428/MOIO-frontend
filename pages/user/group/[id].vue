@@ -1,6 +1,6 @@
 <template>
   <div class="group">
-    <loader-screen :is-loading="fetchGroup.pending.value&&fetchGroup.status.value !== 'idle'" />
+    <loader-screen :is-loading="fetchGroup.pending.value" />
     <group-list
       v-if="group?.name"
       :id="groupId"

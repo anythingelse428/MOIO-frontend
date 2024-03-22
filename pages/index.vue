@@ -24,7 +24,7 @@ const groupStore = useGroupsStore()
 const { group, canEdit, home } = storeToRefs(groupStore)
 const groupsFetch = await useAsyncData('allGroups', () => groupStore.getAll(), { deep: false })
 const groupFetch = await useAsyncData('groupById', () => groupStore.getGroupById(home.value), { deep: false })
-const isLoading = computed(() => (groupsFetch.status.value !== 'idle' && groupsFetch.pending.value) || (groupFetch.status.value !== 'idle' && groupFetch.pending.value))
+const isLoading = computed(() => (groupsFetch.pending.value) || (groupFetch.pending.value))
 </script>
 
 <style lang="scss">
