@@ -123,12 +123,12 @@ function logout () {
   userStore.logout()
 }
 
-watch(() => route.fullPath, () => {
+watch(() => route.path, () => {
   if (isAsideCollapsed.value) {
     trigger.value.style.top = '-54px'
     isAsideCollapsed.value = false
   }
-})
+}, { deep: true, immediate: true })
 </script>
 
 <style lang="scss">
