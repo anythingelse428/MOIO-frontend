@@ -81,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia"
 import { useGroupsStore } from "~/store/groups"
 import type { ServiceProps } from "~/components/Service/TheService.vue"
 import ScenarioService from "~/components/Scenarios/ScenarioService.vue"
@@ -92,8 +93,12 @@ import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import useScenarioExpandGroups from "~/composables/useScenarioExpandGroups"
 import useScenarioToggleSelected from "~/composables/useScenarioToggleSelectedState"
 
-const isLoading = ref(true)
 const groupStore = useGroupsStore()
+const { canAutomate } = storeToRefs(groupStore)
+if (!canAutomate.value) {
+  useRouter().back()
+}
+const isLoading = ref(true)
 const data = ref(await groupStore.getGroupById(groupStore.currentHome))
 isLoading.value = false
 const selectedDevice = ref<ServiceProps[]>([])

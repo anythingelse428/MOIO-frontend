@@ -4,7 +4,7 @@
       :is-loading="
         roommatesFetch.pending.value||
           invitedHousesFetch.pending.value||
-          (userFetch.pending.value && userFetch.status.value !== 'idle')"
+          (userFetch.pending.value)"
     />
     <profile-card
       :role="userInfo.role"
@@ -119,7 +119,7 @@ const roommatesFetch = await useAsyncData(
 const userFetch = await useAsyncData(
   'user',
   () => userStore.init(),
-  { deep: false, immediate: false, server: false })
+  { deep: false })
 function aliceSync () {
   devicesStore.getConfig()
 }

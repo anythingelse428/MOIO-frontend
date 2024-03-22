@@ -33,6 +33,13 @@
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import { useAutomationStore } from "~/store/automation"
 import UiIcon from "~/components/ui/UiIcon.vue"
+import { useGroupsStore } from "~/store/groups"
+
+const groupStore = useGroupsStore()
+const { canAutomate } = storeToRefs(groupStore)
+if (!canAutomate.value) {
+  useRouter().back()
+}
 
 const automationStore = useAutomationStore()
 const automationFetch = await useAsyncData('automations', () => automationStore.getAll(), { deep: false })

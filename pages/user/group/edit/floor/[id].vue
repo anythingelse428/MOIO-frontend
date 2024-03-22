@@ -141,7 +141,7 @@ const editFetch = await useAsyncData(
 const groupFetch = await useAsyncData(
   'getGp',
   () => useDataForGroupEdit(id),
-  { deep: false, immediate: false },
+  { deep: false },
 )
 const deleteFetch = await useAsyncData(
   'deleteGp',
@@ -170,9 +170,9 @@ const previewData = ref({
 const isLoading = computed(() =>
   (deleteFetch.pending.value && deleteFetch.status.value !== 'idle') ||
     (editFetch.pending.value && editFetch.status.value !== 'idle') ||
-    (groupFetch.pending.value && groupFetch.status.value !== 'idle'))
-async function getGroupData () {
-  await groupFetch.execute()
+    (groupFetch.pending.value))
+
+function mapGroupData () {
   const data = groupFetch.data.value
   if (data) {
     const { inGroupDevices, inHouseDevices, groupName, inGroupUsers, groupHouse } = data
@@ -184,7 +184,7 @@ async function getGroupData () {
     house.value = groupHouse
   }
 }
-getGroupData()
+mapGroupData()
 async function editGroup () {
   await editFetch.execute()
   if (editFetch.status.value === 'success') {

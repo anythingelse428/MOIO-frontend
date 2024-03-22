@@ -123,7 +123,7 @@ async function changeData () {
     }
     if (type.value === "email") {
       await loginFetch.execute()
-      step.value = loginFetch.status.value === 'success' ? 2 : 1
+      step.value = loginFetch.data.value ? 1 : 2
       loginFetch.data.value && clearFields()
     }
   }

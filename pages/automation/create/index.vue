@@ -109,6 +109,7 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia"
 import UiModal from "~/components/ui/UiModal.vue"
 import { useScenarioStore } from "~/store/scenario"
 import { useAutomationStore } from "~/store/automation"
@@ -134,16 +135,22 @@ export interface IBaseCondition<T>{
   value:IAutomationValue
   type:AutomationConditionTypes
 }
+const groupStore = useGroupsStore()
+const scenarioStore = useScenarioStore()
+const automationStore = useAutomationStore()
+const { canAutomate } = storeToRefs(groupStore)
+if (!canAutomate.value) {
+  useRouter().back()
+}
 const isLoading = ref(false)
 const isConditionModalShow = ref(false)
 const isTemperatureModalShow = ref(false)
 const conditions = ref<IBaseCondition<number>[]>([])
-const groupStore = useGroupsStore()
+
 const scenarios = ref<string[]>([])
 const name = ref('')
 const sensors = ref<IAutomationSensor[]>([])
-const scenarioStore = useScenarioStore()
-const automationStore = useAutomationStore()
+
 const existingScenarios = await scenarioStore.getAll()
 function setShowConditionalModal () {
   useAutomationShowCondition(sensors.value, conditions, isConditionModalShow, conditions.value.length + 1)

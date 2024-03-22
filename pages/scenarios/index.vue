@@ -31,14 +31,22 @@
 import { useScenarioStore } from "~/store/scenario"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 import UiIcon from "~/components/ui/UiIcon.vue"
+import { useGroupsStore } from "~/store/groups"
 
+const groupStore = useGroupsStore()
+const { canAutomate } = storeToRefs(groupStore)
+if (!canAutomate.value) {
+  useRouter().back()
+}
 const scenarioStore = useScenarioStore()
 const scenariosFetch = await useAsyncData('scenarios', () => scenarioStore.getAll(), { deep: false })
-const executedScenario = ref('')
 const executeScenarioFetch = await useAsyncData(
   'scenarios',
   () => scenarioStore.executeScenario(executedScenario.value),
   { deep: false, immediate: false })
+executeScenarioFetch.pending.value = false
+
+const executedScenario = ref('')
 const isLoading = computed(() => (executeScenarioFetch.pending.value && executeScenarioFetch.status.value !== 'idle') || scenariosFetch.pending.value)
 
 async function executeScenario (id:string) {

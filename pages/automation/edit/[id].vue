@@ -146,6 +146,7 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia"
 import UiModal from "~/components/ui/UiModal.vue"
 import { useScenarioStore } from "~/store/scenario"
 import { useAutomationStore } from "~/store/automation"
@@ -167,7 +168,10 @@ const route = useRoute()
 const isLoading = ref(true)
 const groupStore = useGroupsStore()
 const automationStore = useAutomationStore()
-
+const { canAutomate } = storeToRefs(groupStore)
+if (!canAutomate.value) {
+  useRouter().back()
+}
 const id = route.params.id
 const name = ref('')
 

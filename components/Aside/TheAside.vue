@@ -125,6 +125,7 @@ function logout () {
 
 watch(() => route.fullPath, () => {
   if (isAsideCollapsed.value) {
+    trigger.value.style.top = '-54px'
     isAsideCollapsed.value = false
   }
 })
