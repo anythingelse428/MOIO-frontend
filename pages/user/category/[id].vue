@@ -45,12 +45,11 @@ const canEdit = ref(groupStore.canEdit)
 const fetchCategories = useLazyAsyncData(
   `categoryById-${categoryId}`,
   async () => await categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome),
-  { deep: false },
+  { watch: [route], deep: false },
 )
 groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
 watch(devicesInCategory, async (newVal, oldValue) => {
-  await fetchCategories.execute()
   groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
   if (Object.keys(newVal).length && groupData.value?.groups) {
     groupData.value.groups = newVal
