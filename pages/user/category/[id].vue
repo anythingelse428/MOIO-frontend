@@ -29,7 +29,6 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-
 import TheService from '~/components/Service/TheService.vue'
 import { useCategoriesStore } from "~/store/categories"
 import { useGroupsStore } from "~/store/groups"
@@ -51,6 +50,7 @@ const fetchCategories = useLazyAsyncData(
 groupData.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
 watch(devicesInCategory, (newVal, oldValue) => {
+  groupData.name = categoryStore.categoryById(categoryId)?.name ?? ""
   if (Object.keys(newVal).length && groupData?.groups) {
     groupData.groups = newVal
   }
