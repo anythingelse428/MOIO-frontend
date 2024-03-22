@@ -41,7 +41,7 @@ export const useGroupsStore = defineStore('groups', {
     canAutomate: (state) => {
       const userStore = useUserStore()
       const userId = userStore.userInfo.id
-      if (state.currentGroup?.canAutomate || state.currentGroup.groupCreatorId === userId) {
+      if (state.currentGroup?.canAutomate || state.currentGroup?.groupCreatorId === userId) {
         return true
       }
       if (!state.currentGroup?.groupId) {
