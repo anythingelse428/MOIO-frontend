@@ -159,7 +159,7 @@ const editFetch = await useAsyncData(
 const groupFetch = await useAsyncData(
   'getGp',
   () => useDataForGroupEdit(id),
-  { deep: false },
+  { deep: false, immediate: false },
 )
 const deleteFetch = await useAsyncData(
   'deleteGp',
@@ -187,6 +187,7 @@ const isLoading = computed(() =>
     (groupFetch.pending.value))
 
 async function getGroupData () {
+  await groupFetch.execute()
   const data = groupFetch.data.value
   if (data) {
     const { inGroupDevices, inHouseDevices, groupName, inGroupUsers, groupHouse } = data
