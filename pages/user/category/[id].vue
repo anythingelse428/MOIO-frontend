@@ -40,20 +40,20 @@ const groupStore = useGroupsStore()
 const { devicesInCategory } = storeToRefs(categoryStore)
 const route = useRoute()
 const categoryId = Number(route.params.id) as number
-const groupData = reactive<{name:string, groups:IDevicesInCategory}>({ name: '', groups: {} })
+const groupData = ref<{name:string, groups:IDevicesInCategory}>({ name: '', groups: {} })
 const canEdit = ref(groupStore.canEdit)
 const fetchCategories = useLazyAsyncData(
   `categoryById-${categoryId}`,
   async () => await categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome),
   { deep: false },
 )
-groupData.name = categoryStore.categoryById(categoryId)?.name ?? ""
+groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
 watch(devicesInCategory, async (newVal, oldValue) => {
   await fetchCategories.execute()
-  groupData.name = categoryStore.categoryById(categoryId)?.name ?? ""
-  if (Object.keys(newVal).length && groupData?.groups) {
-    groupData.groups = newVal
+  groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
+  if (Object.keys(newVal).length && groupData.value?.groups) {
+    groupData.value.groups = newVal
   }
 }, { deep: true, immediate: true })
 </script>
