@@ -137,12 +137,12 @@ const id = useRoute().params.id as string
 const editFetch = await useAsyncData(
   'editGp',
   () => useEditGroup(id, name.value, oldName, usersForRemove.value, existingDevices.value, devices.value),
-  { deep: false, immediate: false },
+  { immediate: false },
 )
 const groupFetch = useLazyAsyncData(
   `groupById-${id}`,
   async () => await useDataForGroupEdit(id),
-  { deep: false, immediate: false },
+  { immediate: false },
 )
 const deleteFetch = await useAsyncData(
   'deleteGp',

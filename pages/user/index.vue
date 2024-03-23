@@ -110,16 +110,15 @@ const isHouseOwner = groupStore.upGroups.find(el => el.groupCreatorId === userIn
 
 const invitedHousesFetch = useLazyAsyncData(
   'pending',
-  async () => await apiUsersPendingGet(),
-  { deep: false })
+  async () => await apiUsersPendingGet())
 const roommatesFetch = useLazyAsyncData(
   'groupUsers',
   async () => await groupStore.getUsersByGroupId(groupStore.currentHome),
-  { deep: false })
+)
 const userFetch = useLazyAsyncData(
   'user-init',
   async () => await userStore.init(),
-  { deep: false })
+)
 function aliceSync () {
   devicesStore.getConfig()
 }
