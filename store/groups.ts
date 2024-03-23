@@ -92,6 +92,7 @@ export const useGroupsStore = defineStore('groups', {
         const data = await apiGroupGetAll(id)
         if (data?.length) {
           this.groups = data
+          return data
         }
       }
     },

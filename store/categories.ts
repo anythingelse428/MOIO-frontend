@@ -38,6 +38,7 @@ export const useCategoriesStore = defineStore('categories', {
     async getDevicesByCategoryId (id:number, homeId:string) {
       this.devicesInCategory = {}
       this.devicesInCategory = await apiCategoryGetDevicesById(id, homeId)
+      return this.devicesInCategory
     },
   },
 })

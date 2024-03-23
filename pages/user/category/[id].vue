@@ -51,9 +51,11 @@ groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
 watch(devicesInCategory, (newVal, oldValue) => {
   groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
-  if (Object.keys(newVal).length && groupData.value?.groups) {
+  if (Object.keys(newVal)) {
     groupData.value.groups = newVal
+    return
   }
+  groupData.value.groups = {}
 }, { deep: true, immediate: true })
 </script>
 
