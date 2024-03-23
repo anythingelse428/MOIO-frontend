@@ -256,7 +256,7 @@ function thermostatAction () {
     thumb.value?.addEventListener('touchstart', () => {
       dragStart()
       thumb.value?.addEventListener('touchmove', e => render(e as MouseEvent & TouchEvent))
-    })
+    }, { passive: true })
     window.addEventListener('mouseup', dragEnd)
     window.addEventListener('touchend', dragEnd)
     setSVG()
