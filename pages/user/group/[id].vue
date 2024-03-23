@@ -29,7 +29,6 @@ const fetchGroup = useLazyAsyncData(
   `groupById-${groupId}`,
   async () => await groupStore.getGroupById(groupId),
   {
-    watch: [route],
     deep: false,
   },
 )

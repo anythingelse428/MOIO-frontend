@@ -42,10 +42,11 @@ const route = useRoute()
 const categoryId = Number(route.params.id) as number
 const groupData = ref<{name:string, groups:IDevicesInCategory}>({ name: '', groups: {} })
 const canEdit = ref(groupStore.canEdit)
+const home = groupStore.currentHome
 const fetchCategories = useLazyAsyncData(
   `categoryById-${categoryId}`,
-  async () => await categoryStore.getDevicesByCategoryId(categoryId, groupStore.currentHome),
-  { watch: [route], deep: false },
+  async () => await categoryStore.getDevicesByCategoryId(categoryId, home),
+  { deep: false },
 )
 groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
