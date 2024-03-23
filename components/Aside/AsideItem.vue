@@ -1,5 +1,8 @@
 <template>
-  <div v-if="title?.length && url?.length" :class="`aside-item ${router.currentRoute.value.path === props.url?'--active':''}`">
+  <div
+    v-if="title?.length && url?.length"
+    :class="`aside-item ${router.currentRoute.value.path === props.url?'--active':''}`"
+  >
     <nuxt-link class="aside-item__link" :to="url">
       <ui-icon :name="icon" size="28" />
       <h2 class="aside-item__title">

@@ -71,7 +71,7 @@ export interface IAsideContent {
 const groupsStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
 const colorMode = useColorTheme()
-const route = useRoute()
+const { currentRoute } = useRouter()
 const { rooms, floors } = storeToRefs(groupsStore)
 const isAsideCollapsed = ref(false)
 const categories = ref<{
@@ -122,7 +122,7 @@ function logout () {
   const userStore = useUserStore()
   userStore.logout()
 }
-watch(() => route.fullPath, () => {
+watch(currentRoute, () => {
   if (isAsideCollapsed.value) {
     isAsideCollapsed.value = false
     trigger.value.style.top = '-54px'
