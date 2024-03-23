@@ -21,16 +21,12 @@ import { useGroupsStore } from "~/store/groups"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 
 const groupStore = useGroupsStore()
-const { group } = storeToRefs(groupStore)
+const { group, canEdit } = storeToRefs(groupStore)
 const route = useRoute()
 const groupId = route.params.id as string
-const canEdit = ref(groupStore.canEdit)
 const fetchGroup = useLazyAsyncData(
   `groupById-${groupId}`,
   async () => await groupStore.getGroupById(groupId),
-  {
-    deep: false,
-  },
 )
 
 

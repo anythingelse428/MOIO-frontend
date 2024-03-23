@@ -46,7 +46,7 @@
         <group-list
           v-for="group in inverseParent"
           :id="group.id"
-          :key="group.name"
+          :key="group.id"
           :devices="group.devices"
           :name="group.name"
           :inverse-parent="group?.inverseParent"
@@ -70,7 +70,7 @@ import ScenarioService, { type IScenarioService } from "~/components/Scenarios/S
 import UiIcon from "~/components/ui/UiIcon.vue"
 
 export interface GroupList {
-  name?:string,
+  name?:string|null,
   id:string|number
   devices?: Array<IAllDevicesResponse & { selected?: boolean }>,
   inverseParent?: GroupList[],

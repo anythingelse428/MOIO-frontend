@@ -23,7 +23,7 @@ export default function useTransformOnScroll (scrollTarget:Ref<HTMLDivElement>,
   }
   onMounted(() => {
     const runTransform = throttle(500, transform)
-    scrollTarget.value.addEventListener('scroll', function (e) {
+    scrollTarget.value.addEventListener('scroll', function () {
       runTransform()
     })
   })

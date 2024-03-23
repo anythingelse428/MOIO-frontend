@@ -46,7 +46,6 @@ const home = groupStore.currentHome
 const fetchCategories = useLazyAsyncData(
   `categoryById-${categoryId}`,
   async () => await categoryStore.getDevicesByCategoryId(categoryId, home),
-  { deep: false },
 )
 groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
 

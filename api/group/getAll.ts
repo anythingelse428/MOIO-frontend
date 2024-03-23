@@ -15,7 +15,7 @@ export interface IGroupResponseItem{
         name:string|null
     },
     groupId?:string|number
-    name: string|null,
+    name?: string|null,
     devices: IAllDevicesResponse[],
     groupCreatorId:number
     isPending?:boolean
