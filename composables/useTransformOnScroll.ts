@@ -25,6 +25,6 @@ export default function useTransformOnScroll (scrollTarget:Ref<HTMLDivElement>,
     const runTransform = throttle(500, transform)
     scrollTarget.value.addEventListener('scroll', function () {
       runTransform()
-    })
+    }, { passive: true })
   })
 }

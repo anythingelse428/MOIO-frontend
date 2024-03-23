@@ -24,13 +24,12 @@ import { useCategoriesStore } from "~/store/categories"
 const userStore = useUserStore()
 const groupStore = useGroupsStore()
 const categoriesStore = useCategoriesStore()
-const route = useRoute()
+const { currentRoute } = useRouter()
 await userStore.init()
 await groupStore.getHouses()
 const main = ref()
 const header = ref()
 const aside = ref()
-useTransformOnScroll(main, [header, aside], '0px', '-124px', 'top')
 
 // Сокеты
 const { $bus } = useNuxtApp()
@@ -59,7 +58,7 @@ socket.connection.on("UpdateConfig", (message:ServiceProps) => {
 
 function changeCapability (message:ServiceProps, group = groupStore.group) {
   // console.log('hiiiiiiiiiiiiiiiiiiiii')
-  const isCategory = route.path.includes('category/')
+  const isCategory = currentRoute.value.fullPath.includes('category/')
   if (isCategory && !isChanged) {
     for (const category of Object.keys(categoriesStore.devicesInCategory)) {
       const deviceIdx = categoriesStore.devicesInCategory[category].findIndex(el => el.id === message.id)
@@ -84,7 +83,12 @@ function changeCapability (message:ServiceProps, group = groupStore.group) {
     }
   }
 }
-
+onMounted(() => {
+  useTransformOnScroll(main, [header, aside], '0px', '-124px', 'top')
+})
+watch(currentRoute, () => {
+  aside.value.style.top = '0px'
+})
 </script>
 <style lang="scss">
 @import "assets/styles/layouts/default-layout";
