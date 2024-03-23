@@ -78,12 +78,12 @@ const router = useRoute()
 const passwordFetch = await useAsyncData(
   'password',
   () => userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value, confirmationCode: code.value }),
-  { deep: false, immediate: false },
+  { immediate: false },
 )
 const loginFetch = await useAsyncData(
   'login',
   () => userStore.changeLogin({ newLogin: login.value, password: oldPassword.value, confirmationCode: code.value }),
-  { deep: false, immediate: false },
+  { immediate: false },
 )
 
 const isLoading = computed(() => (passwordFetch.pending.value && passwordFetch.status.value !== 'idle') ||

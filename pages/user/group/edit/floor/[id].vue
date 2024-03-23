@@ -135,9 +135,9 @@ import useEditGroup from "~/composables/useEditGroup"
 const id = useRoute().params.id as string
 
 const editFetch = await useAsyncData(
-  'editGp',
-  () => useEditGroup(id, name.value, oldName, usersForRemove.value, existingDevices.value, devices.value),
-  { immediate: false },
+    `editGp-${id}`,
+    () => useEditGroup(id, name.value, oldName, usersForRemove.value, existingDevices.value, devices.value),
+    { immediate: false },
 )
 const groupFetch = useLazyAsyncData(
   `groupById-${id}`,
@@ -145,9 +145,9 @@ const groupFetch = useLazyAsyncData(
   { immediate: false },
 )
 const deleteFetch = await useAsyncData(
-  'deleteGp',
+  `deleteGp-${id}`,
   () => groupStore.deleteGroup(id),
-  { deep: false, immediate: false },
+  { immediate: false },
 )
 
 let oldName = ''
