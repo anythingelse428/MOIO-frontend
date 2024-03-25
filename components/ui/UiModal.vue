@@ -27,9 +27,20 @@ const emit = defineEmits<{
 }>()
 const isMounted = ref(false)
 
+const inner = ref()
+const modal = ref()
+onClickOutside(inner, (e) => {
+  emit('clickOutside', e)
+})
+function closeByEsc (e:KeyboardEvent) {
+  if (e.key === 'Escape' || e.code === 'Escape') {
+    emit('clickOutside', e as TouchEvent)
+  }
+}
 onMounted(() => {
   isMounted.value = true
   const $main = document.querySelector('main')
+  window.addEventListener('keydown', closeByEsc)
   watch(() => props.isShown, (n, o) => {
     if ($main) {
       if (props.isShown) {
@@ -40,12 +51,10 @@ onMounted(() => {
     }
   })
 })
-const inner = ref()
-const modal = ref()
-onClickOutside(inner, (e) => {
-  emit('clickOutside', e)
-})
 
+onUnmounted(() => {
+  window.removeEventListener('keydown', closeByEsc)
+})
 </script>
 
 <style lang="scss">

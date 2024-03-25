@@ -41,12 +41,12 @@
         <div v-for="(item,i) in oldConditions" :key="item.id" class="automation__conditions">
           <automation-condition
             :type="item.type"
-            :time="item.type === AutomationConditionTypesEnum.time ? item.value.time : undefined"
-            :time-range="item.type === AutomationConditionTypesEnum.timeRange ? item.value.timeRange : undefined"
-            :automation-condition="item.type === AutomationConditionTypesEnum.temperature ? item.value.automationCondition : undefined"
-            :temperature-range="item.type === AutomationConditionTypesEnum.temperature ? item.value.temperatureRange : undefined"
+            :time="item.type === AutomationConditionTypesEnum.time ? item.value?.time : undefined"
+            :time-range="item.type === AutomationConditionTypesEnum.timeRange ? item.value?.timeRange : undefined"
+            :automation-condition="item.type === AutomationConditionTypesEnum.temperature ? item.value?.automationCondition : undefined"
+            :temperature-range="item.type === AutomationConditionTypesEnum.temperature ? item.value?.temperatureRange : undefined"
             :sensors="sensors"
-            :device-id="item.type === AutomationConditionTypesEnum.sensor || item.type === AutomationConditionTypesEnum.temperature ? item.value.deviceId : undefined"
+            :device-id="item.type === AutomationConditionTypesEnum.sensor || item.type === AutomationConditionTypesEnum.temperature ? item.value?.deviceId : undefined"
             :editable="false"
             :idx="i+1"
           />
@@ -68,7 +68,7 @@
             :automation-condition="item.type === AutomationConditionTypesEnum.temperature ? item.value.automationCondition : undefined"
             :temperature-range="item.type === AutomationConditionTypesEnum.temperature ? item.value.temperatureRange : undefined"
             :sensors="sensors"
-            :device-id="item.type === AutomationConditionTypesEnum.sensor || item.type === AutomationConditionTypesEnum.temperature ? item.value.deviceId : undefined"
+            :device-id="item.type === AutomationConditionTypesEnum.sensor || item.type === AutomationConditionTypesEnum.temperature ? item.value?.deviceId : undefined"
             :editable="true"
             :idx="i+oldConditions.length+1"
             @select-option="e=>setCondition(item.id, e?.type, e.value)"
