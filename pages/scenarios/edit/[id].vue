@@ -142,12 +142,12 @@ const scenarioStore = useScenarioStore()
 async function getData () {
   isLoading.value = true
   const response = await scenarioStore.getById(router.params.id as string)
+  isLoading.value = false
   if (!response) {
     setTimeout(() => {
       useRouter().back()
     }, 900)
   }
-  isLoading.value = false
   selectedDevice.value = response?.devicesScenarios ?? []
   scenarioName.value = response?.name as string
   selectedDevice.value?.forEach((el) => {

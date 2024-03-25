@@ -322,7 +322,7 @@ async function getData () {
   const getValidTimePart = (part:string|number) => String(part).length === 1 ? '0' + part : part
   if (!response?.id?.length || !response?.name?.length) {
     setTimeout(() => {
-      useRouter().push('/automation')
+      useRouter().back()
     }, 900)
   }
   scenarios.value = response.scenarios.map(el => el.scenarioId)
