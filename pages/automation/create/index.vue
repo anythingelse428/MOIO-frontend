@@ -41,8 +41,8 @@
         >
           <automation-condition
             :type="item.type"
-            :time="item.type === 'time' ? item.value.time : undefined"
-            :time-range="item.type === 'time-range' ? item.value.timeRange : undefined"
+            :time="item.type === 'time' ? item.value?.time : undefined"
+            :time-range="item.type === 'time-range' ? item.value?.timeRange : undefined"
             :automation-condition="item.type === 'temperature' ? item.value.automationCondition : undefined"
             :temperature-range="item.type === 'temperature' ? item.value.temperatureRange : undefined"
             :sensors="sensors"
@@ -68,8 +68,8 @@
           >
             <template #inner>
               <AutomationSelectRangeModal
-                :name="sensors.find(el=>el.id === item.value.deviceId)?.name || ''"
-                :range="sensors.find(el=>el.id === item.value.deviceId)?.range"
+                :name="sensors.find(el=>el.id === item.value?.deviceId)?.name || ''"
+                :range="sensors.find(el=>el.id === item.value?.deviceId)?.range"
                 @save-automation-condition="e=>{applyAutomationCondition(item.id, e)}"
                 @save-temperature-range="e=>{applyTemperatureRangeCondition(item.id, e)}"
               />
@@ -229,16 +229,16 @@ async function create () {
           isSensorsValid = false
           useNotification('error', 'Введите время')
         }
-        el.value.time = new Date(`2077/01/01 ${el.value.time}`).toISOString()
+        el.value.time = new Date(`2077/01/01 ${el.value?.time}`).toISOString()
       }
       if (el.type === 'time-range') {
-        if (!el.value.timeRange || !el.value.timeRange.endTime || !el.value.timeRange.startTime) {
+        if (!el.value?.timeRange || !el.value?.timeRange.endTime || !el.value.timeRange.startTime) {
           isSensorsValid = false
           useNotification('error', 'Не указан дипазон времнеи')
         }
         el.value.timeRange = {
-          startTime: new Date(`2077/01/01 ${el.value.timeRange?.startTime}`).toISOString(),
-          endTime: new Date(`2077/01/01 ${el.value.timeRange?.endTime}`).toISOString(),
+          startTime: new Date(`2077/01/01 ${el.value?.timeRange?.startTime}`).toISOString(),
+          endTime: new Date(`2077/01/01 ${el.value?.timeRange?.endTime}`).toISOString(),
         }
       }
       return unref(el.value)

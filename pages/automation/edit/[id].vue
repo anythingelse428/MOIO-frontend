@@ -61,12 +61,13 @@
           </ui-button>
         </div>
         <div v-for="(item,i) in newConditions" :key="item.id+i" class="automation__conditions">
+          {{ i }} {{ item.id }}
           <automation-condition
             :type="item.type"
-            :time="item.type === AutomationConditionTypesEnum.time ? item.value.time : undefined"
-            :time-range="item.type === AutomationConditionTypesEnum.timeRange ? item.value.timeRange : undefined"
-            :automation-condition="item.type === AutomationConditionTypesEnum.temperature ? item.value.automationCondition : undefined"
-            :temperature-range="item.type === AutomationConditionTypesEnum.temperature ? item.value.temperatureRange : undefined"
+            :time="item.type === AutomationConditionTypesEnum.time ? item.value?.time : undefined"
+            :time-range="item.type === AutomationConditionTypesEnum.timeRange ? item?.value?.timeRange : undefined"
+            :automation-condition="item.type === AutomationConditionTypesEnum.temperature ? item.value?.automationCondition : undefined"
+            :temperature-range="item.type === AutomationConditionTypesEnum.temperature ? item.value?.temperatureRange : undefined"
             :sensors="sensors"
             :device-id="item.type === AutomationConditionTypesEnum.sensor || item.type === AutomationConditionTypesEnum.temperature ? item.value?.deviceId : undefined"
             :editable="true"
@@ -91,8 +92,8 @@
           >
             <template #inner>
               <AutomationSelectRangeModal
-                :name="sensors.find(el=>el.id === item.value.deviceId)?.name || ''"
-                :range="sensors.find(el=>el.id === item.value.deviceId)?.range"
+                :name="sensors.find(el=>el.id === item.value?.deviceId)?.name || ''"
+                :range="sensors.find(el=>el.id === item.value?.deviceId)?.range"
                 @save-automation-condition="e=>{applyAutomationCondition(item.id, e)}"
                 @save-temperature-range="e=>{applyTemperatureRangeCondition(item.id, e)}"
               />
@@ -191,6 +192,14 @@ const sensors = ref<IAutomationSensor[]>([])
 
 function setShowConditionalModal () {
   const newId = oldConditions.value.length + newConditions.value.length + 1
+  if (oldConditions.value.find(el => el.type === AutomationConditionTypesEnum.time)) {
+    newConditions.value.push({
+      type: AutomationConditionTypesEnum.time,
+      id: newId,
+      value: { time: `${new Date().getHours()}:${new Date().getMinutes()}` },
+    })
+    return
+  }
   useAutomationShowCondition(sensors.value, newConditions, isConditionModalShow, newId)
 }
 function applyTemperatureRangeCondition (conditionId:number, range:Exclude<IAutomationValue["temperatureRange"], undefined>) {
@@ -213,6 +222,7 @@ sensors.value = useSelectOnlySensors(await groupStore.getGroupById(groupStore.cu
 })
 
 function deleteCondition (id:any) {
+  console.log(id)
   if (!Number.isSafeInteger(id)) {
     const oldConditionIdx = oldConditions.value.findIndex(el => el.id === id)
     removeCondition.value.push(oldConditions.value[oldConditionIdx].id)
@@ -272,17 +282,17 @@ async function update () {
         isSensorsValid = false
         break
       }
-      newTriggersArr.push({ time: new Date(`2077/01/01 ${iAutomationValue.value.time}`).toISOString() })
+      newTriggersArr.push({ time: new Date(`2077/01/01 ${iAutomationValue.value?.time}`).toISOString() })
     }
     if (iAutomationValue.type === AutomationConditionTypesEnum.timeRange) {
-      if (!iAutomationValue.value.timeRange?.startTime || !iAutomationValue.value.timeRange?.endTime) {
+      if (!iAutomationValue.value?.timeRange?.startTime || !iAutomationValue.value?.timeRange?.endTime) {
         isSensorsValid = false
         break
       }
       newTriggersArr.push({
         timeRange: {
-          startTime: new Date(`2077/01/01 ${iAutomationValue.value.timeRange?.startTime}`).toISOString(),
-          endTime: new Date(`2077/01/01 ${iAutomationValue.value.timeRange?.endTime}`).toISOString(),
+          startTime: new Date(`2077/01/01 ${iAutomationValue.value?.timeRange?.startTime}`).toISOString(),
+          endTime: new Date(`2077/01/01 ${iAutomationValue.value?.timeRange?.endTime}`).toISOString(),
         },
       })
     }

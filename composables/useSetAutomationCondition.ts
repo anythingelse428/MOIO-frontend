@@ -11,21 +11,27 @@ export default function useSetAutomationCondition (id:number,
   isTemperatureModalShow:Ref<boolean>,
   value:IAutomationValue,
   oldConditions?:IBaseCondition<string>[]) {
-  const isSensorCondition = type === 'sensor' || type === 'temperature'
+  const oldConditionsLength = oldConditions?.length ?? 0
+  const validInitialTime = `${new Date().getHours()}:${new Date().getMinutes()}`
+  const isTimeConditionExist = newConditions.value.find(el => el.type === AutomationConditionTypesEnum.time) ||
+      oldConditions?.find(el => el.type === AutomationConditionTypesEnum.time)
+  const isSensorConditionExist = newConditions.value
+    .find(el => el.type === AutomationConditionTypesEnum.sensor || el.type === AutomationConditionTypesEnum.temperature) ||
+      oldConditions?.find(el => el.type === AutomationConditionTypesEnum.sensor || el.type === AutomationConditionTypesEnum.temperature)
+  if (isTimeConditionExist) {
+    isTemperatureModalShow.value = false
+    return
+  }
+  const isSensorCondition = type === AutomationConditionTypesEnum.sensor || type === AutomationConditionTypesEnum.temperature
   const sensorProps = (id:string) => isSensorCondition ? sensors?.find(el => el.id === id) : undefined
   const isTemperatureSensor = (id:string) => isSensorCondition ? sensorProps(id)?.type?.includes('temp') || sensorProps(id)?.type?.includes('therm') : undefined
-  const isConditionExist = newConditions.value.findIndex(el => el.id === id)
+  const isConditionExist = newConditions.value.findIndex(el => el.id === id && el.type === type)
 
   if (isTemperatureSensor(value?.deviceId || '') && newConditions.value[isConditionExist]?.value?.deviceId === value) {
     isTemperatureModalShow.value = true
     return
   }
 
-  const isSensorConditionExist = newConditions.value
-    .find(el => el.type === 'sensor' || el.type === 'temperature') ||
-      oldConditions?.find(el => el.type === 'sensor' || el.type === 'temperature')
-  const validInitialTime = `${new Date().getHours()}:${new Date().getMinutes()}`
-  const oldConditionsLength = oldConditions?.length ?? 0
   if (isConditionExist > -1) {
     if (!isSensorCondition) {
       if (isSensorConditionExist) {

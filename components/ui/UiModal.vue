@@ -34,7 +34,7 @@ onClickOutside(inner, (e) => {
 })
 function closeByEsc (e:KeyboardEvent) {
   if (e.key === 'Escape' || e.code === 'Escape') {
-    emit('clickOutside', e as TouchEvent)
+    emit('clickOutside', e)
   }
 }
 onMounted(() => {
