@@ -61,7 +61,6 @@
           </ui-button>
         </div>
         <div v-for="(item,i) in newConditions" :key="item.id+i" class="automation__conditions">
-          {{ i }} {{ item.id }}
           <automation-condition
             :type="item.type"
             :time="item.type === AutomationConditionTypesEnum.time ? item.value?.time : undefined"
