@@ -21,7 +21,7 @@
             <ui-icon name="pencil" size="18" color="var(--color-active)" />
           </ui-button>
         </span>
-        <form v-show="isNameChanging" method="post" class="profile-card-info__change-name">
+        <form v-show="isNameChanging" method="post" class="profile-card-info__change-name" @submit.prevent="changeName">
           <input v-model="newName" type="text" class="profile-card-info__change-name-input" required>
           <ui-button
             padding="4px"

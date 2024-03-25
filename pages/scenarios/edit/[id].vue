@@ -142,12 +142,17 @@ const scenarioStore = useScenarioStore()
 async function getData () {
   isLoading.value = true
   const response = await scenarioStore.getById(router.params.id as string)
+  if (!response) {
+    setTimeout(() => {
+      useRouter().back()
+    }, 900)
+  }
   isLoading.value = false
   selectedDevice.value = response?.devicesScenarios ?? []
   scenarioName.value = response?.name as string
   selectedDevice.value?.forEach((el) => {
     useScenarioToggleSelected(el.id, data.value)
-    if (capabilities.value[el.id]) {
+    if (capabilities.value[el.id] && el.capabilities) {
       capabilities.value[el.id].push(...el.capabilities)
     } else {
       capabilities.value[el.id] = el.capabilities
