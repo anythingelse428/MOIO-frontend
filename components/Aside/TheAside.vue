@@ -110,6 +110,8 @@ const automateLinks:IAsideContent["categoryContent"] = [
   }]
 const aside = ref()
 const trigger = ref()
+useTransformOnScroll(aside, [trigger], '-54px', '-124px', 'top')
+
 async function getCategories () {
   await categoriesStore.getAll()
   categories.value = categoriesStore.allCategories()
@@ -121,9 +123,6 @@ function logout () {
   const userStore = useUserStore()
   userStore.logout()
 }
-onMounted(() => {
-  useTransformOnScroll(aside, [trigger], '-54px', '-124px', 'top')
-})
 watch(currentRoute, () => {
   if (isAsideCollapsed.value) {
     isAsideCollapsed.value = false

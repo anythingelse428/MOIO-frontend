@@ -38,6 +38,8 @@ const restBaseUrl = useRuntimeConfig().public.REST_BASE_TARGET
 const socket = await useSocket(restBaseUrl + "/chat")
 let isChanged = false
 
+useTransformOnScroll(main, [header, aside], '0px', '-124px', 'top')
+
 socket.connection.on("UpdateSensorState", (message:string) => {
   // console.log("UpdateSensorState", message)
   useNotification("info", message)
@@ -84,9 +86,6 @@ function changeCapability (message:ServiceProps, group = groupStore.group) {
     }
   }
 }
-onMounted(() => {
-  useTransformOnScroll(main, [header, aside], '0px', '-124px', 'top')
-})
 watch(currentRoute, () => {
   aside.value.style.top = '0px'
 })
