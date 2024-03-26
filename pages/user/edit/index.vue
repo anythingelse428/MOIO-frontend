@@ -75,12 +75,12 @@ import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 const userStore = useUserStore()
 const router = useRoute()
 
-const passwordFetch = await useAsyncData(
+const passwordFetch = useAsyncData(
   'password',
   () => userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value, confirmationCode: code.value }),
   { immediate: false },
 )
-const loginFetch = await useAsyncData(
+const loginFetch = useAsyncData(
   'login',
   () => userStore.changeLogin({ newLogin: login.value, password: oldPassword.value, confirmationCode: code.value }),
   { immediate: false },

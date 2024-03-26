@@ -26,6 +26,7 @@ const groupsFetch = useLazyAsyncData('allGroups',
   () => groupStore.getAll())
 const groupFetch = useLazyAsyncData(`groupById-${home.value}`,
   () => groupStore.getGroupById(home.value))
+
 const isLoading = computed(() => (groupsFetch.pending.value) || (groupFetch.pending.value))
 </script>
 

@@ -20,6 +20,7 @@ import { useUserStore } from "~/store/user"
 import { useGroupsStore } from "~/store/groups"
 import type { ServiceProps } from "~/components/Service/TheService.vue"
 import { useCategoriesStore } from "~/store/categories"
+import useTransformOnScroll from "~/composables/useTransformOnScroll"
 
 const userStore = useUserStore()
 const groupStore = useGroupsStore()
