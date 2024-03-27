@@ -151,7 +151,7 @@ const scenarios = ref<string[]>([])
 const name = ref('')
 const sensors = ref<IAutomationSensor[]>([])
 
-const existingScenarios = await scenarioStore.getAll()
+const existingScenarios = await scenarioStore.getAll(groupStore.currentHome)
 function setShowConditionalModal () {
   useAutomationShowCondition(sensors.value, conditions, isConditionModalShow, conditions.value.length + 1)
 }

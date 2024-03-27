@@ -180,7 +180,7 @@ const newConditions = ref<IBaseCondition<number>[]>([])
 const removeCondition = ref<string[]>([])
 
 const scenarios = ref<string[]>([])
-const existingScenarios = await useScenarioStore().getAll()
+const existingScenarios = await useScenarioStore().getAll(groupStore.currentHome)
 isLoading.value = false
 
 const runByAllConditions = ref(true)
