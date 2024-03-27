@@ -1,6 +1,6 @@
 <template>
   <div class="group">
-    <loader-screen :is-loading="fetchGroup.pending.value" />
+    <loader-screen :is-loading="isLoading" />
     <group-list
       v-if="group?.name"
       :id="groupId"
@@ -28,7 +28,7 @@ const fetchGroup = useLazyAsyncData(
   `groupById-${groupId}`,
   () => groupStore.getGroupById(groupId),
 )
-
+const isLoading = computed(() => fetchGroup.pending.value)
 
 if (groupStore.currentHome !== groupId && groupStore.upGroups?.find(el => el.id === groupId)?.typeId === 1) {
   groupStore.setCurrentHome(groupId)

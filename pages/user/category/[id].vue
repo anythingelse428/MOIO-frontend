@@ -1,6 +1,6 @@
 <template>
   <div class="category">
-    <loader-screen :is-loading="fetchCategories.pending.value" />
+    <loader-screen :is-loading="isLoading" />
     <h1 class="category__header">
       {{ groupData?.name }}
     </h1>
@@ -47,6 +47,7 @@ const fetchCategories = useLazyAsyncData(
   `categoryById-${categoryId}`,
   () => categoryStore.getDevicesByCategoryId(categoryId, home),
 )
+const isLoading = computed(() => fetchCategories.pending.value)
 groupData.value.name = categoryStore.categoryById(categoryId)?.name ?? ""
 
 watch(devicesInCategory, (newVal, oldValue) => {
