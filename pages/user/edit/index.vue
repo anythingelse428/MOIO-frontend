@@ -79,12 +79,12 @@ const router = useRoute()
 
 const passwordFetch = useLazyAsyncData(
   'password',
-  async () => await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value }),
+  () => userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value }),
   { immediate: false },
 )
 const passwordConfirmFetch = useLazyAsyncData(
   'password-confirm',
-  async () => await apiUserConfirmPassword(code.value),
+  () => apiUserConfirmPassword(code.value),
   { immediate: false },
 )
 passwordFetch.pending.value = false

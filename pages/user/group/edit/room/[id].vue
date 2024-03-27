@@ -159,7 +159,7 @@ const editFetch = await useAsyncData(
 )
 const groupFetch = useLazyAsyncData(
   `groupById-${id}`,
-  async () => await useDataForGroupEdit(id),
+  () => useDataForGroupEdit(id),
   { immediate: false },
 )
 

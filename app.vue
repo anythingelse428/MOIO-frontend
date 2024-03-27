@@ -15,9 +15,4 @@ const colorMode = useColorTheme()
 if (user.accessToken) {
   await user.init()
 }
-
-
 </script>
-<style>
-
-</style>
