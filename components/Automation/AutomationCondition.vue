@@ -13,7 +13,6 @@
       <div
         v-if="type===AutomationConditionTypesEnum.time"
         class="automation-condition__time"
-        @click="openTimeSelect"
       >
         <div class="automation-condition__time-offset">
           {{ timeOffset ? timeOffset[0] : '' }}
@@ -36,7 +35,6 @@
       <div
         v-if="type === AutomationConditionTypesEnum.timeRange"
         class="automation-condition__time"
-        @click="openTimeSelect"
       >
         <div class="automation-condition__time-offset">
           {{ timeOffset ? timeOffset[0] : '' }}

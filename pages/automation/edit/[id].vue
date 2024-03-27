@@ -332,7 +332,7 @@ async function getData () {
   if (!response?.id?.length || !response?.name?.length) {
     setTimeout(() => {
       useRouter().back()
-    }, 900)
+    }, 2000)
   }
   scenarios.value = response.scenarios.map(el => el.scenarioId)
   name.value = response.name
