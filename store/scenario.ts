@@ -19,8 +19,8 @@ export const useScenarioStore = defineStore('scenario', {
     async createScenario (props:IAddScenario) {
       return await apiScenariosAdd(props)
     },
-    async getAll () {
-      return await apiScenariosGetAll()
+    async getAll (homeId:string) {
+      return await apiScenariosGetAll(homeId)
     },
     async getById (id:string) {
       return await apiScenariosGetById(id)
