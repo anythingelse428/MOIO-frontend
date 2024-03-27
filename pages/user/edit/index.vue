@@ -77,12 +77,12 @@ import apiUserConfirmPassword from "~/api/user/confirmPassword"
 const userStore = useUserStore()
 const router = useRoute()
 
-const passwordFetch = useAsyncData(
+const passwordFetch = useLazyAsyncData(
   'password',
   async () => await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value }),
   { immediate: false },
 )
-const passwordConfirmFetch = useAsyncData(
+const passwordConfirmFetch = useLazyAsyncData(
   'password-confirm',
   async () => await apiUserConfirmPassword(code.value),
   { immediate: false },

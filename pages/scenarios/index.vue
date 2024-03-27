@@ -40,7 +40,7 @@ if (!canAutomate.value) {
 }
 const scenarioStore = useScenarioStore()
 const scenariosFetch = useLazyAsyncData('scenarios-all', async () => await scenarioStore.getAll(groupStore.currentHome))
-const executeScenarioFetch = useAsyncData(
+const executeScenarioFetch = useLazyAsyncData(
   'scenarios-exec',
   async () => await scenarioStore.executeScenario(executedScenario.value),
   { immediate: false })
