@@ -36,7 +36,6 @@
         transition-content-name="translate"
         backdrop-filter="blur(5px)"
         width="320px"
-        @click-outside="isCapabilitiesShow = false"
       >
         <template #inner>
           <div ref="target" class="service-capabilities-modal" role="dialog">
