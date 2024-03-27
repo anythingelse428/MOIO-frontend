@@ -2,6 +2,7 @@ import useValidationBackendError from "~/composables/useValidationBackendError"
 
 export interface IAddScenario {
   name: string,
+  homeId:string
   devicesValueStates:{
     [key:string]:{
       type:string,

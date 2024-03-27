@@ -19,6 +19,7 @@ export interface IAutomationValue {
 export interface IAutomationCreateProps {
   name: string,
   value: IAutomationValue[]
+  homeId:string
   scenariosOrder: {
      scenarioId: string,
      orderId: number

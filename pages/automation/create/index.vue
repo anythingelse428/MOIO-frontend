@@ -219,6 +219,7 @@ async function create () {
   let isSensorsValid = true
   const automationData:IAutomationCreateProps = {
     name: name.value,
+    homeId: groupStore.currentHome,
     value: conditions.value.map((el) => {
       if ((el.type === "sensor" || el.type === "temperature") && !el.value?.deviceId?.length) {
         isSensorsValid = false

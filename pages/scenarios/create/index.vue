@@ -126,7 +126,7 @@ async function createScenario () {
   }
 
   isLoading.value = true
-  await useScenarioStore().createScenario({ name: scenarioName.value, devicesValueStates: capabilities.value })
+  await useScenarioStore().createScenario({ name: scenarioName.value, homeId: groupStore.currentHome, devicesValueStates: capabilities.value })
   isLoading.value = false
 }
 </script>
