@@ -23,9 +23,9 @@ import LoaderScreen from "~/components/shared/LoaderScreen.vue"
 const groupStore = useGroupsStore()
 const { group, canEdit, home } = storeToRefs(groupStore)
 const groupsFetch = useLazyAsyncData('allGroups',
-  () => groupStore.getAll())
+  async () => await groupStore.getAll())
 const groupFetch = useLazyAsyncData(`groupById-${home.value}`,
-  () => groupStore.getGroupById(home.value))
+  async () => await groupStore.getGroupById(home.value))
 
 const isLoading = computed(() => (groupsFetch.pending.value) || (groupFetch.pending.value))
 </script>
