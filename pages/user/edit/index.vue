@@ -71,23 +71,42 @@
 <script setup lang="ts">
 import { useUserStore } from "~/store/user"
 import LoaderScreen from "~/components/shared/LoaderScreen.vue"
+import apiUserConfirmLogin from "~/api/user/confirmLogin"
+import apiUserConfirmPassword from "~/api/user/confirmPassword"
 
 const userStore = useUserStore()
 const router = useRoute()
 
 const passwordFetch = useAsyncData(
   'password',
-  () => userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value, confirmationCode: code.value }),
+  async () => await userStore.changePassword({ oldPassword: oldPassword.value, newPassword: newPassword.value }),
   { immediate: false },
 )
+const passwordConfirmFetch = useAsyncData(
+  'password-confirm',
+  async () => await apiUserConfirmPassword(code.value),
+  { immediate: false },
+)
+passwordFetch.pending.value = false
+passwordConfirmFetch.pending.value = false
+
 const loginFetch = useAsyncData(
   'login',
-  () => userStore.changeLogin({ newLogin: login.value, password: oldPassword.value, confirmationCode: code.value }),
+  async () => await userStore.changeLogin({ newLogin: login.value, password: oldPassword.value }),
   { immediate: false },
 )
+const loginConfirmFetch = useAsyncData(
+  'login-confirm',
+  async () => await apiUserConfirmLogin(code.value),
+  { immediate: false },
+)
+loginFetch.pending.value = false
+loginConfirmFetch.pending.value = false
+const isLoading = computed(() => passwordFetch.pending.value ||
+    passwordConfirmFetch.pending.value ||
+    loginFetch.pending.value ||
+    loginConfirmFetch.pending.value)
 
-const isLoading = computed(() => (passwordFetch.pending.value && passwordFetch.status.value !== 'idle') ||
-    (loginFetch.pending.value && loginFetch.status.value !== 'idle'))
 const type = ref<'password'|'email'>(router.query?.password ? 'password' : 'email')
 const oldPassword = ref('')
 const newPassword = ref('')
@@ -117,14 +136,17 @@ async function changeData () {
   }
   if (step.value === 2) {
     if (type.value === "password") {
-      await passwordFetch.execute()
-      step.value = passwordFetch.data.value ? 1 : 2
-      passwordFetch.data.value && clearFields()
+      await passwordConfirmFetch.execute()
+      console.log(passwordConfirmFetch.data)
+      step.value = passwordConfirmFetch.data.value ? 1 : 2
+      passwordConfirmFetch.data.value && clearFields()
     }
     if (type.value === "email") {
-      await loginFetch.execute()
-      step.value = loginFetch.data.value ? 1 : 2
-      loginFetch.data.value && clearFields()
+      await loginConfirmFetch.execute()
+      console.log(loginConfirmFetch.data)
+
+      step.value = loginConfirmFetch.data.value ? 1 : 2
+      loginConfirmFetch.data.value && clearFields()
     }
   }
 }

@@ -53,7 +53,7 @@ async function acceptInvite () {
 }
 
 async function rejectInvite () {
-  await apiGroupRejectPending(props.id)
+  await apiGroupRejectPending(props.code)
   emit('updatePending')
 }
 </script>

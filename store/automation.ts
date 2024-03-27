@@ -17,8 +17,8 @@ export const useAutomationStore = defineStore('automation', {
     async create (props:IAutomationCreateProps) {
       return await apiAutomationsCreate(props)
     },
-    async getAll () {
-      return await apiAutomationsGetAll()
+    async getAll (homeId:string) {
+      return await apiAutomationsGetAll(homeId)
     },
     async getById (id:string) {
       return await apiAutomationsGetById(id)
